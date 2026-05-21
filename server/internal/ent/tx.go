@@ -12,10 +12,16 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
+	// Conversation is the client for interacting with the Conversation builders.
+	Conversation *ConversationClient
+	// ConversationMember is the client for interacting with the ConversationMember builders.
+	ConversationMember *ConversationMemberClient
 	// Follow is the client for interacting with the Follow builders.
 	Follow *FollowClient
 	// MediaAsset is the client for interacting with the MediaAsset builders.
 	MediaAsset *MediaAssetClient
+	// Message is the client for interacting with the Message builders.
+	Message *MessageClient
 	// ModerationAction is the client for interacting with the ModerationAction builders.
 	ModerationAction *ModerationActionClient
 	// Notification is the client for interacting with the Notification builders.
@@ -173,8 +179,11 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
+	tx.Conversation = NewConversationClient(tx.config)
+	tx.ConversationMember = NewConversationMemberClient(tx.config)
 	tx.Follow = NewFollowClient(tx.config)
 	tx.MediaAsset = NewMediaAssetClient(tx.config)
+	tx.Message = NewMessageClient(tx.config)
 	tx.ModerationAction = NewModerationActionClient(tx.config)
 	tx.Notification = NewNotificationClient(tx.config)
 	tx.OutboxEvent = NewOutboxEventClient(tx.config)
@@ -197,7 +206,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: Follow.QueryXXX(), the query will be executed
+// applies a query, for example: Conversation.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

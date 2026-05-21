@@ -8,6 +8,54 @@ import (
 )
 
 var (
+	// ConversationsColumns holds the columns for the "conversations" table.
+	ConversationsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "type", Type: field.TypeString, Default: "direct"},
+		{Name: "title", Type: field.TypeString, Size: 100, Default: ""},
+		{Name: "last_message_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "last_message_at", Type: field.TypeTime, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// ConversationsTable holds the schema information for the "conversations" table.
+	ConversationsTable = &schema.Table{
+		Name:       "conversations",
+		Columns:    ConversationsColumns,
+		PrimaryKey: []*schema.Column{ConversationsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "conversation_last_message_at",
+				Unique:  false,
+				Columns: []*schema.Column{ConversationsColumns[4]},
+			},
+		},
+	}
+	// ConversationMembersColumns holds the columns for the "conversation_members" table.
+	ConversationMembersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "conversation_id", Type: field.TypeUUID},
+		{Name: "user_id", Type: field.TypeUUID},
+		{Name: "joined_at", Type: field.TypeTime},
+		{Name: "last_read_at", Type: field.TypeTime},
+	}
+	// ConversationMembersTable holds the schema information for the "conversation_members" table.
+	ConversationMembersTable = &schema.Table{
+		Name:       "conversation_members",
+		Columns:    ConversationMembersColumns,
+		PrimaryKey: []*schema.Column{ConversationMembersColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "conversationmember_conversation_id_user_id",
+				Unique:  true,
+				Columns: []*schema.Column{ConversationMembersColumns[1], ConversationMembersColumns[2]},
+			},
+			{
+				Name:    "conversationmember_user_id_joined_at",
+				Unique:  false,
+				Columns: []*schema.Column{ConversationMembersColumns[2], ConversationMembersColumns[3]},
+			},
+		},
+	}
 	// FollowsColumns holds the columns for the "follows" table.
 	FollowsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -56,6 +104,35 @@ var (
 		Name:       "media_assets",
 		Columns:    MediaAssetsColumns,
 		PrimaryKey: []*schema.Column{MediaAssetsColumns[0]},
+	}
+	// MessagesColumns holds the columns for the "messages" table.
+	MessagesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "conversation_id", Type: field.TypeUUID},
+		{Name: "sender_id", Type: field.TypeUUID},
+		{Name: "content", Type: field.TypeString, Size: 2147483647, Default: ""},
+		{Name: "type", Type: field.TypeString, Default: "text"},
+		{Name: "client_message_id", Type: field.TypeString, Size: 64, Default: ""},
+		{Name: "status", Type: field.TypeString, Default: "sent"},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// MessagesTable holds the schema information for the "messages" table.
+	MessagesTable = &schema.Table{
+		Name:       "messages",
+		Columns:    MessagesColumns,
+		PrimaryKey: []*schema.Column{MessagesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "message_conversation_id_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{MessagesColumns[1], MessagesColumns[7]},
+			},
+			{
+				Name:    "message_client_message_id",
+				Unique:  true,
+				Columns: []*schema.Column{MessagesColumns[5]},
+			},
+		},
 	}
 	// ModerationActionsColumns holds the columns for the "moderation_actions" table.
 	ModerationActionsColumns = []*schema.Column{
@@ -382,8 +459,11 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		ConversationsTable,
+		ConversationMembersTable,
 		FollowsTable,
 		MediaAssetsTable,
+		MessagesTable,
 		ModerationActionsTable,
 		NotificationsTable,
 		OutboxEventsTable,

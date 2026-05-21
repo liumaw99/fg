@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../data/api/interaction_api.dart';
+import '../data/api/messaging_api.dart';
 import '../data/api/search_api.dart';
+import 'chat_screen.dart';
 import '../providers/post_provider.dart';
 import '../router/route_names.dart';
 import '../widgets/post_card.dart';
@@ -406,24 +408,127 @@ class _NotificationsPageState extends State<_NotificationsPage> {
   }
 }
 
-class _MessagesPage extends StatelessWidget {
+class _MessagesPage extends StatefulWidget {
   const _MessagesPage();
 
   @override
+  State<_MessagesPage> createState() => _MessagesPageState();
+}
+
+class _MessagesPageState extends State<_MessagesPage> {
+  final _api = MessagingApi();
+  List<dynamic> _conversations = [];
+  bool _isLoading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadConversations();
+  }
+
+  Future<void> _loadConversations() async {
+    try {
+      final data = await _api.getConversations();
+      setState(() {
+        _conversations = data['conversations'] as List<dynamic>? ?? [];
+        _isLoading = false;
+        _error = null;
+      });
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.mail_outline, size: 64, color: Colors.grey),
-          SizedBox(height: 16),
-          Text(
-            'Messages',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 8),
-          Text('Your conversations will appear here'),
-        ],
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_error != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 64, color: Colors.red),
+            const SizedBox(height: 16),
+            Text('Error: $_error'),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _loadConversations,
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (_conversations.isEmpty) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.mail_outline, size: 64, color: Colors.grey),
+            SizedBox(height: 16),
+            Text(
+              'No messages yet',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: _loadConversations,
+      child: ListView.builder(
+        itemCount: _conversations.length,
+        itemBuilder: (context, index) {
+          final c = _conversations[index] as Map<String, dynamic>;
+          final lastMsg = c['last_message'] as Map<String, dynamic>?;
+          final unread = c['unread_count'] as int? ?? 0;
+          return ListTile(
+            leading: CircleAvatar(
+              backgroundColor: Theme.of(context).colorScheme.primary.withAlpha(30),
+              child: Icon(Icons.person, color: Theme.of(context).colorScheme.primary),
+            ),
+            title: Text(
+              'User ${c['participant_id']?.toString().substring(0, 8) ?? ''}',
+              style: TextStyle(
+                fontWeight: unread > 0 ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+            subtitle: Text(
+              lastMsg?['content']?.toString() ?? 'No messages',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: unread > 0 ? Colors.black87 : Colors.grey,
+                fontWeight: unread > 0 ? FontWeight.w500 : FontWeight.normal,
+              ),
+            ),
+            trailing: unread > 0
+                ? Badge(
+                    label: Text('$unread'),
+                    child: const Icon(Icons.chevron_right),
+                  )
+                : const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => ChatScreen(
+                    conversationId: c['id'] as String,
+                    participantId: c['participant_id'] as String?,
+                  ),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }

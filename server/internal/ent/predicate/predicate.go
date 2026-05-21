@@ -6,11 +6,20 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// Conversation is the predicate function for conversation builders.
+type Conversation func(*sql.Selector)
+
+// ConversationMember is the predicate function for conversationmember builders.
+type ConversationMember func(*sql.Selector)
+
 // Follow is the predicate function for follow builders.
 type Follow func(*sql.Selector)
 
 // MediaAsset is the predicate function for mediaasset builders.
 type MediaAsset func(*sql.Selector)
+
+// Message is the predicate function for message builders.
+type Message func(*sql.Selector)
 
 // ModerationAction is the predicate function for moderationaction builders.
 type ModerationAction func(*sql.Selector)

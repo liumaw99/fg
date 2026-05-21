@@ -7,8 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"social-server/internal/ent/conversation"
+	"social-server/internal/ent/conversationmember"
 	"social-server/internal/ent/follow"
 	"social-server/internal/ent/mediaasset"
+	"social-server/internal/ent/message"
 	"social-server/internal/ent/moderationaction"
 	"social-server/internal/ent/notification"
 	"social-server/internal/ent/outboxevent"
@@ -87,21 +90,24 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			follow.Table:           follow.ValidColumn,
-			mediaasset.Table:       mediaasset.ValidColumn,
-			moderationaction.Table: moderationaction.ValidColumn,
-			notification.Table:     notification.ValidColumn,
-			outboxevent.Table:      outboxevent.ValidColumn,
-			post.Table:             post.ValidColumn,
-			postlike.Table:         postlike.ValidColumn,
-			postmedia.Table:        postmedia.ValidColumn,
-			poststats.Table:        poststats.ValidColumn,
-			processedevent.Table:   processedevent.ValidColumn,
-			report.Table:           report.ValidColumn,
-			user.Table:             user.ValidColumn,
-			userprofile.Table:      userprofile.ValidColumn,
-			usersession.Table:      usersession.ValidColumn,
-			userstats.Table:        userstats.ValidColumn,
+			conversation.Table:       conversation.ValidColumn,
+			conversationmember.Table: conversationmember.ValidColumn,
+			follow.Table:             follow.ValidColumn,
+			mediaasset.Table:         mediaasset.ValidColumn,
+			message.Table:            message.ValidColumn,
+			moderationaction.Table:   moderationaction.ValidColumn,
+			notification.Table:       notification.ValidColumn,
+			outboxevent.Table:        outboxevent.ValidColumn,
+			post.Table:               post.ValidColumn,
+			postlike.Table:           postlike.ValidColumn,
+			postmedia.Table:          postmedia.ValidColumn,
+			poststats.Table:          poststats.ValidColumn,
+			processedevent.Table:     processedevent.ValidColumn,
+			report.Table:             report.ValidColumn,
+			user.Table:               user.ValidColumn,
+			userprofile.Table:        userprofile.ValidColumn,
+			usersession.Table:        usersession.ValidColumn,
+			userstats.Table:          userstats.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

@@ -3,8 +3,11 @@
 package ent
 
 import (
+	"social-server/internal/ent/conversation"
+	"social-server/internal/ent/conversationmember"
 	"social-server/internal/ent/follow"
 	"social-server/internal/ent/mediaasset"
+	"social-server/internal/ent/message"
 	"social-server/internal/ent/moderationaction"
 	"social-server/internal/ent/notification"
 	"social-server/internal/ent/outboxevent"
@@ -28,6 +31,40 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	conversationFields := schema.Conversation{}.Fields()
+	_ = conversationFields
+	// conversationDescType is the schema descriptor for type field.
+	conversationDescType := conversationFields[1].Descriptor()
+	// conversation.DefaultType holds the default value on creation for the type field.
+	conversation.DefaultType = conversationDescType.Default.(string)
+	// conversationDescTitle is the schema descriptor for title field.
+	conversationDescTitle := conversationFields[2].Descriptor()
+	// conversation.DefaultTitle holds the default value on creation for the title field.
+	conversation.DefaultTitle = conversationDescTitle.Default.(string)
+	// conversation.TitleValidator is a validator for the "title" field. It is called by the builders before save.
+	conversation.TitleValidator = conversationDescTitle.Validators[0].(func(string) error)
+	// conversationDescCreatedAt is the schema descriptor for created_at field.
+	conversationDescCreatedAt := conversationFields[5].Descriptor()
+	// conversation.DefaultCreatedAt holds the default value on creation for the created_at field.
+	conversation.DefaultCreatedAt = conversationDescCreatedAt.Default.(func() time.Time)
+	// conversationDescID is the schema descriptor for id field.
+	conversationDescID := conversationFields[0].Descriptor()
+	// conversation.DefaultID holds the default value on creation for the id field.
+	conversation.DefaultID = conversationDescID.Default.(func() uuid.UUID)
+	conversationmemberFields := schema.ConversationMember{}.Fields()
+	_ = conversationmemberFields
+	// conversationmemberDescJoinedAt is the schema descriptor for joined_at field.
+	conversationmemberDescJoinedAt := conversationmemberFields[3].Descriptor()
+	// conversationmember.DefaultJoinedAt holds the default value on creation for the joined_at field.
+	conversationmember.DefaultJoinedAt = conversationmemberDescJoinedAt.Default.(func() time.Time)
+	// conversationmemberDescLastReadAt is the schema descriptor for last_read_at field.
+	conversationmemberDescLastReadAt := conversationmemberFields[4].Descriptor()
+	// conversationmember.DefaultLastReadAt holds the default value on creation for the last_read_at field.
+	conversationmember.DefaultLastReadAt = conversationmemberDescLastReadAt.Default.(func() time.Time)
+	// conversationmemberDescID is the schema descriptor for id field.
+	conversationmemberDescID := conversationmemberFields[0].Descriptor()
+	// conversationmember.DefaultID holds the default value on creation for the id field.
+	conversationmember.DefaultID = conversationmemberDescID.Default.(func() uuid.UUID)
 	followFields := schema.Follow{}.Fields()
 	_ = followFields
 	// followDescCreatedAt is the schema descriptor for created_at field.
@@ -108,6 +145,34 @@ func init() {
 	mediaassetDescID := mediaassetFields[0].Descriptor()
 	// mediaasset.DefaultID holds the default value on creation for the id field.
 	mediaasset.DefaultID = mediaassetDescID.Default.(func() uuid.UUID)
+	messageFields := schema.Message{}.Fields()
+	_ = messageFields
+	// messageDescContent is the schema descriptor for content field.
+	messageDescContent := messageFields[3].Descriptor()
+	// message.DefaultContent holds the default value on creation for the content field.
+	message.DefaultContent = messageDescContent.Default.(string)
+	// messageDescType is the schema descriptor for type field.
+	messageDescType := messageFields[4].Descriptor()
+	// message.DefaultType holds the default value on creation for the type field.
+	message.DefaultType = messageDescType.Default.(string)
+	// messageDescClientMessageID is the schema descriptor for client_message_id field.
+	messageDescClientMessageID := messageFields[5].Descriptor()
+	// message.DefaultClientMessageID holds the default value on creation for the client_message_id field.
+	message.DefaultClientMessageID = messageDescClientMessageID.Default.(string)
+	// message.ClientMessageIDValidator is a validator for the "client_message_id" field. It is called by the builders before save.
+	message.ClientMessageIDValidator = messageDescClientMessageID.Validators[0].(func(string) error)
+	// messageDescStatus is the schema descriptor for status field.
+	messageDescStatus := messageFields[6].Descriptor()
+	// message.DefaultStatus holds the default value on creation for the status field.
+	message.DefaultStatus = messageDescStatus.Default.(string)
+	// messageDescCreatedAt is the schema descriptor for created_at field.
+	messageDescCreatedAt := messageFields[7].Descriptor()
+	// message.DefaultCreatedAt holds the default value on creation for the created_at field.
+	message.DefaultCreatedAt = messageDescCreatedAt.Default.(func() time.Time)
+	// messageDescID is the schema descriptor for id field.
+	messageDescID := messageFields[0].Descriptor()
+	// message.DefaultID holds the default value on creation for the id field.
+	message.DefaultID = messageDescID.Default.(func() uuid.UUID)
 	moderationactionFields := schema.ModerationAction{}.Fields()
 	_ = moderationactionFields
 	// moderationactionDescActionType is the schema descriptor for action_type field.

@@ -8,6 +8,30 @@ import (
 	"social-server/internal/ent"
 )
 
+// The ConversationFunc type is an adapter to allow the use of ordinary
+// function as Conversation mutator.
+type ConversationFunc func(context.Context, *ent.ConversationMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ConversationFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.ConversationMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ConversationMutation", m)
+}
+
+// The ConversationMemberFunc type is an adapter to allow the use of ordinary
+// function as ConversationMember mutator.
+type ConversationMemberFunc func(context.Context, *ent.ConversationMemberMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ConversationMemberFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.ConversationMemberMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ConversationMemberMutation", m)
+}
+
 // The FollowFunc type is an adapter to allow the use of ordinary
 // function as Follow mutator.
 type FollowFunc func(context.Context, *ent.FollowMutation) (ent.Value, error)
@@ -30,6 +54,18 @@ func (f MediaAssetFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, 
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.MediaAssetMutation", m)
+}
+
+// The MessageFunc type is an adapter to allow the use of ordinary
+// function as Message mutator.
+type MessageFunc func(context.Context, *ent.MessageMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f MessageFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.MessageMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.MessageMutation", m)
 }
 
 // The ModerationActionFunc type is an adapter to allow the use of ordinary

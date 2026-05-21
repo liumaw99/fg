@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"social-server/internal/module/auth"
 	"social-server/internal/module/interaction"
+	"social-server/internal/module/messaging"
 	"social-server/internal/module/moderation"
 	"social-server/internal/module/post"
 	"social-server/internal/module/social"
@@ -51,6 +52,7 @@ func (a *App) setupRouter() {
 	socialHandler := social.NewSocialModule(a.ent, a.log)
 	interactionHandler := interaction.NewInteractionModule(a.ent, a.log)
 	moderationHandler := moderation.NewModerationModule(a.ent, a.log)
+	messagingHandler := messaging.NewMessagingModule(a.ent, a.log)
 
 	// API v1
 	v1 := r.Group("/api/v1")
@@ -115,6 +117,13 @@ func (a *App) setupRouter() {
 			protected.GET("/reports", moderationHandler.ListReports)
 			protected.POST("/moderation/actions", moderationHandler.TakeAction)
 			protected.GET("/search", moderationHandler.Search)
+
+			// Messaging
+			protected.POST("/conversations", messagingHandler.CreateConversation)
+			protected.GET("/conversations", messagingHandler.ListConversations)
+			protected.POST("/messages", messagingHandler.SendMessage)
+			protected.GET("/conversations/:conversation_id/messages", messagingHandler.ListMessages)
+			protected.POST("/conversations/read", messagingHandler.MarkAsRead)
 
 			// Timeline - posts from followed users
 			protected.GET("/timeline", postHandler.ListPosts)
