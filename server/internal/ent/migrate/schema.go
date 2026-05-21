@@ -8,6 +8,36 @@ import (
 )
 
 var (
+	// FollowsColumns holds the columns for the "follows" table.
+	FollowsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "follower_id", Type: field.TypeUUID},
+		{Name: "following_id", Type: field.TypeUUID},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// FollowsTable holds the schema information for the "follows" table.
+	FollowsTable = &schema.Table{
+		Name:       "follows",
+		Columns:    FollowsColumns,
+		PrimaryKey: []*schema.Column{FollowsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "follow_follower_id_following_id",
+				Unique:  true,
+				Columns: []*schema.Column{FollowsColumns[1], FollowsColumns[2]},
+			},
+			{
+				Name:    "follow_follower_id_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{FollowsColumns[1], FollowsColumns[3]},
+			},
+			{
+				Name:    "follow_following_id_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{FollowsColumns[2], FollowsColumns[3]},
+			},
+		},
+	}
 	// MediaAssetsColumns holds the columns for the "media_assets" table.
 	MediaAssetsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -234,6 +264,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		FollowsTable,
 		MediaAssetsTable,
 		OutboxEventsTable,
 		PostsTable,

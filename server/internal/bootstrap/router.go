@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"social-server/internal/module/auth"
 	"social-server/internal/module/post"
+	"social-server/internal/module/social"
 	"social-server/internal/module/user"
 	"social-server/internal/platform/middleware"
 	"social-server/internal/platform/response"
@@ -45,6 +46,7 @@ func (a *App) setupRouter() {
 	authHandler := auth.NewAuthModule(a.ent, a.jwt, a.log)
 	userHandler := user.NewUserModule(a.ent, a.storage, a.log)
 	postHandler := post.NewPostModule(a.ent, a.log)
+	socialHandler := social.NewSocialModule(a.ent, a.log)
 
 	// API v1
 	v1 := r.Group("/api/v1")
@@ -83,7 +85,17 @@ func (a *App) setupRouter() {
 				posts.GET("/user/:user_id", postHandler.ListUserPosts)
 			}
 
-			// Timeline
+			// Social
+			social := protected.Group("/social")
+			{
+				social.POST("/follow", socialHandler.Follow)
+				social.POST("/unfollow", socialHandler.Unfollow)
+				social.GET("/follow-status/:user_id", socialHandler.GetFollowStatus)
+				social.GET("/followers/:user_id", socialHandler.ListFollowers)
+				social.GET("/following/:user_id", socialHandler.ListFollowing)
+			}
+
+			// Timeline - posts from followed users
 			protected.GET("/timeline", postHandler.ListPosts)
 		}
 	}

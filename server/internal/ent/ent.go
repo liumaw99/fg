@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"social-server/internal/ent/follow"
 	"social-server/internal/ent/mediaasset"
 	"social-server/internal/ent/outboxevent"
 	"social-server/internal/ent/post"
@@ -82,6 +83,7 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
+			follow.Table:         follow.ValidColumn,
 			mediaasset.Table:     mediaasset.ValidColumn,
 			outboxevent.Table:    outboxevent.ValidColumn,
 			post.Table:           post.ValidColumn,

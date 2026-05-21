@@ -6,6 +6,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// Follow is the predicate function for follow builders.
+type Follow func(*sql.Selector)
+
 // MediaAsset is the predicate function for mediaasset builders.
 type MediaAsset func(*sql.Selector)
 

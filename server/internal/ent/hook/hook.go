@@ -8,6 +8,18 @@ import (
 	"social-server/internal/ent"
 )
 
+// The FollowFunc type is an adapter to allow the use of ordinary
+// function as Follow mutator.
+type FollowFunc func(context.Context, *ent.FollowMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f FollowFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.FollowMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FollowMutation", m)
+}
+
 // The MediaAssetFunc type is an adapter to allow the use of ordinary
 // function as MediaAsset mutator.
 type MediaAssetFunc func(context.Context, *ent.MediaAssetMutation) (ent.Value, error)

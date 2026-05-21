@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"social-server/internal/ent/follow"
 	"social-server/internal/ent/mediaasset"
 	"social-server/internal/ent/outboxevent"
 	"social-server/internal/ent/post"
@@ -23,6 +24,16 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	followFields := schema.Follow{}.Fields()
+	_ = followFields
+	// followDescCreatedAt is the schema descriptor for created_at field.
+	followDescCreatedAt := followFields[3].Descriptor()
+	// follow.DefaultCreatedAt holds the default value on creation for the created_at field.
+	follow.DefaultCreatedAt = followDescCreatedAt.Default.(func() time.Time)
+	// followDescID is the schema descriptor for id field.
+	followDescID := followFields[0].Descriptor()
+	// follow.DefaultID holds the default value on creation for the id field.
+	follow.DefaultID = followDescID.Default.(func() uuid.UUID)
 	mediaassetFields := schema.MediaAsset{}.Fields()
 	_ = mediaassetFields
 	// mediaassetDescFilename is the schema descriptor for filename field.
