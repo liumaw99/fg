@@ -4,8 +4,9 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/lib/pq"
 	"social-server/internal/config"
-	"social-server/internal/platform/database"
+	"social-server/internal/ent"
 	"social-server/internal/platform/kafka"
 	"social-server/internal/platform/logger"
 	"social-server/internal/platform/redis"
@@ -18,7 +19,7 @@ type App struct {
 	router   *gin.Engine
 	cfg      *config.Config
 	log      *logger.Logger
-	db       *database.DB
+	ent      *ent.Client
 	rdb      *redis.Client
 	kafka    *kafka.Producer
 	storage  *storage.Client
@@ -31,8 +32,8 @@ func NewAPI(cfg *config.Config, log *logger.Logger) (*App, error) {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	// Database
-	db, err := database.New(cfg.DatabaseURL)
+	// Database (Ent)
+	entClient, err := ent.Open("postgres", cfg.DatabaseURL)
 	if err != nil {
 		return nil, fmt.Errorf("database: %w", err)
 	}
@@ -64,7 +65,7 @@ func NewAPI(cfg *config.Config, log *logger.Logger) (*App, error) {
 	app := &App{
 		cfg:     cfg,
 		log:     log,
-		db:      db,
+		ent:     entClient,
 		rdb:     rdb,
 		kafka:   kp,
 		storage: st,
@@ -80,7 +81,7 @@ func NewAPI(cfg *config.Config, log *logger.Logger) (*App, error) {
 		return nil
 	})
 	app.closers = append(app.closers, rdb.Close)
-	app.closers = append(app.closers, db.Close)
+	app.closers = append(app.closers, entClient.Close)
 
 	return app, nil
 }
@@ -100,7 +101,7 @@ func (a *App) Close() error {
 
 func (a *App) Config() *config.Config        { return a.cfg }
 func (a *App) Log() *logger.Logger            { return a.log }
-func (a *App) DB() *database.DB               { return a.db }
+func (a *App) Ent() *ent.Client               { return a.ent }
 func (a *App) Redis() *redis.Client           { return a.rdb }
 func (a *App) Kafka() *kafka.Producer         { return a.kafka }
 func (a *App) Storage() *storage.Client       { return a.storage }

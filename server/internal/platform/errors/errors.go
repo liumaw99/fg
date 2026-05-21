@@ -39,6 +39,11 @@ func Is(err, target error) bool {
 	return errors.Is(err, target)
 }
 
+// As finds the first error in err's chain that matches target.
+func As(err error, target any) bool {
+	return errors.As(err, target)
+}
+
 // Common domain errors.
 var (
 	ErrInternal           = New("internal_error", 500, "internal server error")

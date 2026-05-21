@@ -6,26 +6,28 @@ import (
 	"time"
 
 	"social-server/internal/config"
-	"social-server/internal/platform/database"
+	"social-server/internal/ent"
 	"social-server/internal/platform/kafka"
 	"social-server/internal/platform/logger"
 	"social-server/internal/platform/redis"
+
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 // Worker holds the worker application dependencies.
 type Worker struct {
-	cfg      *config.Config
-	log      *logger.Logger
-	db       *database.DB
-	rdb      *redis.Client
-	kafka    *kafka.Producer
+	cfg       *config.Config
+	log       *logger.Logger
+	ent       *ent.Client
+	rdb       *redis.Client
+	kafka     *kafka.Producer
 	consumers []*kafka.Consumer
 	closers   []func() error
 }
 
 func NewWorker(cfg *config.Config, log *logger.Logger) (*Worker, error) {
-	// Database
-	db, err := database.New(cfg.DatabaseURL)
+	// Database (Ent)
+	entClient, err := ent.Open("postgres", cfg.DatabaseURL)
 	if err != nil {
 		return nil, fmt.Errorf("database: %w", err)
 	}
@@ -45,7 +47,7 @@ func NewWorker(cfg *config.Config, log *logger.Logger) (*Worker, error) {
 	w := &Worker{
 		cfg:   cfg,
 		log:   log,
-		db:    db,
+		ent:   entClient,
 		rdb:   rdb,
 		kafka: kp,
 	}
@@ -57,7 +59,7 @@ func NewWorker(cfg *config.Config, log *logger.Logger) (*Worker, error) {
 		return nil
 	})
 	w.closers = append(w.closers, rdb.Close)
-	w.closers = append(w.closers, db.Close)
+	w.closers = append(w.closers, entClient.Close)
 
 	return w, nil
 }
@@ -95,18 +97,12 @@ func (w *Worker) runOutboxPublisher(ctx context.Context) {
 
 func (w *Worker) publishOutboxEvents(ctx context.Context) error {
 	// TODO: Implement outbox event scanning and publishing
-	// This will be implemented when Ent schema and outbox_events table are created
 	return nil
 }
 
 // runConsumers starts Kafka consumers.
 func (w *Worker) runConsumers(ctx context.Context) {
 	// TODO: Register actual consumers
-	// timeline-fanout-consumer
-	// notification-consumer
-	// push-consumer
-	// search-index-consumer
-	// media-processing-consumer
 }
 
 // Close shuts down the worker.

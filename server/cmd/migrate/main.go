@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"os"
 
+	_ "github.com/lib/pq"
 	"social-server/internal/config"
-	"social-server/internal/platform/database"
+	"social-server/internal/ent"
+	"social-server/internal/ent/migrate"
 	"social-server/internal/platform/logger"
 )
 
@@ -33,29 +35,22 @@ func main() {
 
 	ctx := context.Background()
 
-	db, err := database.New(cfg.DatabaseURL)
+	client, err := ent.Open("postgres", cfg.DatabaseURL)
 	if err != nil {
 		log.Fatal("failed to connect database", logger.Error(err))
 	}
-	defer db.Close()
+	defer client.Close()
 
 	switch action {
 	case "up":
-		if err := db.MigrateUp(ctx); err != nil {
+		if err := client.Schema.Create(ctx, migrate.WithDropIndex(true), migrate.WithDropColumn(true)); err != nil {
 			log.Fatal("failed to migrate up", logger.Error(err))
 		}
 		log.Info("migration up completed")
 	case "down":
-		if err := db.MigrateDown(ctx); err != nil {
-			log.Fatal("failed to migrate down", logger.Error(err))
-		}
-		log.Info("migration down completed")
+		log.Info("migrate down not supported with ent auto-migration, use manual rollback")
 	case "status":
-		version, dirty, err := db.MigrateStatus(ctx)
-		if err != nil {
-			log.Fatal("failed to get migration status", logger.Error(err))
-		}
-		log.Info("migration status", logger.Int64("version", version), logger.Bool("dirty", dirty))
+		log.Info("ent auto-migration: schema will be synchronized on next 'up' run")
 	default:
 		fmt.Printf("unknown action: %s\n", action)
 		os.Exit(1)

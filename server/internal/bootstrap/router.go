@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"social-server/internal/module/auth"
 	"social-server/internal/platform/middleware"
 	"social-server/internal/platform/response"
 	"social-server/internal/platform/security"
@@ -38,33 +39,26 @@ func (a *App) setupRouter() {
 		response.OK(c, gin.H{"status": "ready"})
 	})
 
+	// Init auth module
+	authHandler := auth.NewAuthModule(a.ent, a.jwt, a.log)
+
 	// API v1
 	v1 := r.Group("/api/v1")
 	{
 		// Auth routes (public)
-		auth := v1.Group("/auth")
+		authGroup := v1.Group("/auth")
 		{
-			auth.POST("/register", func(c *gin.Context) {
-				response.OK(c, gin.H{"message": "register placeholder"})
-			})
-			auth.POST("/login", func(c *gin.Context) {
-				response.OK(c, gin.H{"message": "login placeholder"})
-			})
-			auth.POST("/refresh", func(c *gin.Context) {
-				response.OK(c, gin.H{"message": "refresh placeholder"})
-			})
-			auth.POST("/logout", func(c *gin.Context) {
-				response.OK(c, gin.H{"message": "logout placeholder"})
-			})
+			authGroup.POST("/register", authHandler.Register)
+			authGroup.POST("/login", authHandler.Login)
+			authGroup.POST("/refresh", authHandler.Refresh)
+			authGroup.POST("/logout", authHandler.Logout)
 		}
 
 		// Protected routes
 		protected := v1.Group("")
 		protected.Use(middleware.Auth(&tokenValidator{jwt: a.jwt}))
 		{
-			protected.GET("/me", func(c *gin.Context) {
-				response.OK(c, gin.H{"user_id": middleware.GetUserID(c)})
-			})
+			protected.GET("/me", authHandler.Me)
 
 			// Users
 			users := protected.Group("/users")
