@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"social-server/internal/module/auth"
+	"social-server/internal/module/user"
 	"social-server/internal/platform/middleware"
 	"social-server/internal/platform/response"
 	"social-server/internal/platform/security"
@@ -39,8 +40,9 @@ func (a *App) setupRouter() {
 		response.OK(c, gin.H{"status": "ready"})
 	})
 
-	// Init auth module
+	// Init modules
 	authHandler := auth.NewAuthModule(a.ent, a.jwt, a.log)
+	userHandler := user.NewUserModule(a.ent, a.storage, a.log)
 
 	// API v1
 	v1 := r.Group("/api/v1")
@@ -63,9 +65,10 @@ func (a *App) setupRouter() {
 			// Users
 			users := protected.Group("/users")
 			{
-				users.GET("/:id", func(c *gin.Context) {
-					response.OK(c, gin.H{"id": c.Param("id")})
-				})
+				users.GET("/profile", userHandler.GetProfile)
+				users.PATCH("/profile", userHandler.UpdateProfile)
+				users.POST("/avatar/upload-url", userHandler.GetAvatarUploadURL)
+				users.GET("/:username", userHandler.GetUserByUsername)
 			}
 
 			// Posts
