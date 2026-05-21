@@ -16,6 +16,8 @@ type Tx struct {
 	Follow *FollowClient
 	// MediaAsset is the client for interacting with the MediaAsset builders.
 	MediaAsset *MediaAssetClient
+	// ModerationAction is the client for interacting with the ModerationAction builders.
+	ModerationAction *ModerationActionClient
 	// Notification is the client for interacting with the Notification builders.
 	Notification *NotificationClient
 	// OutboxEvent is the client for interacting with the OutboxEvent builders.
@@ -30,6 +32,8 @@ type Tx struct {
 	PostStats *PostStatsClient
 	// ProcessedEvent is the client for interacting with the ProcessedEvent builders.
 	ProcessedEvent *ProcessedEventClient
+	// Report is the client for interacting with the Report builders.
+	Report *ReportClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 	// UserProfile is the client for interacting with the UserProfile builders.
@@ -171,6 +175,7 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Follow = NewFollowClient(tx.config)
 	tx.MediaAsset = NewMediaAssetClient(tx.config)
+	tx.ModerationAction = NewModerationActionClient(tx.config)
 	tx.Notification = NewNotificationClient(tx.config)
 	tx.OutboxEvent = NewOutboxEventClient(tx.config)
 	tx.Post = NewPostClient(tx.config)
@@ -178,6 +183,7 @@ func (tx *Tx) init() {
 	tx.PostMedia = NewPostMediaClient(tx.config)
 	tx.PostStats = NewPostStatsClient(tx.config)
 	tx.ProcessedEvent = NewProcessedEventClient(tx.config)
+	tx.Report = NewReportClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 	tx.UserProfile = NewUserProfileClient(tx.config)
 	tx.UserSession = NewUserSessionClient(tx.config)

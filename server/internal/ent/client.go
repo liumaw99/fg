@@ -13,6 +13,7 @@ import (
 
 	"social-server/internal/ent/follow"
 	"social-server/internal/ent/mediaasset"
+	"social-server/internal/ent/moderationaction"
 	"social-server/internal/ent/notification"
 	"social-server/internal/ent/outboxevent"
 	"social-server/internal/ent/post"
@@ -20,6 +21,7 @@ import (
 	"social-server/internal/ent/postmedia"
 	"social-server/internal/ent/poststats"
 	"social-server/internal/ent/processedevent"
+	"social-server/internal/ent/report"
 	"social-server/internal/ent/user"
 	"social-server/internal/ent/userprofile"
 	"social-server/internal/ent/usersession"
@@ -40,6 +42,8 @@ type Client struct {
 	Follow *FollowClient
 	// MediaAsset is the client for interacting with the MediaAsset builders.
 	MediaAsset *MediaAssetClient
+	// ModerationAction is the client for interacting with the ModerationAction builders.
+	ModerationAction *ModerationActionClient
 	// Notification is the client for interacting with the Notification builders.
 	Notification *NotificationClient
 	// OutboxEvent is the client for interacting with the OutboxEvent builders.
@@ -54,6 +58,8 @@ type Client struct {
 	PostStats *PostStatsClient
 	// ProcessedEvent is the client for interacting with the ProcessedEvent builders.
 	ProcessedEvent *ProcessedEventClient
+	// Report is the client for interacting with the Report builders.
+	Report *ReportClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 	// UserProfile is the client for interacting with the UserProfile builders.
@@ -75,6 +81,7 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Follow = NewFollowClient(c.config)
 	c.MediaAsset = NewMediaAssetClient(c.config)
+	c.ModerationAction = NewModerationActionClient(c.config)
 	c.Notification = NewNotificationClient(c.config)
 	c.OutboxEvent = NewOutboxEventClient(c.config)
 	c.Post = NewPostClient(c.config)
@@ -82,6 +89,7 @@ func (c *Client) init() {
 	c.PostMedia = NewPostMediaClient(c.config)
 	c.PostStats = NewPostStatsClient(c.config)
 	c.ProcessedEvent = NewProcessedEventClient(c.config)
+	c.Report = NewReportClient(c.config)
 	c.User = NewUserClient(c.config)
 	c.UserProfile = NewUserProfileClient(c.config)
 	c.UserSession = NewUserSessionClient(c.config)
@@ -176,21 +184,23 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:            ctx,
-		config:         cfg,
-		Follow:         NewFollowClient(cfg),
-		MediaAsset:     NewMediaAssetClient(cfg),
-		Notification:   NewNotificationClient(cfg),
-		OutboxEvent:    NewOutboxEventClient(cfg),
-		Post:           NewPostClient(cfg),
-		PostLike:       NewPostLikeClient(cfg),
-		PostMedia:      NewPostMediaClient(cfg),
-		PostStats:      NewPostStatsClient(cfg),
-		ProcessedEvent: NewProcessedEventClient(cfg),
-		User:           NewUserClient(cfg),
-		UserProfile:    NewUserProfileClient(cfg),
-		UserSession:    NewUserSessionClient(cfg),
-		UserStats:      NewUserStatsClient(cfg),
+		ctx:              ctx,
+		config:           cfg,
+		Follow:           NewFollowClient(cfg),
+		MediaAsset:       NewMediaAssetClient(cfg),
+		ModerationAction: NewModerationActionClient(cfg),
+		Notification:     NewNotificationClient(cfg),
+		OutboxEvent:      NewOutboxEventClient(cfg),
+		Post:             NewPostClient(cfg),
+		PostLike:         NewPostLikeClient(cfg),
+		PostMedia:        NewPostMediaClient(cfg),
+		PostStats:        NewPostStatsClient(cfg),
+		ProcessedEvent:   NewProcessedEventClient(cfg),
+		Report:           NewReportClient(cfg),
+		User:             NewUserClient(cfg),
+		UserProfile:      NewUserProfileClient(cfg),
+		UserSession:      NewUserSessionClient(cfg),
+		UserStats:        NewUserStatsClient(cfg),
 	}, nil
 }
 
@@ -208,21 +218,23 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:            ctx,
-		config:         cfg,
-		Follow:         NewFollowClient(cfg),
-		MediaAsset:     NewMediaAssetClient(cfg),
-		Notification:   NewNotificationClient(cfg),
-		OutboxEvent:    NewOutboxEventClient(cfg),
-		Post:           NewPostClient(cfg),
-		PostLike:       NewPostLikeClient(cfg),
-		PostMedia:      NewPostMediaClient(cfg),
-		PostStats:      NewPostStatsClient(cfg),
-		ProcessedEvent: NewProcessedEventClient(cfg),
-		User:           NewUserClient(cfg),
-		UserProfile:    NewUserProfileClient(cfg),
-		UserSession:    NewUserSessionClient(cfg),
-		UserStats:      NewUserStatsClient(cfg),
+		ctx:              ctx,
+		config:           cfg,
+		Follow:           NewFollowClient(cfg),
+		MediaAsset:       NewMediaAssetClient(cfg),
+		ModerationAction: NewModerationActionClient(cfg),
+		Notification:     NewNotificationClient(cfg),
+		OutboxEvent:      NewOutboxEventClient(cfg),
+		Post:             NewPostClient(cfg),
+		PostLike:         NewPostLikeClient(cfg),
+		PostMedia:        NewPostMediaClient(cfg),
+		PostStats:        NewPostStatsClient(cfg),
+		ProcessedEvent:   NewProcessedEventClient(cfg),
+		Report:           NewReportClient(cfg),
+		User:             NewUserClient(cfg),
+		UserProfile:      NewUserProfileClient(cfg),
+		UserSession:      NewUserSessionClient(cfg),
+		UserStats:        NewUserStatsClient(cfg),
 	}, nil
 }
 
@@ -252,9 +264,9 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.Follow, c.MediaAsset, c.Notification, c.OutboxEvent, c.Post, c.PostLike,
-		c.PostMedia, c.PostStats, c.ProcessedEvent, c.User, c.UserProfile,
-		c.UserSession, c.UserStats,
+		c.Follow, c.MediaAsset, c.ModerationAction, c.Notification, c.OutboxEvent,
+		c.Post, c.PostLike, c.PostMedia, c.PostStats, c.ProcessedEvent, c.Report,
+		c.User, c.UserProfile, c.UserSession, c.UserStats,
 	} {
 		n.Use(hooks...)
 	}
@@ -264,9 +276,9 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Follow, c.MediaAsset, c.Notification, c.OutboxEvent, c.Post, c.PostLike,
-		c.PostMedia, c.PostStats, c.ProcessedEvent, c.User, c.UserProfile,
-		c.UserSession, c.UserStats,
+		c.Follow, c.MediaAsset, c.ModerationAction, c.Notification, c.OutboxEvent,
+		c.Post, c.PostLike, c.PostMedia, c.PostStats, c.ProcessedEvent, c.Report,
+		c.User, c.UserProfile, c.UserSession, c.UserStats,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -279,6 +291,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Follow.mutate(ctx, m)
 	case *MediaAssetMutation:
 		return c.MediaAsset.mutate(ctx, m)
+	case *ModerationActionMutation:
+		return c.ModerationAction.mutate(ctx, m)
 	case *NotificationMutation:
 		return c.Notification.mutate(ctx, m)
 	case *OutboxEventMutation:
@@ -293,6 +307,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.PostStats.mutate(ctx, m)
 	case *ProcessedEventMutation:
 		return c.ProcessedEvent.mutate(ctx, m)
+	case *ReportMutation:
+		return c.Report.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
 	case *UserProfileMutation:
@@ -569,6 +585,139 @@ func (c *MediaAssetClient) mutate(ctx context.Context, m *MediaAssetMutation) (V
 		return (&MediaAssetDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown MediaAsset mutation op: %q", m.Op())
+	}
+}
+
+// ModerationActionClient is a client for the ModerationAction schema.
+type ModerationActionClient struct {
+	config
+}
+
+// NewModerationActionClient returns a client for the ModerationAction from the given config.
+func NewModerationActionClient(c config) *ModerationActionClient {
+	return &ModerationActionClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `moderationaction.Hooks(f(g(h())))`.
+func (c *ModerationActionClient) Use(hooks ...Hook) {
+	c.hooks.ModerationAction = append(c.hooks.ModerationAction, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `moderationaction.Intercept(f(g(h())))`.
+func (c *ModerationActionClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ModerationAction = append(c.inters.ModerationAction, interceptors...)
+}
+
+// Create returns a builder for creating a ModerationAction entity.
+func (c *ModerationActionClient) Create() *ModerationActionCreate {
+	mutation := newModerationActionMutation(c.config, OpCreate)
+	return &ModerationActionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ModerationAction entities.
+func (c *ModerationActionClient) CreateBulk(builders ...*ModerationActionCreate) *ModerationActionCreateBulk {
+	return &ModerationActionCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *ModerationActionClient) MapCreateBulk(slice any, setFunc func(*ModerationActionCreate, int)) *ModerationActionCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &ModerationActionCreateBulk{err: fmt.Errorf("calling to ModerationActionClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*ModerationActionCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &ModerationActionCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ModerationAction.
+func (c *ModerationActionClient) Update() *ModerationActionUpdate {
+	mutation := newModerationActionMutation(c.config, OpUpdate)
+	return &ModerationActionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ModerationActionClient) UpdateOne(ma *ModerationAction) *ModerationActionUpdateOne {
+	mutation := newModerationActionMutation(c.config, OpUpdateOne, withModerationAction(ma))
+	return &ModerationActionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ModerationActionClient) UpdateOneID(id uuid.UUID) *ModerationActionUpdateOne {
+	mutation := newModerationActionMutation(c.config, OpUpdateOne, withModerationActionID(id))
+	return &ModerationActionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ModerationAction.
+func (c *ModerationActionClient) Delete() *ModerationActionDelete {
+	mutation := newModerationActionMutation(c.config, OpDelete)
+	return &ModerationActionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ModerationActionClient) DeleteOne(ma *ModerationAction) *ModerationActionDeleteOne {
+	return c.DeleteOneID(ma.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ModerationActionClient) DeleteOneID(id uuid.UUID) *ModerationActionDeleteOne {
+	builder := c.Delete().Where(moderationaction.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ModerationActionDeleteOne{builder}
+}
+
+// Query returns a query builder for ModerationAction.
+func (c *ModerationActionClient) Query() *ModerationActionQuery {
+	return &ModerationActionQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeModerationAction},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ModerationAction entity by its id.
+func (c *ModerationActionClient) Get(ctx context.Context, id uuid.UUID) (*ModerationAction, error) {
+	return c.Query().Where(moderationaction.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ModerationActionClient) GetX(ctx context.Context, id uuid.UUID) *ModerationAction {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *ModerationActionClient) Hooks() []Hook {
+	return c.hooks.ModerationAction
+}
+
+// Interceptors returns the client interceptors.
+func (c *ModerationActionClient) Interceptors() []Interceptor {
+	return c.inters.ModerationAction
+}
+
+func (c *ModerationActionClient) mutate(ctx context.Context, m *ModerationActionMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ModerationActionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ModerationActionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ModerationActionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ModerationActionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown ModerationAction mutation op: %q", m.Op())
 	}
 }
 
@@ -1503,6 +1652,139 @@ func (c *ProcessedEventClient) mutate(ctx context.Context, m *ProcessedEventMuta
 	}
 }
 
+// ReportClient is a client for the Report schema.
+type ReportClient struct {
+	config
+}
+
+// NewReportClient returns a client for the Report from the given config.
+func NewReportClient(c config) *ReportClient {
+	return &ReportClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `report.Hooks(f(g(h())))`.
+func (c *ReportClient) Use(hooks ...Hook) {
+	c.hooks.Report = append(c.hooks.Report, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `report.Intercept(f(g(h())))`.
+func (c *ReportClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Report = append(c.inters.Report, interceptors...)
+}
+
+// Create returns a builder for creating a Report entity.
+func (c *ReportClient) Create() *ReportCreate {
+	mutation := newReportMutation(c.config, OpCreate)
+	return &ReportCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Report entities.
+func (c *ReportClient) CreateBulk(builders ...*ReportCreate) *ReportCreateBulk {
+	return &ReportCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *ReportClient) MapCreateBulk(slice any, setFunc func(*ReportCreate, int)) *ReportCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &ReportCreateBulk{err: fmt.Errorf("calling to ReportClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*ReportCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &ReportCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Report.
+func (c *ReportClient) Update() *ReportUpdate {
+	mutation := newReportMutation(c.config, OpUpdate)
+	return &ReportUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ReportClient) UpdateOne(r *Report) *ReportUpdateOne {
+	mutation := newReportMutation(c.config, OpUpdateOne, withReport(r))
+	return &ReportUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ReportClient) UpdateOneID(id uuid.UUID) *ReportUpdateOne {
+	mutation := newReportMutation(c.config, OpUpdateOne, withReportID(id))
+	return &ReportUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Report.
+func (c *ReportClient) Delete() *ReportDelete {
+	mutation := newReportMutation(c.config, OpDelete)
+	return &ReportDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ReportClient) DeleteOne(r *Report) *ReportDeleteOne {
+	return c.DeleteOneID(r.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ReportClient) DeleteOneID(id uuid.UUID) *ReportDeleteOne {
+	builder := c.Delete().Where(report.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ReportDeleteOne{builder}
+}
+
+// Query returns a query builder for Report.
+func (c *ReportClient) Query() *ReportQuery {
+	return &ReportQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeReport},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Report entity by its id.
+func (c *ReportClient) Get(ctx context.Context, id uuid.UUID) (*Report, error) {
+	return c.Query().Where(report.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ReportClient) GetX(ctx context.Context, id uuid.UUID) *Report {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *ReportClient) Hooks() []Hook {
+	return c.hooks.Report
+}
+
+// Interceptors returns the client interceptors.
+func (c *ReportClient) Interceptors() []Interceptor {
+	return c.inters.Report
+}
+
+func (c *ReportClient) mutate(ctx context.Context, m *ReportMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ReportCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ReportUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ReportUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ReportDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Report mutation op: %q", m.Op())
+	}
+}
+
 // UserClient is a client for the User schema.
 type UserClient struct {
 	config
@@ -2038,12 +2320,13 @@ func (c *UserStatsClient) mutate(ctx context.Context, m *UserStatsMutation) (Val
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Follow, MediaAsset, Notification, OutboxEvent, Post, PostLike, PostMedia,
-		PostStats, ProcessedEvent, User, UserProfile, UserSession, UserStats []ent.Hook
+		Follow, MediaAsset, ModerationAction, Notification, OutboxEvent, Post, PostLike,
+		PostMedia, PostStats, ProcessedEvent, Report, User, UserProfile, UserSession,
+		UserStats []ent.Hook
 	}
 	inters struct {
-		Follow, MediaAsset, Notification, OutboxEvent, Post, PostLike, PostMedia,
-		PostStats, ProcessedEvent, User, UserProfile, UserSession,
+		Follow, MediaAsset, ModerationAction, Notification, OutboxEvent, Post, PostLike,
+		PostMedia, PostStats, ProcessedEvent, Report, User, UserProfile, UserSession,
 		UserStats []ent.Interceptor
 	}
 )

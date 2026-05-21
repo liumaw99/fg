@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../data/api/interaction_api.dart';
+import '../data/api/search_api.dart';
 import '../providers/post_provider.dart';
 import '../router/route_names.dart';
 import '../widgets/post_card.dart';
@@ -141,25 +142,119 @@ class _TimelinePageState extends ConsumerState<_TimelinePage> {
   }
 }
 
-class _ExplorePage extends StatelessWidget {
+class _ExplorePage extends StatefulWidget {
   const _ExplorePage();
 
   @override
+  State<_ExplorePage> createState() => _ExplorePageState();
+}
+
+class _ExplorePageState extends State<_ExplorePage> {
+  final _controller = TextEditingController();
+  final _searchApi = SearchApi();
+  List<dynamic> _results = [];
+  bool _isLoading = false;
+  String? _error;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _search() async {
+    final query = _controller.text.trim();
+    if (query.isEmpty) return;
+
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      final data = await _searchApi.search(query);
+      setState(() {
+        _results = data['results'] as List<dynamic>? ?? [];
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.explore_outlined, size: 64, color: Colors.grey),
-          SizedBox(height: 16),
-          Text(
-            'Explore',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: TextField(
+            controller: _controller,
+            decoration: InputDecoration(
+              hintText: 'Search users or posts...',
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: _controller.text.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        _controller.clear();
+                        setState(() => _results = []);
+                      },
+                    )
+                  : null,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            onSubmitted: (_) => _search(),
           ),
-          SizedBox(height: 8),
-          Text('Discover new content here'),
-        ],
-      ),
+        ),
+        if (_isLoading)
+          const Expanded(
+            child: Center(child: CircularProgressIndicator()),
+          )
+        else if (_error != null)
+          Expanded(
+            child: Center(child: Text('Error: $_error')),
+          )
+        else if (_results.isEmpty && _controller.text.isNotEmpty)
+          const Expanded(
+            child: Center(
+              child: Text('No results found', style: TextStyle(color: Colors.grey)),
+            ),
+          )
+        else
+          Expanded(
+            child: ListView.builder(
+              itemCount: _results.length,
+              itemBuilder: (context, index) {
+                final r = _results[index] as Map<String, dynamic>;
+                final type = r['type'] as String? ?? '';
+                return ListTile(
+                  leading: Icon(
+                    type == 'user' ? Icons.person : Icons.article,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  title: Text(r['title'] as String? ?? ''),
+                  subtitle: Text(
+                    r['subtitle'] as String? ??
+                        (r['content'] as String? ?? '').substring(
+                            0,
+                            ((r['content'] as String?)?.length ?? 0) > 60
+                                ? 60
+                                : (r['content'] as String?)?.length ?? 0),
+                  ),
+                  onTap: () {
+                    // TODO: Navigate to user profile or post detail
+                  },
+                );
+              },
+            ),
+          ),
+      ],
     );
   }
 }

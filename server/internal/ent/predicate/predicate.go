@@ -12,6 +12,9 @@ type Follow func(*sql.Selector)
 // MediaAsset is the predicate function for mediaasset builders.
 type MediaAsset func(*sql.Selector)
 
+// ModerationAction is the predicate function for moderationaction builders.
+type ModerationAction func(*sql.Selector)
+
 // Notification is the predicate function for notification builders.
 type Notification func(*sql.Selector)
 
@@ -32,6 +35,9 @@ type PostStats func(*sql.Selector)
 
 // ProcessedEvent is the predicate function for processedevent builders.
 type ProcessedEvent func(*sql.Selector)
+
+// Report is the predicate function for report builders.
+type Report func(*sql.Selector)
 
 // User is the predicate function for user builders.
 type User func(*sql.Selector)

@@ -5,6 +5,7 @@ package ent
 import (
 	"social-server/internal/ent/follow"
 	"social-server/internal/ent/mediaasset"
+	"social-server/internal/ent/moderationaction"
 	"social-server/internal/ent/notification"
 	"social-server/internal/ent/outboxevent"
 	"social-server/internal/ent/post"
@@ -12,6 +13,7 @@ import (
 	"social-server/internal/ent/postmedia"
 	"social-server/internal/ent/poststats"
 	"social-server/internal/ent/processedevent"
+	"social-server/internal/ent/report"
 	"social-server/internal/ent/schema"
 	"social-server/internal/ent/user"
 	"social-server/internal/ent/userprofile"
@@ -106,6 +108,24 @@ func init() {
 	mediaassetDescID := mediaassetFields[0].Descriptor()
 	// mediaasset.DefaultID holds the default value on creation for the id field.
 	mediaasset.DefaultID = mediaassetDescID.Default.(func() uuid.UUID)
+	moderationactionFields := schema.ModerationAction{}.Fields()
+	_ = moderationactionFields
+	// moderationactionDescActionType is the schema descriptor for action_type field.
+	moderationactionDescActionType := moderationactionFields[5].Descriptor()
+	// moderationaction.ActionTypeValidator is a validator for the "action_type" field. It is called by the builders before save.
+	moderationaction.ActionTypeValidator = moderationactionDescActionType.Validators[0].(func(string) error)
+	// moderationactionDescReason is the schema descriptor for reason field.
+	moderationactionDescReason := moderationactionFields[6].Descriptor()
+	// moderationaction.DefaultReason holds the default value on creation for the reason field.
+	moderationaction.DefaultReason = moderationactionDescReason.Default.(string)
+	// moderationactionDescCreatedAt is the schema descriptor for created_at field.
+	moderationactionDescCreatedAt := moderationactionFields[7].Descriptor()
+	// moderationaction.DefaultCreatedAt holds the default value on creation for the created_at field.
+	moderationaction.DefaultCreatedAt = moderationactionDescCreatedAt.Default.(func() time.Time)
+	// moderationactionDescID is the schema descriptor for id field.
+	moderationactionDescID := moderationactionFields[0].Descriptor()
+	// moderationaction.DefaultID holds the default value on creation for the id field.
+	moderationaction.DefaultID = moderationactionDescID.Default.(func() uuid.UUID)
 	notificationFields := schema.Notification{}.Fields()
 	_ = notificationFields
 	// notificationDescType is the schema descriptor for type field.
@@ -312,6 +332,32 @@ func init() {
 	processedeventDescID := processedeventFields[0].Descriptor()
 	// processedevent.DefaultID holds the default value on creation for the id field.
 	processedevent.DefaultID = processedeventDescID.Default.(func() uuid.UUID)
+	reportFields := schema.Report{}.Fields()
+	_ = reportFields
+	// reportDescType is the schema descriptor for type field.
+	reportDescType := reportFields[4].Descriptor()
+	// report.TypeValidator is a validator for the "type" field. It is called by the builders before save.
+	report.TypeValidator = reportDescType.Validators[0].(func(string) error)
+	// reportDescReason is the schema descriptor for reason field.
+	reportDescReason := reportFields[5].Descriptor()
+	// report.ReasonValidator is a validator for the "reason" field. It is called by the builders before save.
+	report.ReasonValidator = reportDescReason.Validators[0].(func(string) error)
+	// reportDescStatus is the schema descriptor for status field.
+	reportDescStatus := reportFields[6].Descriptor()
+	// report.DefaultStatus holds the default value on creation for the status field.
+	report.DefaultStatus = reportDescStatus.Default.(string)
+	// reportDescReviewNotes is the schema descriptor for review_notes field.
+	reportDescReviewNotes := reportFields[7].Descriptor()
+	// report.DefaultReviewNotes holds the default value on creation for the review_notes field.
+	report.DefaultReviewNotes = reportDescReviewNotes.Default.(string)
+	// reportDescCreatedAt is the schema descriptor for created_at field.
+	reportDescCreatedAt := reportFields[10].Descriptor()
+	// report.DefaultCreatedAt holds the default value on creation for the created_at field.
+	report.DefaultCreatedAt = reportDescCreatedAt.Default.(func() time.Time)
+	// reportDescID is the schema descriptor for id field.
+	reportDescID := reportFields[0].Descriptor()
+	// report.DefaultID holds the default value on creation for the id field.
+	report.DefaultID = reportDescID.Default.(func() uuid.UUID)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescUsername is the schema descriptor for username field.
