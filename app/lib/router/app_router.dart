@@ -34,6 +34,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         return RouteNames.home;
       }
 
+      print('GoRouter redirect: isLoggedIn=$isLoggedIn, isAuthRoute=$isAuthRoute, isSplash=$isSplash');
+
       return null;
     },
     routes: [

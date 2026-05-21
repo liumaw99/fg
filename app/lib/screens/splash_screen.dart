@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/auth_provider.dart';
-import '../router/route_names.dart';
 import 'package:go_router/go_router.dart';
+import '../core/storage/token_storage.dart';
+import '../router/route_names.dart';
 
-class SplashScreen extends ConsumerStatefulWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  ConsumerState<SplashScreen> createState() => _SplashScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen> {
   bool _navigated = false;
 
   @override
@@ -21,23 +20,21 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   Future<void> _checkAuth() async {
-    await Future.delayed(const Duration(seconds: 1));
-
-    if (!mounted || _navigated) return;
-
-    final auth = ref.read(authProvider);
-
-    // 给 refreshAuth 加一个超时保护，防止 Web 端 flutter_secure_storage 卡住
-    try {
-      await auth.refreshAuth().timeout(const Duration(seconds: 2));
-    } catch (_) {
-      // 超时或出错，继续走未登录流程
-    }
+    await Future.delayed(const Duration(milliseconds: 800));
 
     if (!mounted || _navigated) return;
 
     _navigated = true;
-    if (auth.isAuthenticated) {
+
+    // 直接读存储，不经过 authProvider，避免触发 notifyListeners 导致 redirect 循环
+    final tokenStorage = TokenStorage();
+    final hasToken = await tokenStorage.hasAccessToken();
+
+    if (!mounted) return;
+
+    print('SplashScreen: hasToken=$hasToken');
+
+    if (hasToken) {
       context.go(RouteNames.home);
     } else {
       context.go(RouteNames.login);
