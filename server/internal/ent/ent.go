@@ -9,6 +9,9 @@ import (
 	"reflect"
 	"social-server/internal/ent/mediaasset"
 	"social-server/internal/ent/outboxevent"
+	"social-server/internal/ent/post"
+	"social-server/internal/ent/postmedia"
+	"social-server/internal/ent/poststats"
 	"social-server/internal/ent/processedevent"
 	"social-server/internal/ent/user"
 	"social-server/internal/ent/userprofile"
@@ -76,11 +79,14 @@ var (
 )
 
 // checkColumn checks if the column exists in the given table.
-func checkColumn(t, c string) error {
+func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			mediaasset.Table:     mediaasset.ValidColumn,
 			outboxevent.Table:    outboxevent.ValidColumn,
+			post.Table:           post.ValidColumn,
+			postmedia.Table:      postmedia.ValidColumn,
+			poststats.Table:      poststats.ValidColumn,
 			processedevent.Table: processedevent.ValidColumn,
 			user.Table:           user.ValidColumn,
 			userprofile.Table:    userprofile.ValidColumn,
@@ -88,7 +94,7 @@ func checkColumn(t, c string) error {
 			userstats.Table:      userstats.ValidColumn,
 		})
 	})
-	return columnCheck(t, c)
+	return columnCheck(table, column)
 }
 
 // Asc applies the given fields in ASC order.

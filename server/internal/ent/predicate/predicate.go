@@ -12,6 +12,15 @@ type MediaAsset func(*sql.Selector)
 // OutboxEvent is the predicate function for outboxevent builders.
 type OutboxEvent func(*sql.Selector)
 
+// Post is the predicate function for post builders.
+type Post func(*sql.Selector)
+
+// PostMedia is the predicate function for postmedia builders.
+type PostMedia func(*sql.Selector)
+
+// PostStats is the predicate function for poststats builders.
+type PostStats func(*sql.Selector)
+
 // ProcessedEvent is the predicate function for processedevent builders.
 type ProcessedEvent func(*sql.Selector)
 

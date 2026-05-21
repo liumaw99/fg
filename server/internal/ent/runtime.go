@@ -5,6 +5,9 @@ package ent
 import (
 	"social-server/internal/ent/mediaasset"
 	"social-server/internal/ent/outboxevent"
+	"social-server/internal/ent/post"
+	"social-server/internal/ent/postmedia"
+	"social-server/internal/ent/poststats"
 	"social-server/internal/ent/processedevent"
 	"social-server/internal/ent/schema"
 	"social-server/internal/ent/user"
@@ -138,6 +141,82 @@ func init() {
 	outboxeventDescID := outboxeventFields[0].Descriptor()
 	// outboxevent.DefaultID holds the default value on creation for the id field.
 	outboxevent.DefaultID = outboxeventDescID.Default.(func() uuid.UUID)
+	postFields := schema.Post{}.Fields()
+	_ = postFields
+	// postDescContent is the schema descriptor for content field.
+	postDescContent := postFields[2].Descriptor()
+	// post.DefaultContent holds the default value on creation for the content field.
+	post.DefaultContent = postDescContent.Default.(string)
+	// post.ContentValidator is a validator for the "content" field. It is called by the builders before save.
+	post.ContentValidator = postDescContent.Validators[0].(func(string) error)
+	// postDescStatus is the schema descriptor for status field.
+	postDescStatus := postFields[5].Descriptor()
+	// post.DefaultStatus holds the default value on creation for the status field.
+	post.DefaultStatus = postDescStatus.Default.(string)
+	// postDescVisibility is the schema descriptor for visibility field.
+	postDescVisibility := postFields[6].Descriptor()
+	// post.DefaultVisibility holds the default value on creation for the visibility field.
+	post.DefaultVisibility = postDescVisibility.Default.(string)
+	// postDescCreatedAt is the schema descriptor for created_at field.
+	postDescCreatedAt := postFields[7].Descriptor()
+	// post.DefaultCreatedAt holds the default value on creation for the created_at field.
+	post.DefaultCreatedAt = postDescCreatedAt.Default.(func() time.Time)
+	// postDescUpdatedAt is the schema descriptor for updated_at field.
+	postDescUpdatedAt := postFields[8].Descriptor()
+	// post.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	post.DefaultUpdatedAt = postDescUpdatedAt.Default.(func() time.Time)
+	// postDescID is the schema descriptor for id field.
+	postDescID := postFields[0].Descriptor()
+	// post.DefaultID holds the default value on creation for the id field.
+	post.DefaultID = postDescID.Default.(func() uuid.UUID)
+	postmediaFields := schema.PostMedia{}.Fields()
+	_ = postmediaFields
+	// postmediaDescSortOrder is the schema descriptor for sort_order field.
+	postmediaDescSortOrder := postmediaFields[3].Descriptor()
+	// postmedia.DefaultSortOrder holds the default value on creation for the sort_order field.
+	postmedia.DefaultSortOrder = postmediaDescSortOrder.Default.(int)
+	// postmediaDescCreatedAt is the schema descriptor for created_at field.
+	postmediaDescCreatedAt := postmediaFields[4].Descriptor()
+	// postmedia.DefaultCreatedAt holds the default value on creation for the created_at field.
+	postmedia.DefaultCreatedAt = postmediaDescCreatedAt.Default.(func() time.Time)
+	// postmediaDescID is the schema descriptor for id field.
+	postmediaDescID := postmediaFields[0].Descriptor()
+	// postmedia.DefaultID holds the default value on creation for the id field.
+	postmedia.DefaultID = postmediaDescID.Default.(func() uuid.UUID)
+	poststatsFields := schema.PostStats{}.Fields()
+	_ = poststatsFields
+	// poststatsDescLikeCount is the schema descriptor for like_count field.
+	poststatsDescLikeCount := poststatsFields[2].Descriptor()
+	// poststats.DefaultLikeCount holds the default value on creation for the like_count field.
+	poststats.DefaultLikeCount = poststatsDescLikeCount.Default.(int)
+	// poststatsDescReplyCount is the schema descriptor for reply_count field.
+	poststatsDescReplyCount := poststatsFields[3].Descriptor()
+	// poststats.DefaultReplyCount holds the default value on creation for the reply_count field.
+	poststats.DefaultReplyCount = poststatsDescReplyCount.Default.(int)
+	// poststatsDescRepostCount is the schema descriptor for repost_count field.
+	poststatsDescRepostCount := poststatsFields[4].Descriptor()
+	// poststats.DefaultRepostCount holds the default value on creation for the repost_count field.
+	poststats.DefaultRepostCount = poststatsDescRepostCount.Default.(int)
+	// poststatsDescBookmarkCount is the schema descriptor for bookmark_count field.
+	poststatsDescBookmarkCount := poststatsFields[5].Descriptor()
+	// poststats.DefaultBookmarkCount holds the default value on creation for the bookmark_count field.
+	poststats.DefaultBookmarkCount = poststatsDescBookmarkCount.Default.(int)
+	// poststatsDescViewCount is the schema descriptor for view_count field.
+	poststatsDescViewCount := poststatsFields[6].Descriptor()
+	// poststats.DefaultViewCount holds the default value on creation for the view_count field.
+	poststats.DefaultViewCount = poststatsDescViewCount.Default.(int)
+	// poststatsDescCreatedAt is the schema descriptor for created_at field.
+	poststatsDescCreatedAt := poststatsFields[7].Descriptor()
+	// poststats.DefaultCreatedAt holds the default value on creation for the created_at field.
+	poststats.DefaultCreatedAt = poststatsDescCreatedAt.Default.(func() time.Time)
+	// poststatsDescUpdatedAt is the schema descriptor for updated_at field.
+	poststatsDescUpdatedAt := poststatsFields[8].Descriptor()
+	// poststats.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	poststats.DefaultUpdatedAt = poststatsDescUpdatedAt.Default.(func() time.Time)
+	// poststatsDescID is the schema descriptor for id field.
+	poststatsDescID := poststatsFields[0].Descriptor()
+	// poststats.DefaultID holds the default value on creation for the id field.
+	poststats.DefaultID = poststatsDescID.Default.(func() uuid.UUID)
 	processedeventFields := schema.ProcessedEvent{}.Fields()
 	_ = processedeventFields
 	// processedeventDescEventType is the schema descriptor for event_type field.

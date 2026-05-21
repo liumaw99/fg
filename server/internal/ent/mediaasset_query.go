@@ -29,40 +29,40 @@ type MediaAssetQuery struct {
 }
 
 // Where adds a new predicate for the MediaAssetQuery builder.
-func (_q *MediaAssetQuery) Where(ps ...predicate.MediaAsset) *MediaAssetQuery {
-	_q.predicates = append(_q.predicates, ps...)
-	return _q
+func (maq *MediaAssetQuery) Where(ps ...predicate.MediaAsset) *MediaAssetQuery {
+	maq.predicates = append(maq.predicates, ps...)
+	return maq
 }
 
 // Limit the number of records to be returned by this query.
-func (_q *MediaAssetQuery) Limit(limit int) *MediaAssetQuery {
-	_q.ctx.Limit = &limit
-	return _q
+func (maq *MediaAssetQuery) Limit(limit int) *MediaAssetQuery {
+	maq.ctx.Limit = &limit
+	return maq
 }
 
 // Offset to start from.
-func (_q *MediaAssetQuery) Offset(offset int) *MediaAssetQuery {
-	_q.ctx.Offset = &offset
-	return _q
+func (maq *MediaAssetQuery) Offset(offset int) *MediaAssetQuery {
+	maq.ctx.Offset = &offset
+	return maq
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (_q *MediaAssetQuery) Unique(unique bool) *MediaAssetQuery {
-	_q.ctx.Unique = &unique
-	return _q
+func (maq *MediaAssetQuery) Unique(unique bool) *MediaAssetQuery {
+	maq.ctx.Unique = &unique
+	return maq
 }
 
 // Order specifies how the records should be ordered.
-func (_q *MediaAssetQuery) Order(o ...mediaasset.OrderOption) *MediaAssetQuery {
-	_q.order = append(_q.order, o...)
-	return _q
+func (maq *MediaAssetQuery) Order(o ...mediaasset.OrderOption) *MediaAssetQuery {
+	maq.order = append(maq.order, o...)
+	return maq
 }
 
 // First returns the first MediaAsset entity from the query.
 // Returns a *NotFoundError when no MediaAsset was found.
-func (_q *MediaAssetQuery) First(ctx context.Context) (*MediaAsset, error) {
-	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
+func (maq *MediaAssetQuery) First(ctx context.Context) (*MediaAsset, error) {
+	nodes, err := maq.Limit(1).All(setContextOp(ctx, maq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -73,8 +73,8 @@ func (_q *MediaAssetQuery) First(ctx context.Context) (*MediaAsset, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (_q *MediaAssetQuery) FirstX(ctx context.Context) *MediaAsset {
-	node, err := _q.First(ctx)
+func (maq *MediaAssetQuery) FirstX(ctx context.Context) *MediaAsset {
+	node, err := maq.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -83,9 +83,9 @@ func (_q *MediaAssetQuery) FirstX(ctx context.Context) *MediaAsset {
 
 // FirstID returns the first MediaAsset ID from the query.
 // Returns a *NotFoundError when no MediaAsset ID was found.
-func (_q *MediaAssetQuery) FirstID(ctx context.Context) (id uuid.UUID, err error) {
+func (maq *MediaAssetQuery) FirstID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
-	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = maq.Limit(1).IDs(setContextOp(ctx, maq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -96,8 +96,8 @@ func (_q *MediaAssetQuery) FirstID(ctx context.Context) (id uuid.UUID, err error
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (_q *MediaAssetQuery) FirstIDX(ctx context.Context) uuid.UUID {
-	id, err := _q.FirstID(ctx)
+func (maq *MediaAssetQuery) FirstIDX(ctx context.Context) uuid.UUID {
+	id, err := maq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -107,8 +107,8 @@ func (_q *MediaAssetQuery) FirstIDX(ctx context.Context) uuid.UUID {
 // Only returns a single MediaAsset entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one MediaAsset entity is found.
 // Returns a *NotFoundError when no MediaAsset entities are found.
-func (_q *MediaAssetQuery) Only(ctx context.Context) (*MediaAsset, error) {
-	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
+func (maq *MediaAssetQuery) Only(ctx context.Context) (*MediaAsset, error) {
+	nodes, err := maq.Limit(2).All(setContextOp(ctx, maq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -123,8 +123,8 @@ func (_q *MediaAssetQuery) Only(ctx context.Context) (*MediaAsset, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (_q *MediaAssetQuery) OnlyX(ctx context.Context) *MediaAsset {
-	node, err := _q.Only(ctx)
+func (maq *MediaAssetQuery) OnlyX(ctx context.Context) *MediaAsset {
+	node, err := maq.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -134,9 +134,9 @@ func (_q *MediaAssetQuery) OnlyX(ctx context.Context) *MediaAsset {
 // OnlyID is like Only, but returns the only MediaAsset ID in the query.
 // Returns a *NotSingularError when more than one MediaAsset ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (_q *MediaAssetQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error) {
+func (maq *MediaAssetQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
-	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = maq.Limit(2).IDs(setContextOp(ctx, maq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -151,8 +151,8 @@ func (_q *MediaAssetQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error)
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (_q *MediaAssetQuery) OnlyIDX(ctx context.Context) uuid.UUID {
-	id, err := _q.OnlyID(ctx)
+func (maq *MediaAssetQuery) OnlyIDX(ctx context.Context) uuid.UUID {
+	id, err := maq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -160,18 +160,18 @@ func (_q *MediaAssetQuery) OnlyIDX(ctx context.Context) uuid.UUID {
 }
 
 // All executes the query and returns a list of MediaAssets.
-func (_q *MediaAssetQuery) All(ctx context.Context) ([]*MediaAsset, error) {
-	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
-	if err := _q.prepareQuery(ctx); err != nil {
+func (maq *MediaAssetQuery) All(ctx context.Context) ([]*MediaAsset, error) {
+	ctx = setContextOp(ctx, maq.ctx, ent.OpQueryAll)
+	if err := maq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*MediaAsset, *MediaAssetQuery]()
-	return withInterceptors[[]*MediaAsset](ctx, _q, qr, _q.inters)
+	return withInterceptors[[]*MediaAsset](ctx, maq, qr, maq.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (_q *MediaAssetQuery) AllX(ctx context.Context) []*MediaAsset {
-	nodes, err := _q.All(ctx)
+func (maq *MediaAssetQuery) AllX(ctx context.Context) []*MediaAsset {
+	nodes, err := maq.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -179,20 +179,20 @@ func (_q *MediaAssetQuery) AllX(ctx context.Context) []*MediaAsset {
 }
 
 // IDs executes the query and returns a list of MediaAsset IDs.
-func (_q *MediaAssetQuery) IDs(ctx context.Context) (ids []uuid.UUID, err error) {
-	if _q.ctx.Unique == nil && _q.path != nil {
-		_q.Unique(true)
+func (maq *MediaAssetQuery) IDs(ctx context.Context) (ids []uuid.UUID, err error) {
+	if maq.ctx.Unique == nil && maq.path != nil {
+		maq.Unique(true)
 	}
-	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
-	if err = _q.Select(mediaasset.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, maq.ctx, ent.OpQueryIDs)
+	if err = maq.Select(mediaasset.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (_q *MediaAssetQuery) IDsX(ctx context.Context) []uuid.UUID {
-	ids, err := _q.IDs(ctx)
+func (maq *MediaAssetQuery) IDsX(ctx context.Context) []uuid.UUID {
+	ids, err := maq.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -200,17 +200,17 @@ func (_q *MediaAssetQuery) IDsX(ctx context.Context) []uuid.UUID {
 }
 
 // Count returns the count of the given query.
-func (_q *MediaAssetQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
-	if err := _q.prepareQuery(ctx); err != nil {
+func (maq *MediaAssetQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, maq.ctx, ent.OpQueryCount)
+	if err := maq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, _q, querierCount[*MediaAssetQuery](), _q.inters)
+	return withInterceptors[int](ctx, maq, querierCount[*MediaAssetQuery](), maq.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (_q *MediaAssetQuery) CountX(ctx context.Context) int {
-	count, err := _q.Count(ctx)
+func (maq *MediaAssetQuery) CountX(ctx context.Context) int {
+	count, err := maq.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -218,9 +218,9 @@ func (_q *MediaAssetQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (_q *MediaAssetQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
-	switch _, err := _q.FirstID(ctx); {
+func (maq *MediaAssetQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, maq.ctx, ent.OpQueryExist)
+	switch _, err := maq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -231,8 +231,8 @@ func (_q *MediaAssetQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (_q *MediaAssetQuery) ExistX(ctx context.Context) bool {
-	exist, err := _q.Exist(ctx)
+func (maq *MediaAssetQuery) ExistX(ctx context.Context) bool {
+	exist, err := maq.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -241,19 +241,19 @@ func (_q *MediaAssetQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the MediaAssetQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (_q *MediaAssetQuery) Clone() *MediaAssetQuery {
-	if _q == nil {
+func (maq *MediaAssetQuery) Clone() *MediaAssetQuery {
+	if maq == nil {
 		return nil
 	}
 	return &MediaAssetQuery{
-		config:     _q.config,
-		ctx:        _q.ctx.Clone(),
-		order:      append([]mediaasset.OrderOption{}, _q.order...),
-		inters:     append([]Interceptor{}, _q.inters...),
-		predicates: append([]predicate.MediaAsset{}, _q.predicates...),
+		config:     maq.config,
+		ctx:        maq.ctx.Clone(),
+		order:      append([]mediaasset.OrderOption{}, maq.order...),
+		inters:     append([]Interceptor{}, maq.inters...),
+		predicates: append([]predicate.MediaAsset{}, maq.predicates...),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:  maq.sql.Clone(),
+		path: maq.path,
 	}
 }
 
@@ -271,10 +271,10 @@ func (_q *MediaAssetQuery) Clone() *MediaAssetQuery {
 //		GroupBy(mediaasset.FieldOwnerID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (_q *MediaAssetQuery) GroupBy(field string, fields ...string) *MediaAssetGroupBy {
-	_q.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &MediaAssetGroupBy{build: _q}
-	grbuild.flds = &_q.ctx.Fields
+func (maq *MediaAssetQuery) GroupBy(field string, fields ...string) *MediaAssetGroupBy {
+	maq.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &MediaAssetGroupBy{build: maq}
+	grbuild.flds = &maq.ctx.Fields
 	grbuild.label = mediaasset.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -292,62 +292,62 @@ func (_q *MediaAssetQuery) GroupBy(field string, fields ...string) *MediaAssetGr
 //	client.MediaAsset.Query().
 //		Select(mediaasset.FieldOwnerID).
 //		Scan(ctx, &v)
-func (_q *MediaAssetQuery) Select(fields ...string) *MediaAssetSelect {
-	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
-	sbuild := &MediaAssetSelect{MediaAssetQuery: _q}
+func (maq *MediaAssetQuery) Select(fields ...string) *MediaAssetSelect {
+	maq.ctx.Fields = append(maq.ctx.Fields, fields...)
+	sbuild := &MediaAssetSelect{MediaAssetQuery: maq}
 	sbuild.label = mediaasset.Label
-	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &maq.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a MediaAssetSelect configured with the given aggregations.
-func (_q *MediaAssetQuery) Aggregate(fns ...AggregateFunc) *MediaAssetSelect {
-	return _q.Select().Aggregate(fns...)
+func (maq *MediaAssetQuery) Aggregate(fns ...AggregateFunc) *MediaAssetSelect {
+	return maq.Select().Aggregate(fns...)
 }
 
-func (_q *MediaAssetQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range _q.inters {
+func (maq *MediaAssetQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range maq.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, _q); err != nil {
+			if err := trv.Traverse(ctx, maq); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range _q.ctx.Fields {
+	for _, f := range maq.ctx.Fields {
 		if !mediaasset.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if _q.path != nil {
-		prev, err := _q.path(ctx)
+	if maq.path != nil {
+		prev, err := maq.path(ctx)
 		if err != nil {
 			return err
 		}
-		_q.sql = prev
+		maq.sql = prev
 	}
 	return nil
 }
 
-func (_q *MediaAssetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*MediaAsset, error) {
+func (maq *MediaAssetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*MediaAsset, error) {
 	var (
 		nodes = []*MediaAsset{}
-		_spec = _q.querySpec()
+		_spec = maq.querySpec()
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*MediaAsset).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &MediaAsset{config: _q.config}
+		node := &MediaAsset{config: maq.config}
 		nodes = append(nodes, node)
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, maq.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
@@ -356,24 +356,24 @@ func (_q *MediaAssetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*M
 	return nodes, nil
 }
 
-func (_q *MediaAssetQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := _q.querySpec()
-	_spec.Node.Columns = _q.ctx.Fields
-	if len(_q.ctx.Fields) > 0 {
-		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
+func (maq *MediaAssetQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := maq.querySpec()
+	_spec.Node.Columns = maq.ctx.Fields
+	if len(maq.ctx.Fields) > 0 {
+		_spec.Unique = maq.ctx.Unique != nil && *maq.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
+	return sqlgraph.CountNodes(ctx, maq.driver, _spec)
 }
 
-func (_q *MediaAssetQuery) querySpec() *sqlgraph.QuerySpec {
+func (maq *MediaAssetQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(mediaasset.Table, mediaasset.Columns, sqlgraph.NewFieldSpec(mediaasset.FieldID, field.TypeUUID))
-	_spec.From = _q.sql
-	if unique := _q.ctx.Unique; unique != nil {
+	_spec.From = maq.sql
+	if unique := maq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if _q.path != nil {
+	} else if maq.path != nil {
 		_spec.Unique = true
 	}
-	if fields := _q.ctx.Fields; len(fields) > 0 {
+	if fields := maq.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, mediaasset.FieldID)
 		for i := range fields {
@@ -382,20 +382,20 @@ func (_q *MediaAssetQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := _q.predicates; len(ps) > 0 {
+	if ps := maq.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := _q.ctx.Limit; limit != nil {
+	if limit := maq.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := _q.ctx.Offset; offset != nil {
+	if offset := maq.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := _q.order; len(ps) > 0 {
+	if ps := maq.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -405,33 +405,33 @@ func (_q *MediaAssetQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (_q *MediaAssetQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(_q.driver.Dialect())
+func (maq *MediaAssetQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(maq.driver.Dialect())
 	t1 := builder.Table(mediaasset.Table)
-	columns := _q.ctx.Fields
+	columns := maq.ctx.Fields
 	if len(columns) == 0 {
 		columns = mediaasset.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if _q.sql != nil {
-		selector = _q.sql
+	if maq.sql != nil {
+		selector = maq.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if _q.ctx.Unique != nil && *_q.ctx.Unique {
+	if maq.ctx.Unique != nil && *maq.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range _q.predicates {
+	for _, p := range maq.predicates {
 		p(selector)
 	}
-	for _, p := range _q.order {
+	for _, p := range maq.order {
 		p(selector)
 	}
-	if offset := _q.ctx.Offset; offset != nil {
+	if offset := maq.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := _q.ctx.Limit; limit != nil {
+	if limit := maq.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -444,41 +444,41 @@ type MediaAssetGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (_g *MediaAssetGroupBy) Aggregate(fns ...AggregateFunc) *MediaAssetGroupBy {
-	_g.fns = append(_g.fns, fns...)
-	return _g
+func (magb *MediaAssetGroupBy) Aggregate(fns ...AggregateFunc) *MediaAssetGroupBy {
+	magb.fns = append(magb.fns, fns...)
+	return magb
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (_g *MediaAssetGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
-	if err := _g.build.prepareQuery(ctx); err != nil {
+func (magb *MediaAssetGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, magb.build.ctx, ent.OpQueryGroupBy)
+	if err := magb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*MediaAssetQuery, *MediaAssetGroupBy](ctx, _g.build, _g, _g.build.inters, v)
+	return scanWithInterceptors[*MediaAssetQuery, *MediaAssetGroupBy](ctx, magb.build, magb, magb.build.inters, v)
 }
 
-func (_g *MediaAssetGroupBy) sqlScan(ctx context.Context, root *MediaAssetQuery, v any) error {
+func (magb *MediaAssetGroupBy) sqlScan(ctx context.Context, root *MediaAssetQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(_g.fns))
-	for _, fn := range _g.fns {
+	aggregation := make([]string, 0, len(magb.fns))
+	for _, fn := range magb.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
-		for _, f := range *_g.flds {
+		columns := make([]string, 0, len(*magb.flds)+len(magb.fns))
+		for _, f := range *magb.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*_g.flds...)...)
+	selector.GroupBy(selector.Columns(*magb.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := magb.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -492,27 +492,27 @@ type MediaAssetSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (_s *MediaAssetSelect) Aggregate(fns ...AggregateFunc) *MediaAssetSelect {
-	_s.fns = append(_s.fns, fns...)
-	return _s
+func (mas *MediaAssetSelect) Aggregate(fns ...AggregateFunc) *MediaAssetSelect {
+	mas.fns = append(mas.fns, fns...)
+	return mas
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (_s *MediaAssetSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
-	if err := _s.prepareQuery(ctx); err != nil {
+func (mas *MediaAssetSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, mas.ctx, ent.OpQuerySelect)
+	if err := mas.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*MediaAssetQuery, *MediaAssetSelect](ctx, _s.MediaAssetQuery, _s, _s.inters, v)
+	return scanWithInterceptors[*MediaAssetQuery, *MediaAssetSelect](ctx, mas.MediaAssetQuery, mas, mas.inters, v)
 }
 
-func (_s *MediaAssetSelect) sqlScan(ctx context.Context, root *MediaAssetQuery, v any) error {
+func (mas *MediaAssetSelect) sqlScan(ctx context.Context, root *MediaAssetQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(_s.fns))
-	for _, fn := range _s.fns {
+	aggregation := make([]string, 0, len(mas.fns))
+	for _, fn := range mas.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*_s.selector.flds); {
+	switch n := len(*mas.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -520,7 +520,7 @@ func (_s *MediaAssetSelect) sqlScan(ctx context.Context, root *MediaAssetQuery, 
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
+	if err := mas.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

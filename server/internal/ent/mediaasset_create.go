@@ -22,135 +22,135 @@ type MediaAssetCreate struct {
 }
 
 // SetOwnerID sets the "owner_id" field.
-func (_c *MediaAssetCreate) SetOwnerID(v uuid.UUID) *MediaAssetCreate {
-	_c.mutation.SetOwnerID(v)
-	return _c
+func (mac *MediaAssetCreate) SetOwnerID(u uuid.UUID) *MediaAssetCreate {
+	mac.mutation.SetOwnerID(u)
+	return mac
 }
 
 // SetFilename sets the "filename" field.
-func (_c *MediaAssetCreate) SetFilename(v string) *MediaAssetCreate {
-	_c.mutation.SetFilename(v)
-	return _c
+func (mac *MediaAssetCreate) SetFilename(s string) *MediaAssetCreate {
+	mac.mutation.SetFilename(s)
+	return mac
 }
 
 // SetMimeType sets the "mime_type" field.
-func (_c *MediaAssetCreate) SetMimeType(v string) *MediaAssetCreate {
-	_c.mutation.SetMimeType(v)
-	return _c
+func (mac *MediaAssetCreate) SetMimeType(s string) *MediaAssetCreate {
+	mac.mutation.SetMimeType(s)
+	return mac
 }
 
 // SetSize sets the "size" field.
-func (_c *MediaAssetCreate) SetSize(v int64) *MediaAssetCreate {
-	_c.mutation.SetSize(v)
-	return _c
+func (mac *MediaAssetCreate) SetSize(i int64) *MediaAssetCreate {
+	mac.mutation.SetSize(i)
+	return mac
 }
 
 // SetNillableSize sets the "size" field if the given value is not nil.
-func (_c *MediaAssetCreate) SetNillableSize(v *int64) *MediaAssetCreate {
-	if v != nil {
-		_c.SetSize(*v)
+func (mac *MediaAssetCreate) SetNillableSize(i *int64) *MediaAssetCreate {
+	if i != nil {
+		mac.SetSize(*i)
 	}
-	return _c
+	return mac
 }
 
 // SetURL sets the "url" field.
-func (_c *MediaAssetCreate) SetURL(v string) *MediaAssetCreate {
-	_c.mutation.SetURL(v)
-	return _c
+func (mac *MediaAssetCreate) SetURL(s string) *MediaAssetCreate {
+	mac.mutation.SetURL(s)
+	return mac
 }
 
 // SetNillableURL sets the "url" field if the given value is not nil.
-func (_c *MediaAssetCreate) SetNillableURL(v *string) *MediaAssetCreate {
-	if v != nil {
-		_c.SetURL(*v)
+func (mac *MediaAssetCreate) SetNillableURL(s *string) *MediaAssetCreate {
+	if s != nil {
+		mac.SetURL(*s)
 	}
-	return _c
+	return mac
 }
 
 // SetThumbnailURL sets the "thumbnail_url" field.
-func (_c *MediaAssetCreate) SetThumbnailURL(v string) *MediaAssetCreate {
-	_c.mutation.SetThumbnailURL(v)
-	return _c
+func (mac *MediaAssetCreate) SetThumbnailURL(s string) *MediaAssetCreate {
+	mac.mutation.SetThumbnailURL(s)
+	return mac
 }
 
 // SetNillableThumbnailURL sets the "thumbnail_url" field if the given value is not nil.
-func (_c *MediaAssetCreate) SetNillableThumbnailURL(v *string) *MediaAssetCreate {
-	if v != nil {
-		_c.SetThumbnailURL(*v)
+func (mac *MediaAssetCreate) SetNillableThumbnailURL(s *string) *MediaAssetCreate {
+	if s != nil {
+		mac.SetThumbnailURL(*s)
 	}
-	return _c
+	return mac
 }
 
 // SetStatus sets the "status" field.
-func (_c *MediaAssetCreate) SetStatus(v string) *MediaAssetCreate {
-	_c.mutation.SetStatus(v)
-	return _c
+func (mac *MediaAssetCreate) SetStatus(s string) *MediaAssetCreate {
+	mac.mutation.SetStatus(s)
+	return mac
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (_c *MediaAssetCreate) SetNillableStatus(v *string) *MediaAssetCreate {
-	if v != nil {
-		_c.SetStatus(*v)
+func (mac *MediaAssetCreate) SetNillableStatus(s *string) *MediaAssetCreate {
+	if s != nil {
+		mac.SetStatus(*s)
 	}
-	return _c
+	return mac
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (_c *MediaAssetCreate) SetCreatedAt(v time.Time) *MediaAssetCreate {
-	_c.mutation.SetCreatedAt(v)
-	return _c
+func (mac *MediaAssetCreate) SetCreatedAt(t time.Time) *MediaAssetCreate {
+	mac.mutation.SetCreatedAt(t)
+	return mac
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (_c *MediaAssetCreate) SetNillableCreatedAt(v *time.Time) *MediaAssetCreate {
-	if v != nil {
-		_c.SetCreatedAt(*v)
+func (mac *MediaAssetCreate) SetNillableCreatedAt(t *time.Time) *MediaAssetCreate {
+	if t != nil {
+		mac.SetCreatedAt(*t)
 	}
-	return _c
+	return mac
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (_c *MediaAssetCreate) SetUpdatedAt(v time.Time) *MediaAssetCreate {
-	_c.mutation.SetUpdatedAt(v)
-	return _c
+func (mac *MediaAssetCreate) SetUpdatedAt(t time.Time) *MediaAssetCreate {
+	mac.mutation.SetUpdatedAt(t)
+	return mac
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (_c *MediaAssetCreate) SetNillableUpdatedAt(v *time.Time) *MediaAssetCreate {
-	if v != nil {
-		_c.SetUpdatedAt(*v)
+func (mac *MediaAssetCreate) SetNillableUpdatedAt(t *time.Time) *MediaAssetCreate {
+	if t != nil {
+		mac.SetUpdatedAt(*t)
 	}
-	return _c
+	return mac
 }
 
 // SetID sets the "id" field.
-func (_c *MediaAssetCreate) SetID(v uuid.UUID) *MediaAssetCreate {
-	_c.mutation.SetID(v)
-	return _c
+func (mac *MediaAssetCreate) SetID(u uuid.UUID) *MediaAssetCreate {
+	mac.mutation.SetID(u)
+	return mac
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (_c *MediaAssetCreate) SetNillableID(v *uuid.UUID) *MediaAssetCreate {
-	if v != nil {
-		_c.SetID(*v)
+func (mac *MediaAssetCreate) SetNillableID(u *uuid.UUID) *MediaAssetCreate {
+	if u != nil {
+		mac.SetID(*u)
 	}
-	return _c
+	return mac
 }
 
 // Mutation returns the MediaAssetMutation object of the builder.
-func (_c *MediaAssetCreate) Mutation() *MediaAssetMutation {
-	return _c.mutation
+func (mac *MediaAssetCreate) Mutation() *MediaAssetMutation {
+	return mac.mutation
 }
 
 // Save creates the MediaAsset in the database.
-func (_c *MediaAssetCreate) Save(ctx context.Context) (*MediaAsset, error) {
-	_c.defaults()
-	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
+func (mac *MediaAssetCreate) Save(ctx context.Context) (*MediaAsset, error) {
+	mac.defaults()
+	return withHooks(ctx, mac.sqlSave, mac.mutation, mac.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (_c *MediaAssetCreate) SaveX(ctx context.Context) *MediaAsset {
-	v, err := _c.Save(ctx)
+func (mac *MediaAssetCreate) SaveX(ctx context.Context) *MediaAsset {
+	v, err := mac.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -158,108 +158,108 @@ func (_c *MediaAssetCreate) SaveX(ctx context.Context) *MediaAsset {
 }
 
 // Exec executes the query.
-func (_c *MediaAssetCreate) Exec(ctx context.Context) error {
-	_, err := _c.Save(ctx)
+func (mac *MediaAssetCreate) Exec(ctx context.Context) error {
+	_, err := mac.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_c *MediaAssetCreate) ExecX(ctx context.Context) {
-	if err := _c.Exec(ctx); err != nil {
+func (mac *MediaAssetCreate) ExecX(ctx context.Context) {
+	if err := mac.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *MediaAssetCreate) defaults() {
-	if _, ok := _c.mutation.Size(); !ok {
+func (mac *MediaAssetCreate) defaults() {
+	if _, ok := mac.mutation.Size(); !ok {
 		v := mediaasset.DefaultSize
-		_c.mutation.SetSize(v)
+		mac.mutation.SetSize(v)
 	}
-	if _, ok := _c.mutation.URL(); !ok {
+	if _, ok := mac.mutation.URL(); !ok {
 		v := mediaasset.DefaultURL
-		_c.mutation.SetURL(v)
+		mac.mutation.SetURL(v)
 	}
-	if _, ok := _c.mutation.ThumbnailURL(); !ok {
+	if _, ok := mac.mutation.ThumbnailURL(); !ok {
 		v := mediaasset.DefaultThumbnailURL
-		_c.mutation.SetThumbnailURL(v)
+		mac.mutation.SetThumbnailURL(v)
 	}
-	if _, ok := _c.mutation.Status(); !ok {
+	if _, ok := mac.mutation.Status(); !ok {
 		v := mediaasset.DefaultStatus
-		_c.mutation.SetStatus(v)
+		mac.mutation.SetStatus(v)
 	}
-	if _, ok := _c.mutation.CreatedAt(); !ok {
+	if _, ok := mac.mutation.CreatedAt(); !ok {
 		v := mediaasset.DefaultCreatedAt()
-		_c.mutation.SetCreatedAt(v)
+		mac.mutation.SetCreatedAt(v)
 	}
-	if _, ok := _c.mutation.UpdatedAt(); !ok {
+	if _, ok := mac.mutation.UpdatedAt(); !ok {
 		v := mediaasset.DefaultUpdatedAt()
-		_c.mutation.SetUpdatedAt(v)
+		mac.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := _c.mutation.ID(); !ok {
+	if _, ok := mac.mutation.ID(); !ok {
 		v := mediaasset.DefaultID()
-		_c.mutation.SetID(v)
+		mac.mutation.SetID(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (_c *MediaAssetCreate) check() error {
-	if _, ok := _c.mutation.OwnerID(); !ok {
+func (mac *MediaAssetCreate) check() error {
+	if _, ok := mac.mutation.OwnerID(); !ok {
 		return &ValidationError{Name: "owner_id", err: errors.New(`ent: missing required field "MediaAsset.owner_id"`)}
 	}
-	if _, ok := _c.mutation.Filename(); !ok {
+	if _, ok := mac.mutation.Filename(); !ok {
 		return &ValidationError{Name: "filename", err: errors.New(`ent: missing required field "MediaAsset.filename"`)}
 	}
-	if v, ok := _c.mutation.Filename(); ok {
+	if v, ok := mac.mutation.Filename(); ok {
 		if err := mediaasset.FilenameValidator(v); err != nil {
 			return &ValidationError{Name: "filename", err: fmt.Errorf(`ent: validator failed for field "MediaAsset.filename": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.MimeType(); !ok {
+	if _, ok := mac.mutation.MimeType(); !ok {
 		return &ValidationError{Name: "mime_type", err: errors.New(`ent: missing required field "MediaAsset.mime_type"`)}
 	}
-	if v, ok := _c.mutation.MimeType(); ok {
+	if v, ok := mac.mutation.MimeType(); ok {
 		if err := mediaasset.MimeTypeValidator(v); err != nil {
 			return &ValidationError{Name: "mime_type", err: fmt.Errorf(`ent: validator failed for field "MediaAsset.mime_type": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.Size(); !ok {
+	if _, ok := mac.mutation.Size(); !ok {
 		return &ValidationError{Name: "size", err: errors.New(`ent: missing required field "MediaAsset.size"`)}
 	}
-	if _, ok := _c.mutation.URL(); !ok {
+	if _, ok := mac.mutation.URL(); !ok {
 		return &ValidationError{Name: "url", err: errors.New(`ent: missing required field "MediaAsset.url"`)}
 	}
-	if v, ok := _c.mutation.URL(); ok {
+	if v, ok := mac.mutation.URL(); ok {
 		if err := mediaasset.URLValidator(v); err != nil {
 			return &ValidationError{Name: "url", err: fmt.Errorf(`ent: validator failed for field "MediaAsset.url": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.ThumbnailURL(); !ok {
+	if _, ok := mac.mutation.ThumbnailURL(); !ok {
 		return &ValidationError{Name: "thumbnail_url", err: errors.New(`ent: missing required field "MediaAsset.thumbnail_url"`)}
 	}
-	if v, ok := _c.mutation.ThumbnailURL(); ok {
+	if v, ok := mac.mutation.ThumbnailURL(); ok {
 		if err := mediaasset.ThumbnailURLValidator(v); err != nil {
 			return &ValidationError{Name: "thumbnail_url", err: fmt.Errorf(`ent: validator failed for field "MediaAsset.thumbnail_url": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.Status(); !ok {
+	if _, ok := mac.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "MediaAsset.status"`)}
 	}
-	if _, ok := _c.mutation.CreatedAt(); !ok {
+	if _, ok := mac.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "MediaAsset.created_at"`)}
 	}
-	if _, ok := _c.mutation.UpdatedAt(); !ok {
+	if _, ok := mac.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "MediaAsset.updated_at"`)}
 	}
 	return nil
 }
 
-func (_c *MediaAssetCreate) sqlSave(ctx context.Context) (*MediaAsset, error) {
-	if err := _c.check(); err != nil {
+func (mac *MediaAssetCreate) sqlSave(ctx context.Context) (*MediaAsset, error) {
+	if err := mac.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := _c.createSpec()
-	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
+	_node, _spec := mac.createSpec()
+	if err := sqlgraph.CreateNode(ctx, mac.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -272,53 +272,53 @@ func (_c *MediaAssetCreate) sqlSave(ctx context.Context) (*MediaAsset, error) {
 			return nil, err
 		}
 	}
-	_c.mutation.id = &_node.ID
-	_c.mutation.done = true
+	mac.mutation.id = &_node.ID
+	mac.mutation.done = true
 	return _node, nil
 }
 
-func (_c *MediaAssetCreate) createSpec() (*MediaAsset, *sqlgraph.CreateSpec) {
+func (mac *MediaAssetCreate) createSpec() (*MediaAsset, *sqlgraph.CreateSpec) {
 	var (
-		_node = &MediaAsset{config: _c.config}
+		_node = &MediaAsset{config: mac.config}
 		_spec = sqlgraph.NewCreateSpec(mediaasset.Table, sqlgraph.NewFieldSpec(mediaasset.FieldID, field.TypeUUID))
 	)
-	if id, ok := _c.mutation.ID(); ok {
+	if id, ok := mac.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = &id
 	}
-	if value, ok := _c.mutation.OwnerID(); ok {
+	if value, ok := mac.mutation.OwnerID(); ok {
 		_spec.SetField(mediaasset.FieldOwnerID, field.TypeUUID, value)
 		_node.OwnerID = value
 	}
-	if value, ok := _c.mutation.Filename(); ok {
+	if value, ok := mac.mutation.Filename(); ok {
 		_spec.SetField(mediaasset.FieldFilename, field.TypeString, value)
 		_node.Filename = value
 	}
-	if value, ok := _c.mutation.MimeType(); ok {
+	if value, ok := mac.mutation.MimeType(); ok {
 		_spec.SetField(mediaasset.FieldMimeType, field.TypeString, value)
 		_node.MimeType = value
 	}
-	if value, ok := _c.mutation.Size(); ok {
+	if value, ok := mac.mutation.Size(); ok {
 		_spec.SetField(mediaasset.FieldSize, field.TypeInt64, value)
 		_node.Size = value
 	}
-	if value, ok := _c.mutation.URL(); ok {
+	if value, ok := mac.mutation.URL(); ok {
 		_spec.SetField(mediaasset.FieldURL, field.TypeString, value)
 		_node.URL = value
 	}
-	if value, ok := _c.mutation.ThumbnailURL(); ok {
+	if value, ok := mac.mutation.ThumbnailURL(); ok {
 		_spec.SetField(mediaasset.FieldThumbnailURL, field.TypeString, value)
 		_node.ThumbnailURL = value
 	}
-	if value, ok := _c.mutation.Status(); ok {
+	if value, ok := mac.mutation.Status(); ok {
 		_spec.SetField(mediaasset.FieldStatus, field.TypeString, value)
 		_node.Status = value
 	}
-	if value, ok := _c.mutation.CreatedAt(); ok {
+	if value, ok := mac.mutation.CreatedAt(); ok {
 		_spec.SetField(mediaasset.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := _c.mutation.UpdatedAt(); ok {
+	if value, ok := mac.mutation.UpdatedAt(); ok {
 		_spec.SetField(mediaasset.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
@@ -333,16 +333,16 @@ type MediaAssetCreateBulk struct {
 }
 
 // Save creates the MediaAsset entities in the database.
-func (_c *MediaAssetCreateBulk) Save(ctx context.Context) ([]*MediaAsset, error) {
-	if _c.err != nil {
-		return nil, _c.err
+func (macb *MediaAssetCreateBulk) Save(ctx context.Context) ([]*MediaAsset, error) {
+	if macb.err != nil {
+		return nil, macb.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
-	nodes := make([]*MediaAsset, len(_c.builders))
-	mutators := make([]Mutator, len(_c.builders))
-	for i := range _c.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(macb.builders))
+	nodes := make([]*MediaAsset, len(macb.builders))
+	mutators := make([]Mutator, len(macb.builders))
+	for i := range macb.builders {
 		func(i int, root context.Context) {
-			builder := _c.builders[i]
+			builder := macb.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*MediaAssetMutation)
@@ -356,11 +356,11 @@ func (_c *MediaAssetCreateBulk) Save(ctx context.Context) ([]*MediaAsset, error)
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, macb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, macb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -380,7 +380,7 @@ func (_c *MediaAssetCreateBulk) Save(ctx context.Context) ([]*MediaAsset, error)
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, macb.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -388,8 +388,8 @@ func (_c *MediaAssetCreateBulk) Save(ctx context.Context) ([]*MediaAsset, error)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_c *MediaAssetCreateBulk) SaveX(ctx context.Context) []*MediaAsset {
-	v, err := _c.Save(ctx)
+func (macb *MediaAssetCreateBulk) SaveX(ctx context.Context) []*MediaAsset {
+	v, err := macb.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -397,14 +397,14 @@ func (_c *MediaAssetCreateBulk) SaveX(ctx context.Context) []*MediaAsset {
 }
 
 // Exec executes the query.
-func (_c *MediaAssetCreateBulk) Exec(ctx context.Context) error {
-	_, err := _c.Save(ctx)
+func (macb *MediaAssetCreateBulk) Exec(ctx context.Context) error {
+	_, err := macb.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_c *MediaAssetCreateBulk) ExecX(ctx context.Context) {
-	if err := _c.Exec(ctx); err != nil {
+func (macb *MediaAssetCreateBulk) ExecX(ctx context.Context) {
+	if err := macb.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

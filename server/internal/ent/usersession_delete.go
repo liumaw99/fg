@@ -20,56 +20,56 @@ type UserSessionDelete struct {
 }
 
 // Where appends a list predicates to the UserSessionDelete builder.
-func (_d *UserSessionDelete) Where(ps ...predicate.UserSession) *UserSessionDelete {
-	_d.mutation.Where(ps...)
-	return _d
+func (usd *UserSessionDelete) Where(ps ...predicate.UserSession) *UserSessionDelete {
+	usd.mutation.Where(ps...)
+	return usd
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (_d *UserSessionDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
+func (usd *UserSessionDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, usd.sqlExec, usd.mutation, usd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_d *UserSessionDelete) ExecX(ctx context.Context) int {
-	n, err := _d.Exec(ctx)
+func (usd *UserSessionDelete) ExecX(ctx context.Context) int {
+	n, err := usd.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (_d *UserSessionDelete) sqlExec(ctx context.Context) (int, error) {
+func (usd *UserSessionDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(usersession.Table, sqlgraph.NewFieldSpec(usersession.FieldID, field.TypeUUID))
-	if ps := _d.mutation.predicates; len(ps) > 0 {
+	if ps := usd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, usd.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	_d.mutation.done = true
+	usd.mutation.done = true
 	return affected, err
 }
 
 // UserSessionDeleteOne is the builder for deleting a single UserSession entity.
 type UserSessionDeleteOne struct {
-	_d *UserSessionDelete
+	usd *UserSessionDelete
 }
 
 // Where appends a list predicates to the UserSessionDelete builder.
-func (_d *UserSessionDeleteOne) Where(ps ...predicate.UserSession) *UserSessionDeleteOne {
-	_d._d.mutation.Where(ps...)
-	return _d
+func (usdo *UserSessionDeleteOne) Where(ps ...predicate.UserSession) *UserSessionDeleteOne {
+	usdo.usd.mutation.Where(ps...)
+	return usdo
 }
 
 // Exec executes the deletion query.
-func (_d *UserSessionDeleteOne) Exec(ctx context.Context) error {
-	n, err := _d._d.Exec(ctx)
+func (usdo *UserSessionDeleteOne) Exec(ctx context.Context) error {
+	n, err := usdo.usd.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (_d *UserSessionDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_d *UserSessionDeleteOne) ExecX(ctx context.Context) {
-	if err := _d.Exec(ctx); err != nil {
+func (usdo *UserSessionDeleteOne) ExecX(ctx context.Context) {
+	if err := usdo.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

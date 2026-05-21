@@ -13,6 +13,9 @@ import (
 
 	"social-server/internal/ent/mediaasset"
 	"social-server/internal/ent/outboxevent"
+	"social-server/internal/ent/post"
+	"social-server/internal/ent/postmedia"
+	"social-server/internal/ent/poststats"
 	"social-server/internal/ent/processedevent"
 	"social-server/internal/ent/user"
 	"social-server/internal/ent/userprofile"
@@ -34,6 +37,12 @@ type Client struct {
 	MediaAsset *MediaAssetClient
 	// OutboxEvent is the client for interacting with the OutboxEvent builders.
 	OutboxEvent *OutboxEventClient
+	// Post is the client for interacting with the Post builders.
+	Post *PostClient
+	// PostMedia is the client for interacting with the PostMedia builders.
+	PostMedia *PostMediaClient
+	// PostStats is the client for interacting with the PostStats builders.
+	PostStats *PostStatsClient
 	// ProcessedEvent is the client for interacting with the ProcessedEvent builders.
 	ProcessedEvent *ProcessedEventClient
 	// User is the client for interacting with the User builders.
@@ -57,6 +66,9 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.MediaAsset = NewMediaAssetClient(c.config)
 	c.OutboxEvent = NewOutboxEventClient(c.config)
+	c.Post = NewPostClient(c.config)
+	c.PostMedia = NewPostMediaClient(c.config)
+	c.PostStats = NewPostStatsClient(c.config)
 	c.ProcessedEvent = NewProcessedEventClient(c.config)
 	c.User = NewUserClient(c.config)
 	c.UserProfile = NewUserProfileClient(c.config)
@@ -156,6 +168,9 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		config:         cfg,
 		MediaAsset:     NewMediaAssetClient(cfg),
 		OutboxEvent:    NewOutboxEventClient(cfg),
+		Post:           NewPostClient(cfg),
+		PostMedia:      NewPostMediaClient(cfg),
+		PostStats:      NewPostStatsClient(cfg),
 		ProcessedEvent: NewProcessedEventClient(cfg),
 		User:           NewUserClient(cfg),
 		UserProfile:    NewUserProfileClient(cfg),
@@ -182,6 +197,9 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		config:         cfg,
 		MediaAsset:     NewMediaAssetClient(cfg),
 		OutboxEvent:    NewOutboxEventClient(cfg),
+		Post:           NewPostClient(cfg),
+		PostMedia:      NewPostMediaClient(cfg),
+		PostStats:      NewPostStatsClient(cfg),
 		ProcessedEvent: NewProcessedEventClient(cfg),
 		User:           NewUserClient(cfg),
 		UserProfile:    NewUserProfileClient(cfg),
@@ -216,8 +234,8 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.MediaAsset, c.OutboxEvent, c.ProcessedEvent, c.User, c.UserProfile,
-		c.UserSession, c.UserStats,
+		c.MediaAsset, c.OutboxEvent, c.Post, c.PostMedia, c.PostStats, c.ProcessedEvent,
+		c.User, c.UserProfile, c.UserSession, c.UserStats,
 	} {
 		n.Use(hooks...)
 	}
@@ -227,8 +245,8 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.MediaAsset, c.OutboxEvent, c.ProcessedEvent, c.User, c.UserProfile,
-		c.UserSession, c.UserStats,
+		c.MediaAsset, c.OutboxEvent, c.Post, c.PostMedia, c.PostStats, c.ProcessedEvent,
+		c.User, c.UserProfile, c.UserSession, c.UserStats,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -241,6 +259,12 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.MediaAsset.mutate(ctx, m)
 	case *OutboxEventMutation:
 		return c.OutboxEvent.mutate(ctx, m)
+	case *PostMutation:
+		return c.Post.mutate(ctx, m)
+	case *PostMediaMutation:
+		return c.PostMedia.mutate(ctx, m)
+	case *PostStatsMutation:
+		return c.PostStats.mutate(ctx, m)
 	case *ProcessedEventMutation:
 		return c.ProcessedEvent.mutate(ctx, m)
 	case *UserMutation:
@@ -311,8 +335,8 @@ func (c *MediaAssetClient) Update() *MediaAssetUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *MediaAssetClient) UpdateOne(_m *MediaAsset) *MediaAssetUpdateOne {
-	mutation := newMediaAssetMutation(c.config, OpUpdateOne, withMediaAsset(_m))
+func (c *MediaAssetClient) UpdateOne(ma *MediaAsset) *MediaAssetUpdateOne {
+	mutation := newMediaAssetMutation(c.config, OpUpdateOne, withMediaAsset(ma))
 	return &MediaAssetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -329,8 +353,8 @@ func (c *MediaAssetClient) Delete() *MediaAssetDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *MediaAssetClient) DeleteOne(_m *MediaAsset) *MediaAssetDeleteOne {
-	return c.DeleteOneID(_m.ID)
+func (c *MediaAssetClient) DeleteOne(ma *MediaAsset) *MediaAssetDeleteOne {
+	return c.DeleteOneID(ma.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -444,8 +468,8 @@ func (c *OutboxEventClient) Update() *OutboxEventUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *OutboxEventClient) UpdateOne(_m *OutboxEvent) *OutboxEventUpdateOne {
-	mutation := newOutboxEventMutation(c.config, OpUpdateOne, withOutboxEvent(_m))
+func (c *OutboxEventClient) UpdateOne(oe *OutboxEvent) *OutboxEventUpdateOne {
+	mutation := newOutboxEventMutation(c.config, OpUpdateOne, withOutboxEvent(oe))
 	return &OutboxEventUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -462,8 +486,8 @@ func (c *OutboxEventClient) Delete() *OutboxEventDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *OutboxEventClient) DeleteOne(_m *OutboxEvent) *OutboxEventDeleteOne {
-	return c.DeleteOneID(_m.ID)
+func (c *OutboxEventClient) DeleteOne(oe *OutboxEvent) *OutboxEventDeleteOne {
+	return c.DeleteOneID(oe.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -522,6 +546,405 @@ func (c *OutboxEventClient) mutate(ctx context.Context, m *OutboxEventMutation) 
 	}
 }
 
+// PostClient is a client for the Post schema.
+type PostClient struct {
+	config
+}
+
+// NewPostClient returns a client for the Post from the given config.
+func NewPostClient(c config) *PostClient {
+	return &PostClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `post.Hooks(f(g(h())))`.
+func (c *PostClient) Use(hooks ...Hook) {
+	c.hooks.Post = append(c.hooks.Post, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `post.Intercept(f(g(h())))`.
+func (c *PostClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Post = append(c.inters.Post, interceptors...)
+}
+
+// Create returns a builder for creating a Post entity.
+func (c *PostClient) Create() *PostCreate {
+	mutation := newPostMutation(c.config, OpCreate)
+	return &PostCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Post entities.
+func (c *PostClient) CreateBulk(builders ...*PostCreate) *PostCreateBulk {
+	return &PostCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *PostClient) MapCreateBulk(slice any, setFunc func(*PostCreate, int)) *PostCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &PostCreateBulk{err: fmt.Errorf("calling to PostClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*PostCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &PostCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Post.
+func (c *PostClient) Update() *PostUpdate {
+	mutation := newPostMutation(c.config, OpUpdate)
+	return &PostUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *PostClient) UpdateOne(po *Post) *PostUpdateOne {
+	mutation := newPostMutation(c.config, OpUpdateOne, withPost(po))
+	return &PostUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *PostClient) UpdateOneID(id uuid.UUID) *PostUpdateOne {
+	mutation := newPostMutation(c.config, OpUpdateOne, withPostID(id))
+	return &PostUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Post.
+func (c *PostClient) Delete() *PostDelete {
+	mutation := newPostMutation(c.config, OpDelete)
+	return &PostDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *PostClient) DeleteOne(po *Post) *PostDeleteOne {
+	return c.DeleteOneID(po.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *PostClient) DeleteOneID(id uuid.UUID) *PostDeleteOne {
+	builder := c.Delete().Where(post.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &PostDeleteOne{builder}
+}
+
+// Query returns a query builder for Post.
+func (c *PostClient) Query() *PostQuery {
+	return &PostQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypePost},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Post entity by its id.
+func (c *PostClient) Get(ctx context.Context, id uuid.UUID) (*Post, error) {
+	return c.Query().Where(post.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *PostClient) GetX(ctx context.Context, id uuid.UUID) *Post {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *PostClient) Hooks() []Hook {
+	return c.hooks.Post
+}
+
+// Interceptors returns the client interceptors.
+func (c *PostClient) Interceptors() []Interceptor {
+	return c.inters.Post
+}
+
+func (c *PostClient) mutate(ctx context.Context, m *PostMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&PostCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&PostUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&PostUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&PostDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Post mutation op: %q", m.Op())
+	}
+}
+
+// PostMediaClient is a client for the PostMedia schema.
+type PostMediaClient struct {
+	config
+}
+
+// NewPostMediaClient returns a client for the PostMedia from the given config.
+func NewPostMediaClient(c config) *PostMediaClient {
+	return &PostMediaClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `postmedia.Hooks(f(g(h())))`.
+func (c *PostMediaClient) Use(hooks ...Hook) {
+	c.hooks.PostMedia = append(c.hooks.PostMedia, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `postmedia.Intercept(f(g(h())))`.
+func (c *PostMediaClient) Intercept(interceptors ...Interceptor) {
+	c.inters.PostMedia = append(c.inters.PostMedia, interceptors...)
+}
+
+// Create returns a builder for creating a PostMedia entity.
+func (c *PostMediaClient) Create() *PostMediaCreate {
+	mutation := newPostMediaMutation(c.config, OpCreate)
+	return &PostMediaCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of PostMedia entities.
+func (c *PostMediaClient) CreateBulk(builders ...*PostMediaCreate) *PostMediaCreateBulk {
+	return &PostMediaCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *PostMediaClient) MapCreateBulk(slice any, setFunc func(*PostMediaCreate, int)) *PostMediaCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &PostMediaCreateBulk{err: fmt.Errorf("calling to PostMediaClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*PostMediaCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &PostMediaCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for PostMedia.
+func (c *PostMediaClient) Update() *PostMediaUpdate {
+	mutation := newPostMediaMutation(c.config, OpUpdate)
+	return &PostMediaUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *PostMediaClient) UpdateOne(pm *PostMedia) *PostMediaUpdateOne {
+	mutation := newPostMediaMutation(c.config, OpUpdateOne, withPostMedia(pm))
+	return &PostMediaUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *PostMediaClient) UpdateOneID(id uuid.UUID) *PostMediaUpdateOne {
+	mutation := newPostMediaMutation(c.config, OpUpdateOne, withPostMediaID(id))
+	return &PostMediaUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for PostMedia.
+func (c *PostMediaClient) Delete() *PostMediaDelete {
+	mutation := newPostMediaMutation(c.config, OpDelete)
+	return &PostMediaDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *PostMediaClient) DeleteOne(pm *PostMedia) *PostMediaDeleteOne {
+	return c.DeleteOneID(pm.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *PostMediaClient) DeleteOneID(id uuid.UUID) *PostMediaDeleteOne {
+	builder := c.Delete().Where(postmedia.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &PostMediaDeleteOne{builder}
+}
+
+// Query returns a query builder for PostMedia.
+func (c *PostMediaClient) Query() *PostMediaQuery {
+	return &PostMediaQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypePostMedia},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a PostMedia entity by its id.
+func (c *PostMediaClient) Get(ctx context.Context, id uuid.UUID) (*PostMedia, error) {
+	return c.Query().Where(postmedia.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *PostMediaClient) GetX(ctx context.Context, id uuid.UUID) *PostMedia {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *PostMediaClient) Hooks() []Hook {
+	return c.hooks.PostMedia
+}
+
+// Interceptors returns the client interceptors.
+func (c *PostMediaClient) Interceptors() []Interceptor {
+	return c.inters.PostMedia
+}
+
+func (c *PostMediaClient) mutate(ctx context.Context, m *PostMediaMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&PostMediaCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&PostMediaUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&PostMediaUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&PostMediaDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown PostMedia mutation op: %q", m.Op())
+	}
+}
+
+// PostStatsClient is a client for the PostStats schema.
+type PostStatsClient struct {
+	config
+}
+
+// NewPostStatsClient returns a client for the PostStats from the given config.
+func NewPostStatsClient(c config) *PostStatsClient {
+	return &PostStatsClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `poststats.Hooks(f(g(h())))`.
+func (c *PostStatsClient) Use(hooks ...Hook) {
+	c.hooks.PostStats = append(c.hooks.PostStats, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `poststats.Intercept(f(g(h())))`.
+func (c *PostStatsClient) Intercept(interceptors ...Interceptor) {
+	c.inters.PostStats = append(c.inters.PostStats, interceptors...)
+}
+
+// Create returns a builder for creating a PostStats entity.
+func (c *PostStatsClient) Create() *PostStatsCreate {
+	mutation := newPostStatsMutation(c.config, OpCreate)
+	return &PostStatsCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of PostStats entities.
+func (c *PostStatsClient) CreateBulk(builders ...*PostStatsCreate) *PostStatsCreateBulk {
+	return &PostStatsCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *PostStatsClient) MapCreateBulk(slice any, setFunc func(*PostStatsCreate, int)) *PostStatsCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &PostStatsCreateBulk{err: fmt.Errorf("calling to PostStatsClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*PostStatsCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &PostStatsCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for PostStats.
+func (c *PostStatsClient) Update() *PostStatsUpdate {
+	mutation := newPostStatsMutation(c.config, OpUpdate)
+	return &PostStatsUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *PostStatsClient) UpdateOne(ps *PostStats) *PostStatsUpdateOne {
+	mutation := newPostStatsMutation(c.config, OpUpdateOne, withPostStats(ps))
+	return &PostStatsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *PostStatsClient) UpdateOneID(id uuid.UUID) *PostStatsUpdateOne {
+	mutation := newPostStatsMutation(c.config, OpUpdateOne, withPostStatsID(id))
+	return &PostStatsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for PostStats.
+func (c *PostStatsClient) Delete() *PostStatsDelete {
+	mutation := newPostStatsMutation(c.config, OpDelete)
+	return &PostStatsDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *PostStatsClient) DeleteOne(ps *PostStats) *PostStatsDeleteOne {
+	return c.DeleteOneID(ps.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *PostStatsClient) DeleteOneID(id uuid.UUID) *PostStatsDeleteOne {
+	builder := c.Delete().Where(poststats.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &PostStatsDeleteOne{builder}
+}
+
+// Query returns a query builder for PostStats.
+func (c *PostStatsClient) Query() *PostStatsQuery {
+	return &PostStatsQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypePostStats},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a PostStats entity by its id.
+func (c *PostStatsClient) Get(ctx context.Context, id uuid.UUID) (*PostStats, error) {
+	return c.Query().Where(poststats.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *PostStatsClient) GetX(ctx context.Context, id uuid.UUID) *PostStats {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *PostStatsClient) Hooks() []Hook {
+	return c.hooks.PostStats
+}
+
+// Interceptors returns the client interceptors.
+func (c *PostStatsClient) Interceptors() []Interceptor {
+	return c.inters.PostStats
+}
+
+func (c *PostStatsClient) mutate(ctx context.Context, m *PostStatsMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&PostStatsCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&PostStatsUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&PostStatsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&PostStatsDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown PostStats mutation op: %q", m.Op())
+	}
+}
+
 // ProcessedEventClient is a client for the ProcessedEvent schema.
 type ProcessedEventClient struct {
 	config
@@ -577,8 +1000,8 @@ func (c *ProcessedEventClient) Update() *ProcessedEventUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *ProcessedEventClient) UpdateOne(_m *ProcessedEvent) *ProcessedEventUpdateOne {
-	mutation := newProcessedEventMutation(c.config, OpUpdateOne, withProcessedEvent(_m))
+func (c *ProcessedEventClient) UpdateOne(pe *ProcessedEvent) *ProcessedEventUpdateOne {
+	mutation := newProcessedEventMutation(c.config, OpUpdateOne, withProcessedEvent(pe))
 	return &ProcessedEventUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -595,8 +1018,8 @@ func (c *ProcessedEventClient) Delete() *ProcessedEventDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *ProcessedEventClient) DeleteOne(_m *ProcessedEvent) *ProcessedEventDeleteOne {
-	return c.DeleteOneID(_m.ID)
+func (c *ProcessedEventClient) DeleteOne(pe *ProcessedEvent) *ProcessedEventDeleteOne {
+	return c.DeleteOneID(pe.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -710,8 +1133,8 @@ func (c *UserClient) Update() *UserUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *UserClient) UpdateOne(_m *User) *UserUpdateOne {
-	mutation := newUserMutation(c.config, OpUpdateOne, withUser(_m))
+func (c *UserClient) UpdateOne(u *User) *UserUpdateOne {
+	mutation := newUserMutation(c.config, OpUpdateOne, withUser(u))
 	return &UserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -728,8 +1151,8 @@ func (c *UserClient) Delete() *UserDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *UserClient) DeleteOne(_m *User) *UserDeleteOne {
-	return c.DeleteOneID(_m.ID)
+func (c *UserClient) DeleteOne(u *User) *UserDeleteOne {
+	return c.DeleteOneID(u.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -843,8 +1266,8 @@ func (c *UserProfileClient) Update() *UserProfileUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *UserProfileClient) UpdateOne(_m *UserProfile) *UserProfileUpdateOne {
-	mutation := newUserProfileMutation(c.config, OpUpdateOne, withUserProfile(_m))
+func (c *UserProfileClient) UpdateOne(up *UserProfile) *UserProfileUpdateOne {
+	mutation := newUserProfileMutation(c.config, OpUpdateOne, withUserProfile(up))
 	return &UserProfileUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -861,8 +1284,8 @@ func (c *UserProfileClient) Delete() *UserProfileDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *UserProfileClient) DeleteOne(_m *UserProfile) *UserProfileDeleteOne {
-	return c.DeleteOneID(_m.ID)
+func (c *UserProfileClient) DeleteOne(up *UserProfile) *UserProfileDeleteOne {
+	return c.DeleteOneID(up.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -976,8 +1399,8 @@ func (c *UserSessionClient) Update() *UserSessionUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *UserSessionClient) UpdateOne(_m *UserSession) *UserSessionUpdateOne {
-	mutation := newUserSessionMutation(c.config, OpUpdateOne, withUserSession(_m))
+func (c *UserSessionClient) UpdateOne(us *UserSession) *UserSessionUpdateOne {
+	mutation := newUserSessionMutation(c.config, OpUpdateOne, withUserSession(us))
 	return &UserSessionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -994,8 +1417,8 @@ func (c *UserSessionClient) Delete() *UserSessionDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *UserSessionClient) DeleteOne(_m *UserSession) *UserSessionDeleteOne {
-	return c.DeleteOneID(_m.ID)
+func (c *UserSessionClient) DeleteOne(us *UserSession) *UserSessionDeleteOne {
+	return c.DeleteOneID(us.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -1109,8 +1532,8 @@ func (c *UserStatsClient) Update() *UserStatsUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *UserStatsClient) UpdateOne(_m *UserStats) *UserStatsUpdateOne {
-	mutation := newUserStatsMutation(c.config, OpUpdateOne, withUserStats(_m))
+func (c *UserStatsClient) UpdateOne(us *UserStats) *UserStatsUpdateOne {
+	mutation := newUserStatsMutation(c.config, OpUpdateOne, withUserStats(us))
 	return &UserStatsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -1127,8 +1550,8 @@ func (c *UserStatsClient) Delete() *UserStatsDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *UserStatsClient) DeleteOne(_m *UserStats) *UserStatsDeleteOne {
-	return c.DeleteOneID(_m.ID)
+func (c *UserStatsClient) DeleteOne(us *UserStats) *UserStatsDeleteOne {
+	return c.DeleteOneID(us.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -1190,11 +1613,11 @@ func (c *UserStatsClient) mutate(ctx context.Context, m *UserStatsMutation) (Val
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		MediaAsset, OutboxEvent, ProcessedEvent, User, UserProfile, UserSession,
-		UserStats []ent.Hook
+		MediaAsset, OutboxEvent, Post, PostMedia, PostStats, ProcessedEvent, User,
+		UserProfile, UserSession, UserStats []ent.Hook
 	}
 	inters struct {
-		MediaAsset, OutboxEvent, ProcessedEvent, User, UserProfile, UserSession,
-		UserStats []ent.Interceptor
+		MediaAsset, OutboxEvent, Post, PostMedia, PostStats, ProcessedEvent, User,
+		UserProfile, UserSession, UserStats []ent.Interceptor
 	}
 )

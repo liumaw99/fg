@@ -32,6 +32,42 @@ func (f OutboxEventFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value,
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OutboxEventMutation", m)
 }
 
+// The PostFunc type is an adapter to allow the use of ordinary
+// function as Post mutator.
+type PostFunc func(context.Context, *ent.PostMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f PostFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.PostMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PostMutation", m)
+}
+
+// The PostMediaFunc type is an adapter to allow the use of ordinary
+// function as PostMedia mutator.
+type PostMediaFunc func(context.Context, *ent.PostMediaMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f PostMediaFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.PostMediaMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PostMediaMutation", m)
+}
+
+// The PostStatsFunc type is an adapter to allow the use of ordinary
+// function as PostStats mutator.
+type PostStatsFunc func(context.Context, *ent.PostStatsMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f PostStatsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.PostStatsMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PostStatsMutation", m)
+}
+
 // The ProcessedEventFunc type is an adapter to allow the use of ordinary
 // function as ProcessedEvent mutator.
 type ProcessedEventFunc func(context.Context, *ent.ProcessedEventMutation) (ent.Value, error)

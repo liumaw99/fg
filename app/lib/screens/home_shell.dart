@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../providers/post_provider.dart';
 import '../router/route_names.dart';
+import '../widgets/post_card.dart';
 
 class HomeShell extends ConsumerStatefulWidget {
   const HomeShell({super.key});
@@ -12,13 +14,6 @@ class HomeShell extends ConsumerStatefulWidget {
 
 class _HomeShellState extends ConsumerState<HomeShell> {
   int _currentIndex = 0;
-
-  final List<Widget> _pages = const [
-    _TimelinePage(),
-    _ExplorePage(),
-    _NotificationsPage(),
-    _MessagesPage(),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +27,15 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           ),
         ],
       ),
-      body: _pages[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: const [
+          _TimelinePage(),
+          _ExplorePage(),
+          _NotificationsPage(),
+          _MessagesPage(),
+        ],
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (index) {
@@ -62,36 +65,76 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: Navigate to create post
-        },
+        onPressed: () => context.push('/create-post'),
         child: const Icon(Icons.add),
       ),
     );
   }
 }
 
-class _TimelinePage extends StatelessWidget {
+class _TimelinePage extends ConsumerStatefulWidget {
   const _TimelinePage();
 
   @override
+  ConsumerState<_TimelinePage> createState() => _TimelinePageState();
+}
+
+class _TimelinePageState extends ConsumerState<_TimelinePage> {
+  @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.timeline, size: 64, color: Colors.grey),
-          const SizedBox(height: 16),
-          const Text(
-            'Timeline',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+    final postsAsync = ref.watch(feedPostsProvider);
+
+    return RefreshIndicator(
+      onRefresh: () => ref.read(feedPostsProvider.notifier).refresh(),
+      child: postsAsync.when(
+        data: (posts) {
+          if (posts.isEmpty) {
+            return const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.timeline, size: 64, color: Colors.grey),
+                  SizedBox(height: 16),
+                  Text(
+                    'No posts yet',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 8),
+                  Text('Be the first to post something!'),
+                ],
+              ),
+            );
+          }
+
+          return ListView.builder(
+            itemCount: posts.length,
+            itemBuilder: (context, index) {
+              final post = posts[index];
+              return PostCard(
+                post: post,
+                onTap: () {
+                  // TODO: Navigate to post detail
+                },
+              );
+            },
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, _) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 64, color: Colors.red),
+              const SizedBox(height: 16),
+              Text('Error: $error'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => ref.read(feedPostsProvider.notifier).refresh(),
+                child: const Text('Retry'),
+              ),
+            ],
           ),
-          const SizedBox(height: 8),
-          Text(
-            'Your feed will appear here',
-            style: TextStyle(color: Colors.grey.shade600),
-          ),
-        ],
+        ),
       ),
     );
   }

@@ -23,122 +23,122 @@ type UserStatsUpdate struct {
 }
 
 // Where appends a list predicates to the UserStatsUpdate builder.
-func (_u *UserStatsUpdate) Where(ps ...predicate.UserStats) *UserStatsUpdate {
-	_u.mutation.Where(ps...)
-	return _u
+func (usu *UserStatsUpdate) Where(ps ...predicate.UserStats) *UserStatsUpdate {
+	usu.mutation.Where(ps...)
+	return usu
 }
 
 // SetUserID sets the "user_id" field.
-func (_u *UserStatsUpdate) SetUserID(v uuid.UUID) *UserStatsUpdate {
-	_u.mutation.SetUserID(v)
-	return _u
+func (usu *UserStatsUpdate) SetUserID(u uuid.UUID) *UserStatsUpdate {
+	usu.mutation.SetUserID(u)
+	return usu
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (_u *UserStatsUpdate) SetNillableUserID(v *uuid.UUID) *UserStatsUpdate {
-	if v != nil {
-		_u.SetUserID(*v)
+func (usu *UserStatsUpdate) SetNillableUserID(u *uuid.UUID) *UserStatsUpdate {
+	if u != nil {
+		usu.SetUserID(*u)
 	}
-	return _u
+	return usu
 }
 
 // SetPostCount sets the "post_count" field.
-func (_u *UserStatsUpdate) SetPostCount(v int) *UserStatsUpdate {
-	_u.mutation.ResetPostCount()
-	_u.mutation.SetPostCount(v)
-	return _u
+func (usu *UserStatsUpdate) SetPostCount(i int) *UserStatsUpdate {
+	usu.mutation.ResetPostCount()
+	usu.mutation.SetPostCount(i)
+	return usu
 }
 
 // SetNillablePostCount sets the "post_count" field if the given value is not nil.
-func (_u *UserStatsUpdate) SetNillablePostCount(v *int) *UserStatsUpdate {
-	if v != nil {
-		_u.SetPostCount(*v)
+func (usu *UserStatsUpdate) SetNillablePostCount(i *int) *UserStatsUpdate {
+	if i != nil {
+		usu.SetPostCount(*i)
 	}
-	return _u
+	return usu
 }
 
-// AddPostCount adds value to the "post_count" field.
-func (_u *UserStatsUpdate) AddPostCount(v int) *UserStatsUpdate {
-	_u.mutation.AddPostCount(v)
-	return _u
+// AddPostCount adds i to the "post_count" field.
+func (usu *UserStatsUpdate) AddPostCount(i int) *UserStatsUpdate {
+	usu.mutation.AddPostCount(i)
+	return usu
 }
 
 // SetFollowerCount sets the "follower_count" field.
-func (_u *UserStatsUpdate) SetFollowerCount(v int) *UserStatsUpdate {
-	_u.mutation.ResetFollowerCount()
-	_u.mutation.SetFollowerCount(v)
-	return _u
+func (usu *UserStatsUpdate) SetFollowerCount(i int) *UserStatsUpdate {
+	usu.mutation.ResetFollowerCount()
+	usu.mutation.SetFollowerCount(i)
+	return usu
 }
 
 // SetNillableFollowerCount sets the "follower_count" field if the given value is not nil.
-func (_u *UserStatsUpdate) SetNillableFollowerCount(v *int) *UserStatsUpdate {
-	if v != nil {
-		_u.SetFollowerCount(*v)
+func (usu *UserStatsUpdate) SetNillableFollowerCount(i *int) *UserStatsUpdate {
+	if i != nil {
+		usu.SetFollowerCount(*i)
 	}
-	return _u
+	return usu
 }
 
-// AddFollowerCount adds value to the "follower_count" field.
-func (_u *UserStatsUpdate) AddFollowerCount(v int) *UserStatsUpdate {
-	_u.mutation.AddFollowerCount(v)
-	return _u
+// AddFollowerCount adds i to the "follower_count" field.
+func (usu *UserStatsUpdate) AddFollowerCount(i int) *UserStatsUpdate {
+	usu.mutation.AddFollowerCount(i)
+	return usu
 }
 
 // SetFollowingCount sets the "following_count" field.
-func (_u *UserStatsUpdate) SetFollowingCount(v int) *UserStatsUpdate {
-	_u.mutation.ResetFollowingCount()
-	_u.mutation.SetFollowingCount(v)
-	return _u
+func (usu *UserStatsUpdate) SetFollowingCount(i int) *UserStatsUpdate {
+	usu.mutation.ResetFollowingCount()
+	usu.mutation.SetFollowingCount(i)
+	return usu
 }
 
 // SetNillableFollowingCount sets the "following_count" field if the given value is not nil.
-func (_u *UserStatsUpdate) SetNillableFollowingCount(v *int) *UserStatsUpdate {
-	if v != nil {
-		_u.SetFollowingCount(*v)
+func (usu *UserStatsUpdate) SetNillableFollowingCount(i *int) *UserStatsUpdate {
+	if i != nil {
+		usu.SetFollowingCount(*i)
 	}
-	return _u
+	return usu
 }
 
-// AddFollowingCount adds value to the "following_count" field.
-func (_u *UserStatsUpdate) AddFollowingCount(v int) *UserStatsUpdate {
-	_u.mutation.AddFollowingCount(v)
-	return _u
+// AddFollowingCount adds i to the "following_count" field.
+func (usu *UserStatsUpdate) AddFollowingCount(i int) *UserStatsUpdate {
+	usu.mutation.AddFollowingCount(i)
+	return usu
 }
 
 // SetLikeReceivedCount sets the "like_received_count" field.
-func (_u *UserStatsUpdate) SetLikeReceivedCount(v int) *UserStatsUpdate {
-	_u.mutation.ResetLikeReceivedCount()
-	_u.mutation.SetLikeReceivedCount(v)
-	return _u
+func (usu *UserStatsUpdate) SetLikeReceivedCount(i int) *UserStatsUpdate {
+	usu.mutation.ResetLikeReceivedCount()
+	usu.mutation.SetLikeReceivedCount(i)
+	return usu
 }
 
 // SetNillableLikeReceivedCount sets the "like_received_count" field if the given value is not nil.
-func (_u *UserStatsUpdate) SetNillableLikeReceivedCount(v *int) *UserStatsUpdate {
-	if v != nil {
-		_u.SetLikeReceivedCount(*v)
+func (usu *UserStatsUpdate) SetNillableLikeReceivedCount(i *int) *UserStatsUpdate {
+	if i != nil {
+		usu.SetLikeReceivedCount(*i)
 	}
-	return _u
+	return usu
 }
 
-// AddLikeReceivedCount adds value to the "like_received_count" field.
-func (_u *UserStatsUpdate) AddLikeReceivedCount(v int) *UserStatsUpdate {
-	_u.mutation.AddLikeReceivedCount(v)
-	return _u
+// AddLikeReceivedCount adds i to the "like_received_count" field.
+func (usu *UserStatsUpdate) AddLikeReceivedCount(i int) *UserStatsUpdate {
+	usu.mutation.AddLikeReceivedCount(i)
+	return usu
 }
 
 // Mutation returns the UserStatsMutation object of the builder.
-func (_u *UserStatsUpdate) Mutation() *UserStatsMutation {
-	return _u.mutation
+func (usu *UserStatsUpdate) Mutation() *UserStatsMutation {
+	return usu.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (_u *UserStatsUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
+func (usu *UserStatsUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, usu.sqlSave, usu.mutation, usu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_u *UserStatsUpdate) SaveX(ctx context.Context) int {
-	affected, err := _u.Save(ctx)
+func (usu *UserStatsUpdate) SaveX(ctx context.Context) int {
+	affected, err := usu.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -146,55 +146,55 @@ func (_u *UserStatsUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (_u *UserStatsUpdate) Exec(ctx context.Context) error {
-	_, err := _u.Save(ctx)
+func (usu *UserStatsUpdate) Exec(ctx context.Context) error {
+	_, err := usu.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_u *UserStatsUpdate) ExecX(ctx context.Context) {
-	if err := _u.Exec(ctx); err != nil {
+func (usu *UserStatsUpdate) ExecX(ctx context.Context) {
+	if err := usu.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (_u *UserStatsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+func (usu *UserStatsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(userstats.Table, userstats.Columns, sqlgraph.NewFieldSpec(userstats.FieldID, field.TypeUUID))
-	if ps := _u.mutation.predicates; len(ps) > 0 {
+	if ps := usu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := _u.mutation.UserID(); ok {
+	if value, ok := usu.mutation.UserID(); ok {
 		_spec.SetField(userstats.FieldUserID, field.TypeUUID, value)
 	}
-	if value, ok := _u.mutation.PostCount(); ok {
+	if value, ok := usu.mutation.PostCount(); ok {
 		_spec.SetField(userstats.FieldPostCount, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedPostCount(); ok {
+	if value, ok := usu.mutation.AddedPostCount(); ok {
 		_spec.AddField(userstats.FieldPostCount, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.FollowerCount(); ok {
+	if value, ok := usu.mutation.FollowerCount(); ok {
 		_spec.SetField(userstats.FieldFollowerCount, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedFollowerCount(); ok {
+	if value, ok := usu.mutation.AddedFollowerCount(); ok {
 		_spec.AddField(userstats.FieldFollowerCount, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.FollowingCount(); ok {
+	if value, ok := usu.mutation.FollowingCount(); ok {
 		_spec.SetField(userstats.FieldFollowingCount, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedFollowingCount(); ok {
+	if value, ok := usu.mutation.AddedFollowingCount(); ok {
 		_spec.AddField(userstats.FieldFollowingCount, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.LikeReceivedCount(); ok {
+	if value, ok := usu.mutation.LikeReceivedCount(); ok {
 		_spec.SetField(userstats.FieldLikeReceivedCount, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedLikeReceivedCount(); ok {
+	if value, ok := usu.mutation.AddedLikeReceivedCount(); ok {
 		_spec.AddField(userstats.FieldLikeReceivedCount, field.TypeInt, value)
 	}
-	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
+	if n, err = sqlgraph.UpdateNodes(ctx, usu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{userstats.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -202,8 +202,8 @@ func (_u *UserStatsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		return 0, err
 	}
-	_u.mutation.done = true
-	return _node, nil
+	usu.mutation.done = true
+	return n, nil
 }
 
 // UserStatsUpdateOne is the builder for updating a single UserStats entity.
@@ -215,129 +215,129 @@ type UserStatsUpdateOne struct {
 }
 
 // SetUserID sets the "user_id" field.
-func (_u *UserStatsUpdateOne) SetUserID(v uuid.UUID) *UserStatsUpdateOne {
-	_u.mutation.SetUserID(v)
-	return _u
+func (usuo *UserStatsUpdateOne) SetUserID(u uuid.UUID) *UserStatsUpdateOne {
+	usuo.mutation.SetUserID(u)
+	return usuo
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (_u *UserStatsUpdateOne) SetNillableUserID(v *uuid.UUID) *UserStatsUpdateOne {
-	if v != nil {
-		_u.SetUserID(*v)
+func (usuo *UserStatsUpdateOne) SetNillableUserID(u *uuid.UUID) *UserStatsUpdateOne {
+	if u != nil {
+		usuo.SetUserID(*u)
 	}
-	return _u
+	return usuo
 }
 
 // SetPostCount sets the "post_count" field.
-func (_u *UserStatsUpdateOne) SetPostCount(v int) *UserStatsUpdateOne {
-	_u.mutation.ResetPostCount()
-	_u.mutation.SetPostCount(v)
-	return _u
+func (usuo *UserStatsUpdateOne) SetPostCount(i int) *UserStatsUpdateOne {
+	usuo.mutation.ResetPostCount()
+	usuo.mutation.SetPostCount(i)
+	return usuo
 }
 
 // SetNillablePostCount sets the "post_count" field if the given value is not nil.
-func (_u *UserStatsUpdateOne) SetNillablePostCount(v *int) *UserStatsUpdateOne {
-	if v != nil {
-		_u.SetPostCount(*v)
+func (usuo *UserStatsUpdateOne) SetNillablePostCount(i *int) *UserStatsUpdateOne {
+	if i != nil {
+		usuo.SetPostCount(*i)
 	}
-	return _u
+	return usuo
 }
 
-// AddPostCount adds value to the "post_count" field.
-func (_u *UserStatsUpdateOne) AddPostCount(v int) *UserStatsUpdateOne {
-	_u.mutation.AddPostCount(v)
-	return _u
+// AddPostCount adds i to the "post_count" field.
+func (usuo *UserStatsUpdateOne) AddPostCount(i int) *UserStatsUpdateOne {
+	usuo.mutation.AddPostCount(i)
+	return usuo
 }
 
 // SetFollowerCount sets the "follower_count" field.
-func (_u *UserStatsUpdateOne) SetFollowerCount(v int) *UserStatsUpdateOne {
-	_u.mutation.ResetFollowerCount()
-	_u.mutation.SetFollowerCount(v)
-	return _u
+func (usuo *UserStatsUpdateOne) SetFollowerCount(i int) *UserStatsUpdateOne {
+	usuo.mutation.ResetFollowerCount()
+	usuo.mutation.SetFollowerCount(i)
+	return usuo
 }
 
 // SetNillableFollowerCount sets the "follower_count" field if the given value is not nil.
-func (_u *UserStatsUpdateOne) SetNillableFollowerCount(v *int) *UserStatsUpdateOne {
-	if v != nil {
-		_u.SetFollowerCount(*v)
+func (usuo *UserStatsUpdateOne) SetNillableFollowerCount(i *int) *UserStatsUpdateOne {
+	if i != nil {
+		usuo.SetFollowerCount(*i)
 	}
-	return _u
+	return usuo
 }
 
-// AddFollowerCount adds value to the "follower_count" field.
-func (_u *UserStatsUpdateOne) AddFollowerCount(v int) *UserStatsUpdateOne {
-	_u.mutation.AddFollowerCount(v)
-	return _u
+// AddFollowerCount adds i to the "follower_count" field.
+func (usuo *UserStatsUpdateOne) AddFollowerCount(i int) *UserStatsUpdateOne {
+	usuo.mutation.AddFollowerCount(i)
+	return usuo
 }
 
 // SetFollowingCount sets the "following_count" field.
-func (_u *UserStatsUpdateOne) SetFollowingCount(v int) *UserStatsUpdateOne {
-	_u.mutation.ResetFollowingCount()
-	_u.mutation.SetFollowingCount(v)
-	return _u
+func (usuo *UserStatsUpdateOne) SetFollowingCount(i int) *UserStatsUpdateOne {
+	usuo.mutation.ResetFollowingCount()
+	usuo.mutation.SetFollowingCount(i)
+	return usuo
 }
 
 // SetNillableFollowingCount sets the "following_count" field if the given value is not nil.
-func (_u *UserStatsUpdateOne) SetNillableFollowingCount(v *int) *UserStatsUpdateOne {
-	if v != nil {
-		_u.SetFollowingCount(*v)
+func (usuo *UserStatsUpdateOne) SetNillableFollowingCount(i *int) *UserStatsUpdateOne {
+	if i != nil {
+		usuo.SetFollowingCount(*i)
 	}
-	return _u
+	return usuo
 }
 
-// AddFollowingCount adds value to the "following_count" field.
-func (_u *UserStatsUpdateOne) AddFollowingCount(v int) *UserStatsUpdateOne {
-	_u.mutation.AddFollowingCount(v)
-	return _u
+// AddFollowingCount adds i to the "following_count" field.
+func (usuo *UserStatsUpdateOne) AddFollowingCount(i int) *UserStatsUpdateOne {
+	usuo.mutation.AddFollowingCount(i)
+	return usuo
 }
 
 // SetLikeReceivedCount sets the "like_received_count" field.
-func (_u *UserStatsUpdateOne) SetLikeReceivedCount(v int) *UserStatsUpdateOne {
-	_u.mutation.ResetLikeReceivedCount()
-	_u.mutation.SetLikeReceivedCount(v)
-	return _u
+func (usuo *UserStatsUpdateOne) SetLikeReceivedCount(i int) *UserStatsUpdateOne {
+	usuo.mutation.ResetLikeReceivedCount()
+	usuo.mutation.SetLikeReceivedCount(i)
+	return usuo
 }
 
 // SetNillableLikeReceivedCount sets the "like_received_count" field if the given value is not nil.
-func (_u *UserStatsUpdateOne) SetNillableLikeReceivedCount(v *int) *UserStatsUpdateOne {
-	if v != nil {
-		_u.SetLikeReceivedCount(*v)
+func (usuo *UserStatsUpdateOne) SetNillableLikeReceivedCount(i *int) *UserStatsUpdateOne {
+	if i != nil {
+		usuo.SetLikeReceivedCount(*i)
 	}
-	return _u
+	return usuo
 }
 
-// AddLikeReceivedCount adds value to the "like_received_count" field.
-func (_u *UserStatsUpdateOne) AddLikeReceivedCount(v int) *UserStatsUpdateOne {
-	_u.mutation.AddLikeReceivedCount(v)
-	return _u
+// AddLikeReceivedCount adds i to the "like_received_count" field.
+func (usuo *UserStatsUpdateOne) AddLikeReceivedCount(i int) *UserStatsUpdateOne {
+	usuo.mutation.AddLikeReceivedCount(i)
+	return usuo
 }
 
 // Mutation returns the UserStatsMutation object of the builder.
-func (_u *UserStatsUpdateOne) Mutation() *UserStatsMutation {
-	return _u.mutation
+func (usuo *UserStatsUpdateOne) Mutation() *UserStatsMutation {
+	return usuo.mutation
 }
 
 // Where appends a list predicates to the UserStatsUpdate builder.
-func (_u *UserStatsUpdateOne) Where(ps ...predicate.UserStats) *UserStatsUpdateOne {
-	_u.mutation.Where(ps...)
-	return _u
+func (usuo *UserStatsUpdateOne) Where(ps ...predicate.UserStats) *UserStatsUpdateOne {
+	usuo.mutation.Where(ps...)
+	return usuo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (_u *UserStatsUpdateOne) Select(field string, fields ...string) *UserStatsUpdateOne {
-	_u.fields = append([]string{field}, fields...)
-	return _u
+func (usuo *UserStatsUpdateOne) Select(field string, fields ...string) *UserStatsUpdateOne {
+	usuo.fields = append([]string{field}, fields...)
+	return usuo
 }
 
 // Save executes the query and returns the updated UserStats entity.
-func (_u *UserStatsUpdateOne) Save(ctx context.Context) (*UserStats, error) {
-	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
+func (usuo *UserStatsUpdateOne) Save(ctx context.Context) (*UserStats, error) {
+	return withHooks(ctx, usuo.sqlSave, usuo.mutation, usuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_u *UserStatsUpdateOne) SaveX(ctx context.Context) *UserStats {
-	node, err := _u.Save(ctx)
+func (usuo *UserStatsUpdateOne) SaveX(ctx context.Context) *UserStats {
+	node, err := usuo.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -345,26 +345,26 @@ func (_u *UserStatsUpdateOne) SaveX(ctx context.Context) *UserStats {
 }
 
 // Exec executes the query on the entity.
-func (_u *UserStatsUpdateOne) Exec(ctx context.Context) error {
-	_, err := _u.Save(ctx)
+func (usuo *UserStatsUpdateOne) Exec(ctx context.Context) error {
+	_, err := usuo.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_u *UserStatsUpdateOne) ExecX(ctx context.Context) {
-	if err := _u.Exec(ctx); err != nil {
+func (usuo *UserStatsUpdateOne) ExecX(ctx context.Context) {
+	if err := usuo.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (_u *UserStatsUpdateOne) sqlSave(ctx context.Context) (_node *UserStats, err error) {
+func (usuo *UserStatsUpdateOne) sqlSave(ctx context.Context) (_node *UserStats, err error) {
 	_spec := sqlgraph.NewUpdateSpec(userstats.Table, userstats.Columns, sqlgraph.NewFieldSpec(userstats.FieldID, field.TypeUUID))
-	id, ok := _u.mutation.ID()
+	id, ok := usuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "UserStats.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := _u.fields; len(fields) > 0 {
+	if fields := usuo.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, userstats.FieldID)
 		for _, f := range fields {
@@ -376,44 +376,44 @@ func (_u *UserStatsUpdateOne) sqlSave(ctx context.Context) (_node *UserStats, er
 			}
 		}
 	}
-	if ps := _u.mutation.predicates; len(ps) > 0 {
+	if ps := usuo.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := _u.mutation.UserID(); ok {
+	if value, ok := usuo.mutation.UserID(); ok {
 		_spec.SetField(userstats.FieldUserID, field.TypeUUID, value)
 	}
-	if value, ok := _u.mutation.PostCount(); ok {
+	if value, ok := usuo.mutation.PostCount(); ok {
 		_spec.SetField(userstats.FieldPostCount, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedPostCount(); ok {
+	if value, ok := usuo.mutation.AddedPostCount(); ok {
 		_spec.AddField(userstats.FieldPostCount, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.FollowerCount(); ok {
+	if value, ok := usuo.mutation.FollowerCount(); ok {
 		_spec.SetField(userstats.FieldFollowerCount, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedFollowerCount(); ok {
+	if value, ok := usuo.mutation.AddedFollowerCount(); ok {
 		_spec.AddField(userstats.FieldFollowerCount, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.FollowingCount(); ok {
+	if value, ok := usuo.mutation.FollowingCount(); ok {
 		_spec.SetField(userstats.FieldFollowingCount, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedFollowingCount(); ok {
+	if value, ok := usuo.mutation.AddedFollowingCount(); ok {
 		_spec.AddField(userstats.FieldFollowingCount, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.LikeReceivedCount(); ok {
+	if value, ok := usuo.mutation.LikeReceivedCount(); ok {
 		_spec.SetField(userstats.FieldLikeReceivedCount, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedLikeReceivedCount(); ok {
+	if value, ok := usuo.mutation.AddedLikeReceivedCount(); ok {
 		_spec.AddField(userstats.FieldLikeReceivedCount, field.TypeInt, value)
 	}
-	_node = &UserStats{config: _u.config}
+	_node = &UserStats{config: usuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, usuo.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{userstats.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -421,6 +421,6 @@ func (_u *UserStatsUpdateOne) sqlSave(ctx context.Context) (_node *UserStats, er
 		}
 		return nil, err
 	}
-	_u.mutation.done = true
+	usuo.mutation.done = true
 	return _node, nil
 }

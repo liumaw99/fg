@@ -16,6 +16,12 @@ type Tx struct {
 	MediaAsset *MediaAssetClient
 	// OutboxEvent is the client for interacting with the OutboxEvent builders.
 	OutboxEvent *OutboxEventClient
+	// Post is the client for interacting with the Post builders.
+	Post *PostClient
+	// PostMedia is the client for interacting with the PostMedia builders.
+	PostMedia *PostMediaClient
+	// PostStats is the client for interacting with the PostStats builders.
+	PostStats *PostStatsClient
 	// ProcessedEvent is the client for interacting with the ProcessedEvent builders.
 	ProcessedEvent *ProcessedEventClient
 	// User is the client for interacting with the User builders.
@@ -159,6 +165,9 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.MediaAsset = NewMediaAssetClient(tx.config)
 	tx.OutboxEvent = NewOutboxEventClient(tx.config)
+	tx.Post = NewPostClient(tx.config)
+	tx.PostMedia = NewPostMediaClient(tx.config)
+	tx.PostStats = NewPostStatsClient(tx.config)
 	tx.ProcessedEvent = NewProcessedEventClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 	tx.UserProfile = NewUserProfileClient(tx.config)

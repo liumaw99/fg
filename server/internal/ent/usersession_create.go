@@ -22,101 +22,101 @@ type UserSessionCreate struct {
 }
 
 // SetUserID sets the "user_id" field.
-func (_c *UserSessionCreate) SetUserID(v uuid.UUID) *UserSessionCreate {
-	_c.mutation.SetUserID(v)
-	return _c
+func (usc *UserSessionCreate) SetUserID(u uuid.UUID) *UserSessionCreate {
+	usc.mutation.SetUserID(u)
+	return usc
 }
 
 // SetTokenID sets the "token_id" field.
-func (_c *UserSessionCreate) SetTokenID(v string) *UserSessionCreate {
-	_c.mutation.SetTokenID(v)
-	return _c
+func (usc *UserSessionCreate) SetTokenID(s string) *UserSessionCreate {
+	usc.mutation.SetTokenID(s)
+	return usc
 }
 
 // SetDeviceInfo sets the "device_info" field.
-func (_c *UserSessionCreate) SetDeviceInfo(v string) *UserSessionCreate {
-	_c.mutation.SetDeviceInfo(v)
-	return _c
+func (usc *UserSessionCreate) SetDeviceInfo(s string) *UserSessionCreate {
+	usc.mutation.SetDeviceInfo(s)
+	return usc
 }
 
 // SetNillableDeviceInfo sets the "device_info" field if the given value is not nil.
-func (_c *UserSessionCreate) SetNillableDeviceInfo(v *string) *UserSessionCreate {
-	if v != nil {
-		_c.SetDeviceInfo(*v)
+func (usc *UserSessionCreate) SetNillableDeviceInfo(s *string) *UserSessionCreate {
+	if s != nil {
+		usc.SetDeviceInfo(*s)
 	}
-	return _c
+	return usc
 }
 
 // SetIPAddress sets the "ip_address" field.
-func (_c *UserSessionCreate) SetIPAddress(v string) *UserSessionCreate {
-	_c.mutation.SetIPAddress(v)
-	return _c
+func (usc *UserSessionCreate) SetIPAddress(s string) *UserSessionCreate {
+	usc.mutation.SetIPAddress(s)
+	return usc
 }
 
 // SetNillableIPAddress sets the "ip_address" field if the given value is not nil.
-func (_c *UserSessionCreate) SetNillableIPAddress(v *string) *UserSessionCreate {
-	if v != nil {
-		_c.SetIPAddress(*v)
+func (usc *UserSessionCreate) SetNillableIPAddress(s *string) *UserSessionCreate {
+	if s != nil {
+		usc.SetIPAddress(*s)
 	}
-	return _c
+	return usc
 }
 
 // SetExpiresAt sets the "expires_at" field.
-func (_c *UserSessionCreate) SetExpiresAt(v time.Time) *UserSessionCreate {
-	_c.mutation.SetExpiresAt(v)
-	return _c
+func (usc *UserSessionCreate) SetExpiresAt(t time.Time) *UserSessionCreate {
+	usc.mutation.SetExpiresAt(t)
+	return usc
 }
 
 // SetNillableExpiresAt sets the "expires_at" field if the given value is not nil.
-func (_c *UserSessionCreate) SetNillableExpiresAt(v *time.Time) *UserSessionCreate {
-	if v != nil {
-		_c.SetExpiresAt(*v)
+func (usc *UserSessionCreate) SetNillableExpiresAt(t *time.Time) *UserSessionCreate {
+	if t != nil {
+		usc.SetExpiresAt(*t)
 	}
-	return _c
+	return usc
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (_c *UserSessionCreate) SetCreatedAt(v time.Time) *UserSessionCreate {
-	_c.mutation.SetCreatedAt(v)
-	return _c
+func (usc *UserSessionCreate) SetCreatedAt(t time.Time) *UserSessionCreate {
+	usc.mutation.SetCreatedAt(t)
+	return usc
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (_c *UserSessionCreate) SetNillableCreatedAt(v *time.Time) *UserSessionCreate {
-	if v != nil {
-		_c.SetCreatedAt(*v)
+func (usc *UserSessionCreate) SetNillableCreatedAt(t *time.Time) *UserSessionCreate {
+	if t != nil {
+		usc.SetCreatedAt(*t)
 	}
-	return _c
+	return usc
 }
 
 // SetID sets the "id" field.
-func (_c *UserSessionCreate) SetID(v uuid.UUID) *UserSessionCreate {
-	_c.mutation.SetID(v)
-	return _c
+func (usc *UserSessionCreate) SetID(u uuid.UUID) *UserSessionCreate {
+	usc.mutation.SetID(u)
+	return usc
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (_c *UserSessionCreate) SetNillableID(v *uuid.UUID) *UserSessionCreate {
-	if v != nil {
-		_c.SetID(*v)
+func (usc *UserSessionCreate) SetNillableID(u *uuid.UUID) *UserSessionCreate {
+	if u != nil {
+		usc.SetID(*u)
 	}
-	return _c
+	return usc
 }
 
 // Mutation returns the UserSessionMutation object of the builder.
-func (_c *UserSessionCreate) Mutation() *UserSessionMutation {
-	return _c.mutation
+func (usc *UserSessionCreate) Mutation() *UserSessionMutation {
+	return usc.mutation
 }
 
 // Save creates the UserSession in the database.
-func (_c *UserSessionCreate) Save(ctx context.Context) (*UserSession, error) {
-	_c.defaults()
-	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
+func (usc *UserSessionCreate) Save(ctx context.Context) (*UserSession, error) {
+	usc.defaults()
+	return withHooks(ctx, usc.sqlSave, usc.mutation, usc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (_c *UserSessionCreate) SaveX(ctx context.Context) *UserSession {
-	v, err := _c.Save(ctx)
+func (usc *UserSessionCreate) SaveX(ctx context.Context) *UserSession {
+	v, err := usc.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -124,86 +124,86 @@ func (_c *UserSessionCreate) SaveX(ctx context.Context) *UserSession {
 }
 
 // Exec executes the query.
-func (_c *UserSessionCreate) Exec(ctx context.Context) error {
-	_, err := _c.Save(ctx)
+func (usc *UserSessionCreate) Exec(ctx context.Context) error {
+	_, err := usc.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_c *UserSessionCreate) ExecX(ctx context.Context) {
-	if err := _c.Exec(ctx); err != nil {
+func (usc *UserSessionCreate) ExecX(ctx context.Context) {
+	if err := usc.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *UserSessionCreate) defaults() {
-	if _, ok := _c.mutation.DeviceInfo(); !ok {
+func (usc *UserSessionCreate) defaults() {
+	if _, ok := usc.mutation.DeviceInfo(); !ok {
 		v := usersession.DefaultDeviceInfo
-		_c.mutation.SetDeviceInfo(v)
+		usc.mutation.SetDeviceInfo(v)
 	}
-	if _, ok := _c.mutation.IPAddress(); !ok {
+	if _, ok := usc.mutation.IPAddress(); !ok {
 		v := usersession.DefaultIPAddress
-		_c.mutation.SetIPAddress(v)
+		usc.mutation.SetIPAddress(v)
 	}
-	if _, ok := _c.mutation.ExpiresAt(); !ok {
+	if _, ok := usc.mutation.ExpiresAt(); !ok {
 		v := usersession.DefaultExpiresAt()
-		_c.mutation.SetExpiresAt(v)
+		usc.mutation.SetExpiresAt(v)
 	}
-	if _, ok := _c.mutation.CreatedAt(); !ok {
+	if _, ok := usc.mutation.CreatedAt(); !ok {
 		v := usersession.DefaultCreatedAt()
-		_c.mutation.SetCreatedAt(v)
+		usc.mutation.SetCreatedAt(v)
 	}
-	if _, ok := _c.mutation.ID(); !ok {
+	if _, ok := usc.mutation.ID(); !ok {
 		v := usersession.DefaultID()
-		_c.mutation.SetID(v)
+		usc.mutation.SetID(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (_c *UserSessionCreate) check() error {
-	if _, ok := _c.mutation.UserID(); !ok {
+func (usc *UserSessionCreate) check() error {
+	if _, ok := usc.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "UserSession.user_id"`)}
 	}
-	if _, ok := _c.mutation.TokenID(); !ok {
+	if _, ok := usc.mutation.TokenID(); !ok {
 		return &ValidationError{Name: "token_id", err: errors.New(`ent: missing required field "UserSession.token_id"`)}
 	}
-	if v, ok := _c.mutation.TokenID(); ok {
+	if v, ok := usc.mutation.TokenID(); ok {
 		if err := usersession.TokenIDValidator(v); err != nil {
 			return &ValidationError{Name: "token_id", err: fmt.Errorf(`ent: validator failed for field "UserSession.token_id": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.DeviceInfo(); !ok {
+	if _, ok := usc.mutation.DeviceInfo(); !ok {
 		return &ValidationError{Name: "device_info", err: errors.New(`ent: missing required field "UserSession.device_info"`)}
 	}
-	if v, ok := _c.mutation.DeviceInfo(); ok {
+	if v, ok := usc.mutation.DeviceInfo(); ok {
 		if err := usersession.DeviceInfoValidator(v); err != nil {
 			return &ValidationError{Name: "device_info", err: fmt.Errorf(`ent: validator failed for field "UserSession.device_info": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.IPAddress(); !ok {
+	if _, ok := usc.mutation.IPAddress(); !ok {
 		return &ValidationError{Name: "ip_address", err: errors.New(`ent: missing required field "UserSession.ip_address"`)}
 	}
-	if v, ok := _c.mutation.IPAddress(); ok {
+	if v, ok := usc.mutation.IPAddress(); ok {
 		if err := usersession.IPAddressValidator(v); err != nil {
 			return &ValidationError{Name: "ip_address", err: fmt.Errorf(`ent: validator failed for field "UserSession.ip_address": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.ExpiresAt(); !ok {
+	if _, ok := usc.mutation.ExpiresAt(); !ok {
 		return &ValidationError{Name: "expires_at", err: errors.New(`ent: missing required field "UserSession.expires_at"`)}
 	}
-	if _, ok := _c.mutation.CreatedAt(); !ok {
+	if _, ok := usc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "UserSession.created_at"`)}
 	}
 	return nil
 }
 
-func (_c *UserSessionCreate) sqlSave(ctx context.Context) (*UserSession, error) {
-	if err := _c.check(); err != nil {
+func (usc *UserSessionCreate) sqlSave(ctx context.Context) (*UserSession, error) {
+	if err := usc.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := _c.createSpec()
-	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
+	_node, _spec := usc.createSpec()
+	if err := sqlgraph.CreateNode(ctx, usc.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -216,41 +216,41 @@ func (_c *UserSessionCreate) sqlSave(ctx context.Context) (*UserSession, error) 
 			return nil, err
 		}
 	}
-	_c.mutation.id = &_node.ID
-	_c.mutation.done = true
+	usc.mutation.id = &_node.ID
+	usc.mutation.done = true
 	return _node, nil
 }
 
-func (_c *UserSessionCreate) createSpec() (*UserSession, *sqlgraph.CreateSpec) {
+func (usc *UserSessionCreate) createSpec() (*UserSession, *sqlgraph.CreateSpec) {
 	var (
-		_node = &UserSession{config: _c.config}
+		_node = &UserSession{config: usc.config}
 		_spec = sqlgraph.NewCreateSpec(usersession.Table, sqlgraph.NewFieldSpec(usersession.FieldID, field.TypeUUID))
 	)
-	if id, ok := _c.mutation.ID(); ok {
+	if id, ok := usc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = &id
 	}
-	if value, ok := _c.mutation.UserID(); ok {
+	if value, ok := usc.mutation.UserID(); ok {
 		_spec.SetField(usersession.FieldUserID, field.TypeUUID, value)
 		_node.UserID = value
 	}
-	if value, ok := _c.mutation.TokenID(); ok {
+	if value, ok := usc.mutation.TokenID(); ok {
 		_spec.SetField(usersession.FieldTokenID, field.TypeString, value)
 		_node.TokenID = value
 	}
-	if value, ok := _c.mutation.DeviceInfo(); ok {
+	if value, ok := usc.mutation.DeviceInfo(); ok {
 		_spec.SetField(usersession.FieldDeviceInfo, field.TypeString, value)
 		_node.DeviceInfo = value
 	}
-	if value, ok := _c.mutation.IPAddress(); ok {
+	if value, ok := usc.mutation.IPAddress(); ok {
 		_spec.SetField(usersession.FieldIPAddress, field.TypeString, value)
 		_node.IPAddress = value
 	}
-	if value, ok := _c.mutation.ExpiresAt(); ok {
+	if value, ok := usc.mutation.ExpiresAt(); ok {
 		_spec.SetField(usersession.FieldExpiresAt, field.TypeTime, value)
 		_node.ExpiresAt = value
 	}
-	if value, ok := _c.mutation.CreatedAt(); ok {
+	if value, ok := usc.mutation.CreatedAt(); ok {
 		_spec.SetField(usersession.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
@@ -265,16 +265,16 @@ type UserSessionCreateBulk struct {
 }
 
 // Save creates the UserSession entities in the database.
-func (_c *UserSessionCreateBulk) Save(ctx context.Context) ([]*UserSession, error) {
-	if _c.err != nil {
-		return nil, _c.err
+func (uscb *UserSessionCreateBulk) Save(ctx context.Context) ([]*UserSession, error) {
+	if uscb.err != nil {
+		return nil, uscb.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
-	nodes := make([]*UserSession, len(_c.builders))
-	mutators := make([]Mutator, len(_c.builders))
-	for i := range _c.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(uscb.builders))
+	nodes := make([]*UserSession, len(uscb.builders))
+	mutators := make([]Mutator, len(uscb.builders))
+	for i := range uscb.builders {
 		func(i int, root context.Context) {
-			builder := _c.builders[i]
+			builder := uscb.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*UserSessionMutation)
@@ -288,11 +288,11 @@ func (_c *UserSessionCreateBulk) Save(ctx context.Context) ([]*UserSession, erro
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, uscb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, uscb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -312,7 +312,7 @@ func (_c *UserSessionCreateBulk) Save(ctx context.Context) ([]*UserSession, erro
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, uscb.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -320,8 +320,8 @@ func (_c *UserSessionCreateBulk) Save(ctx context.Context) ([]*UserSession, erro
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_c *UserSessionCreateBulk) SaveX(ctx context.Context) []*UserSession {
-	v, err := _c.Save(ctx)
+func (uscb *UserSessionCreateBulk) SaveX(ctx context.Context) []*UserSession {
+	v, err := uscb.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -329,14 +329,14 @@ func (_c *UserSessionCreateBulk) SaveX(ctx context.Context) []*UserSession {
 }
 
 // Exec executes the query.
-func (_c *UserSessionCreateBulk) Exec(ctx context.Context) error {
-	_, err := _c.Save(ctx)
+func (uscb *UserSessionCreateBulk) Exec(ctx context.Context) error {
+	_, err := uscb.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_c *UserSessionCreateBulk) ExecX(ctx context.Context) {
-	if err := _c.Exec(ctx); err != nil {
+func (uscb *UserSessionCreateBulk) ExecX(ctx context.Context) {
+	if err := uscb.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

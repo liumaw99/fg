@@ -62,7 +62,7 @@ func (*OutboxEvent) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the OutboxEvent fields.
-func (_m *OutboxEvent) assignValues(columns []string, values []any) error {
+func (oe *OutboxEvent) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -72,25 +72,25 @@ func (_m *OutboxEvent) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
-				_m.ID = *value
+				oe.ID = *value
 			}
 		case outboxevent.FieldTopic:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field topic", values[i])
 			} else if value.Valid {
-				_m.Topic = value.String
+				oe.Topic = value.String
 			}
 		case outboxevent.FieldKey:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field key", values[i])
 			} else if value.Valid {
-				_m.Key = value.String
+				oe.Key = value.String
 			}
 		case outboxevent.FieldPayload:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field payload", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &_m.Payload); err != nil {
+				if err := json.Unmarshal(*value, &oe.Payload); err != nil {
 					return fmt.Errorf("unmarshal field payload: %w", err)
 				}
 			}
@@ -98,34 +98,34 @@ func (_m *OutboxEvent) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				_m.Status = value.String
+				oe.Status = value.String
 			}
 		case outboxevent.FieldRetryCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field retry_count", values[i])
 			} else if value.Valid {
-				_m.RetryCount = int(value.Int64)
+				oe.RetryCount = int(value.Int64)
 			}
 		case outboxevent.FieldLastError:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field last_error", values[i])
 			} else if value.Valid {
-				_m.LastError = value.String
+				oe.LastError = value.String
 			}
 		case outboxevent.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				_m.CreatedAt = value.Time
+				oe.CreatedAt = value.Time
 			}
 		case outboxevent.FieldPublishedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field published_at", values[i])
 			} else if value.Valid {
-				_m.PublishedAt = value.Time
+				oe.PublishedAt = value.Time
 			}
 		default:
-			_m.selectValues.Set(columns[i], values[i])
+			oe.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -133,56 +133,56 @@ func (_m *OutboxEvent) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the OutboxEvent.
 // This includes values selected through modifiers, order, etc.
-func (_m *OutboxEvent) Value(name string) (ent.Value, error) {
-	return _m.selectValues.Get(name)
+func (oe *OutboxEvent) Value(name string) (ent.Value, error) {
+	return oe.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this OutboxEvent.
 // Note that you need to call OutboxEvent.Unwrap() before calling this method if this OutboxEvent
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (_m *OutboxEvent) Update() *OutboxEventUpdateOne {
-	return NewOutboxEventClient(_m.config).UpdateOne(_m)
+func (oe *OutboxEvent) Update() *OutboxEventUpdateOne {
+	return NewOutboxEventClient(oe.config).UpdateOne(oe)
 }
 
 // Unwrap unwraps the OutboxEvent entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (_m *OutboxEvent) Unwrap() *OutboxEvent {
-	_tx, ok := _m.config.driver.(*txDriver)
+func (oe *OutboxEvent) Unwrap() *OutboxEvent {
+	_tx, ok := oe.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: OutboxEvent is not a transactional entity")
 	}
-	_m.config.driver = _tx.drv
-	return _m
+	oe.config.driver = _tx.drv
+	return oe
 }
 
 // String implements the fmt.Stringer.
-func (_m *OutboxEvent) String() string {
+func (oe *OutboxEvent) String() string {
 	var builder strings.Builder
 	builder.WriteString("OutboxEvent(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", oe.ID))
 	builder.WriteString("topic=")
-	builder.WriteString(_m.Topic)
+	builder.WriteString(oe.Topic)
 	builder.WriteString(", ")
 	builder.WriteString("key=")
-	builder.WriteString(_m.Key)
+	builder.WriteString(oe.Key)
 	builder.WriteString(", ")
 	builder.WriteString("payload=")
-	builder.WriteString(fmt.Sprintf("%v", _m.Payload))
+	builder.WriteString(fmt.Sprintf("%v", oe.Payload))
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(_m.Status)
+	builder.WriteString(oe.Status)
 	builder.WriteString(", ")
 	builder.WriteString("retry_count=")
-	builder.WriteString(fmt.Sprintf("%v", _m.RetryCount))
+	builder.WriteString(fmt.Sprintf("%v", oe.RetryCount))
 	builder.WriteString(", ")
 	builder.WriteString("last_error=")
-	builder.WriteString(_m.LastError)
+	builder.WriteString(oe.LastError)
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(oe.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("published_at=")
-	builder.WriteString(_m.PublishedAt.Format(time.ANSIC))
+	builder.WriteString(oe.PublishedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

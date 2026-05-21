@@ -55,7 +55,7 @@ func (*UserStats) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the UserStats fields.
-func (_m *UserStats) assignValues(columns []string, values []any) error {
+func (us *UserStats) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -65,52 +65,52 @@ func (_m *UserStats) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
-				_m.ID = *value
+				us.ID = *value
 			}
 		case userstats.FieldUserID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value != nil {
-				_m.UserID = *value
+				us.UserID = *value
 			}
 		case userstats.FieldPostCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field post_count", values[i])
 			} else if value.Valid {
-				_m.PostCount = int(value.Int64)
+				us.PostCount = int(value.Int64)
 			}
 		case userstats.FieldFollowerCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field follower_count", values[i])
 			} else if value.Valid {
-				_m.FollowerCount = int(value.Int64)
+				us.FollowerCount = int(value.Int64)
 			}
 		case userstats.FieldFollowingCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field following_count", values[i])
 			} else if value.Valid {
-				_m.FollowingCount = int(value.Int64)
+				us.FollowingCount = int(value.Int64)
 			}
 		case userstats.FieldLikeReceivedCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field like_received_count", values[i])
 			} else if value.Valid {
-				_m.LikeReceivedCount = int(value.Int64)
+				us.LikeReceivedCount = int(value.Int64)
 			}
 		case userstats.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				_m.CreatedAt = value.Time
+				us.CreatedAt = value.Time
 			}
 		case userstats.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				_m.UpdatedAt = value.Time
+				us.UpdatedAt = value.Time
 			}
 		default:
-			_m.selectValues.Set(columns[i], values[i])
+			us.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -118,53 +118,53 @@ func (_m *UserStats) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the UserStats.
 // This includes values selected through modifiers, order, etc.
-func (_m *UserStats) Value(name string) (ent.Value, error) {
-	return _m.selectValues.Get(name)
+func (us *UserStats) Value(name string) (ent.Value, error) {
+	return us.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this UserStats.
 // Note that you need to call UserStats.Unwrap() before calling this method if this UserStats
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (_m *UserStats) Update() *UserStatsUpdateOne {
-	return NewUserStatsClient(_m.config).UpdateOne(_m)
+func (us *UserStats) Update() *UserStatsUpdateOne {
+	return NewUserStatsClient(us.config).UpdateOne(us)
 }
 
 // Unwrap unwraps the UserStats entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (_m *UserStats) Unwrap() *UserStats {
-	_tx, ok := _m.config.driver.(*txDriver)
+func (us *UserStats) Unwrap() *UserStats {
+	_tx, ok := us.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: UserStats is not a transactional entity")
 	}
-	_m.config.driver = _tx.drv
-	return _m
+	us.config.driver = _tx.drv
+	return us
 }
 
 // String implements the fmt.Stringer.
-func (_m *UserStats) String() string {
+func (us *UserStats) String() string {
 	var builder strings.Builder
 	builder.WriteString("UserStats(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", us.ID))
 	builder.WriteString("user_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.UserID))
+	builder.WriteString(fmt.Sprintf("%v", us.UserID))
 	builder.WriteString(", ")
 	builder.WriteString("post_count=")
-	builder.WriteString(fmt.Sprintf("%v", _m.PostCount))
+	builder.WriteString(fmt.Sprintf("%v", us.PostCount))
 	builder.WriteString(", ")
 	builder.WriteString("follower_count=")
-	builder.WriteString(fmt.Sprintf("%v", _m.FollowerCount))
+	builder.WriteString(fmt.Sprintf("%v", us.FollowerCount))
 	builder.WriteString(", ")
 	builder.WriteString("following_count=")
-	builder.WriteString(fmt.Sprintf("%v", _m.FollowingCount))
+	builder.WriteString(fmt.Sprintf("%v", us.FollowingCount))
 	builder.WriteString(", ")
 	builder.WriteString("like_received_count=")
-	builder.WriteString(fmt.Sprintf("%v", _m.LikeReceivedCount))
+	builder.WriteString(fmt.Sprintf("%v", us.LikeReceivedCount))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(us.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(us.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

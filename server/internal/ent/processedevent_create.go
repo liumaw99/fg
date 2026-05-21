@@ -22,79 +22,79 @@ type ProcessedEventCreate struct {
 }
 
 // SetEventID sets the "event_id" field.
-func (_c *ProcessedEventCreate) SetEventID(v uuid.UUID) *ProcessedEventCreate {
-	_c.mutation.SetEventID(v)
-	return _c
+func (pec *ProcessedEventCreate) SetEventID(u uuid.UUID) *ProcessedEventCreate {
+	pec.mutation.SetEventID(u)
+	return pec
 }
 
 // SetEventType sets the "event_type" field.
-func (_c *ProcessedEventCreate) SetEventType(v string) *ProcessedEventCreate {
-	_c.mutation.SetEventType(v)
-	return _c
+func (pec *ProcessedEventCreate) SetEventType(s string) *ProcessedEventCreate {
+	pec.mutation.SetEventType(s)
+	return pec
 }
 
 // SetConsumerGroup sets the "consumer_group" field.
-func (_c *ProcessedEventCreate) SetConsumerGroup(v string) *ProcessedEventCreate {
-	_c.mutation.SetConsumerGroup(v)
-	return _c
+func (pec *ProcessedEventCreate) SetConsumerGroup(s string) *ProcessedEventCreate {
+	pec.mutation.SetConsumerGroup(s)
+	return pec
 }
 
 // SetProcessedAt sets the "processed_at" field.
-func (_c *ProcessedEventCreate) SetProcessedAt(v time.Time) *ProcessedEventCreate {
-	_c.mutation.SetProcessedAt(v)
-	return _c
+func (pec *ProcessedEventCreate) SetProcessedAt(t time.Time) *ProcessedEventCreate {
+	pec.mutation.SetProcessedAt(t)
+	return pec
 }
 
 // SetNillableProcessedAt sets the "processed_at" field if the given value is not nil.
-func (_c *ProcessedEventCreate) SetNillableProcessedAt(v *time.Time) *ProcessedEventCreate {
-	if v != nil {
-		_c.SetProcessedAt(*v)
+func (pec *ProcessedEventCreate) SetNillableProcessedAt(t *time.Time) *ProcessedEventCreate {
+	if t != nil {
+		pec.SetProcessedAt(*t)
 	}
-	return _c
+	return pec
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (_c *ProcessedEventCreate) SetCreatedAt(v time.Time) *ProcessedEventCreate {
-	_c.mutation.SetCreatedAt(v)
-	return _c
+func (pec *ProcessedEventCreate) SetCreatedAt(t time.Time) *ProcessedEventCreate {
+	pec.mutation.SetCreatedAt(t)
+	return pec
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (_c *ProcessedEventCreate) SetNillableCreatedAt(v *time.Time) *ProcessedEventCreate {
-	if v != nil {
-		_c.SetCreatedAt(*v)
+func (pec *ProcessedEventCreate) SetNillableCreatedAt(t *time.Time) *ProcessedEventCreate {
+	if t != nil {
+		pec.SetCreatedAt(*t)
 	}
-	return _c
+	return pec
 }
 
 // SetID sets the "id" field.
-func (_c *ProcessedEventCreate) SetID(v uuid.UUID) *ProcessedEventCreate {
-	_c.mutation.SetID(v)
-	return _c
+func (pec *ProcessedEventCreate) SetID(u uuid.UUID) *ProcessedEventCreate {
+	pec.mutation.SetID(u)
+	return pec
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (_c *ProcessedEventCreate) SetNillableID(v *uuid.UUID) *ProcessedEventCreate {
-	if v != nil {
-		_c.SetID(*v)
+func (pec *ProcessedEventCreate) SetNillableID(u *uuid.UUID) *ProcessedEventCreate {
+	if u != nil {
+		pec.SetID(*u)
 	}
-	return _c
+	return pec
 }
 
 // Mutation returns the ProcessedEventMutation object of the builder.
-func (_c *ProcessedEventCreate) Mutation() *ProcessedEventMutation {
-	return _c.mutation
+func (pec *ProcessedEventCreate) Mutation() *ProcessedEventMutation {
+	return pec.mutation
 }
 
 // Save creates the ProcessedEvent in the database.
-func (_c *ProcessedEventCreate) Save(ctx context.Context) (*ProcessedEvent, error) {
-	_c.defaults()
-	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
+func (pec *ProcessedEventCreate) Save(ctx context.Context) (*ProcessedEvent, error) {
+	pec.defaults()
+	return withHooks(ctx, pec.sqlSave, pec.mutation, pec.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (_c *ProcessedEventCreate) SaveX(ctx context.Context) *ProcessedEvent {
-	v, err := _c.Save(ctx)
+func (pec *ProcessedEventCreate) SaveX(ctx context.Context) *ProcessedEvent {
+	v, err := pec.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -102,70 +102,70 @@ func (_c *ProcessedEventCreate) SaveX(ctx context.Context) *ProcessedEvent {
 }
 
 // Exec executes the query.
-func (_c *ProcessedEventCreate) Exec(ctx context.Context) error {
-	_, err := _c.Save(ctx)
+func (pec *ProcessedEventCreate) Exec(ctx context.Context) error {
+	_, err := pec.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_c *ProcessedEventCreate) ExecX(ctx context.Context) {
-	if err := _c.Exec(ctx); err != nil {
+func (pec *ProcessedEventCreate) ExecX(ctx context.Context) {
+	if err := pec.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *ProcessedEventCreate) defaults() {
-	if _, ok := _c.mutation.ProcessedAt(); !ok {
+func (pec *ProcessedEventCreate) defaults() {
+	if _, ok := pec.mutation.ProcessedAt(); !ok {
 		v := processedevent.DefaultProcessedAt()
-		_c.mutation.SetProcessedAt(v)
+		pec.mutation.SetProcessedAt(v)
 	}
-	if _, ok := _c.mutation.CreatedAt(); !ok {
+	if _, ok := pec.mutation.CreatedAt(); !ok {
 		v := processedevent.DefaultCreatedAt()
-		_c.mutation.SetCreatedAt(v)
+		pec.mutation.SetCreatedAt(v)
 	}
-	if _, ok := _c.mutation.ID(); !ok {
+	if _, ok := pec.mutation.ID(); !ok {
 		v := processedevent.DefaultID()
-		_c.mutation.SetID(v)
+		pec.mutation.SetID(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (_c *ProcessedEventCreate) check() error {
-	if _, ok := _c.mutation.EventID(); !ok {
+func (pec *ProcessedEventCreate) check() error {
+	if _, ok := pec.mutation.EventID(); !ok {
 		return &ValidationError{Name: "event_id", err: errors.New(`ent: missing required field "ProcessedEvent.event_id"`)}
 	}
-	if _, ok := _c.mutation.EventType(); !ok {
+	if _, ok := pec.mutation.EventType(); !ok {
 		return &ValidationError{Name: "event_type", err: errors.New(`ent: missing required field "ProcessedEvent.event_type"`)}
 	}
-	if v, ok := _c.mutation.EventType(); ok {
+	if v, ok := pec.mutation.EventType(); ok {
 		if err := processedevent.EventTypeValidator(v); err != nil {
 			return &ValidationError{Name: "event_type", err: fmt.Errorf(`ent: validator failed for field "ProcessedEvent.event_type": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.ConsumerGroup(); !ok {
+	if _, ok := pec.mutation.ConsumerGroup(); !ok {
 		return &ValidationError{Name: "consumer_group", err: errors.New(`ent: missing required field "ProcessedEvent.consumer_group"`)}
 	}
-	if v, ok := _c.mutation.ConsumerGroup(); ok {
+	if v, ok := pec.mutation.ConsumerGroup(); ok {
 		if err := processedevent.ConsumerGroupValidator(v); err != nil {
 			return &ValidationError{Name: "consumer_group", err: fmt.Errorf(`ent: validator failed for field "ProcessedEvent.consumer_group": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.ProcessedAt(); !ok {
+	if _, ok := pec.mutation.ProcessedAt(); !ok {
 		return &ValidationError{Name: "processed_at", err: errors.New(`ent: missing required field "ProcessedEvent.processed_at"`)}
 	}
-	if _, ok := _c.mutation.CreatedAt(); !ok {
+	if _, ok := pec.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "ProcessedEvent.created_at"`)}
 	}
 	return nil
 }
 
-func (_c *ProcessedEventCreate) sqlSave(ctx context.Context) (*ProcessedEvent, error) {
-	if err := _c.check(); err != nil {
+func (pec *ProcessedEventCreate) sqlSave(ctx context.Context) (*ProcessedEvent, error) {
+	if err := pec.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := _c.createSpec()
-	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
+	_node, _spec := pec.createSpec()
+	if err := sqlgraph.CreateNode(ctx, pec.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -178,37 +178,37 @@ func (_c *ProcessedEventCreate) sqlSave(ctx context.Context) (*ProcessedEvent, e
 			return nil, err
 		}
 	}
-	_c.mutation.id = &_node.ID
-	_c.mutation.done = true
+	pec.mutation.id = &_node.ID
+	pec.mutation.done = true
 	return _node, nil
 }
 
-func (_c *ProcessedEventCreate) createSpec() (*ProcessedEvent, *sqlgraph.CreateSpec) {
+func (pec *ProcessedEventCreate) createSpec() (*ProcessedEvent, *sqlgraph.CreateSpec) {
 	var (
-		_node = &ProcessedEvent{config: _c.config}
+		_node = &ProcessedEvent{config: pec.config}
 		_spec = sqlgraph.NewCreateSpec(processedevent.Table, sqlgraph.NewFieldSpec(processedevent.FieldID, field.TypeUUID))
 	)
-	if id, ok := _c.mutation.ID(); ok {
+	if id, ok := pec.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = &id
 	}
-	if value, ok := _c.mutation.EventID(); ok {
+	if value, ok := pec.mutation.EventID(); ok {
 		_spec.SetField(processedevent.FieldEventID, field.TypeUUID, value)
 		_node.EventID = value
 	}
-	if value, ok := _c.mutation.EventType(); ok {
+	if value, ok := pec.mutation.EventType(); ok {
 		_spec.SetField(processedevent.FieldEventType, field.TypeString, value)
 		_node.EventType = value
 	}
-	if value, ok := _c.mutation.ConsumerGroup(); ok {
+	if value, ok := pec.mutation.ConsumerGroup(); ok {
 		_spec.SetField(processedevent.FieldConsumerGroup, field.TypeString, value)
 		_node.ConsumerGroup = value
 	}
-	if value, ok := _c.mutation.ProcessedAt(); ok {
+	if value, ok := pec.mutation.ProcessedAt(); ok {
 		_spec.SetField(processedevent.FieldProcessedAt, field.TypeTime, value)
 		_node.ProcessedAt = value
 	}
-	if value, ok := _c.mutation.CreatedAt(); ok {
+	if value, ok := pec.mutation.CreatedAt(); ok {
 		_spec.SetField(processedevent.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
@@ -223,16 +223,16 @@ type ProcessedEventCreateBulk struct {
 }
 
 // Save creates the ProcessedEvent entities in the database.
-func (_c *ProcessedEventCreateBulk) Save(ctx context.Context) ([]*ProcessedEvent, error) {
-	if _c.err != nil {
-		return nil, _c.err
+func (pecb *ProcessedEventCreateBulk) Save(ctx context.Context) ([]*ProcessedEvent, error) {
+	if pecb.err != nil {
+		return nil, pecb.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
-	nodes := make([]*ProcessedEvent, len(_c.builders))
-	mutators := make([]Mutator, len(_c.builders))
-	for i := range _c.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(pecb.builders))
+	nodes := make([]*ProcessedEvent, len(pecb.builders))
+	mutators := make([]Mutator, len(pecb.builders))
+	for i := range pecb.builders {
 		func(i int, root context.Context) {
-			builder := _c.builders[i]
+			builder := pecb.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*ProcessedEventMutation)
@@ -246,11 +246,11 @@ func (_c *ProcessedEventCreateBulk) Save(ctx context.Context) ([]*ProcessedEvent
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, pecb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, pecb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -270,7 +270,7 @@ func (_c *ProcessedEventCreateBulk) Save(ctx context.Context) ([]*ProcessedEvent
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, pecb.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -278,8 +278,8 @@ func (_c *ProcessedEventCreateBulk) Save(ctx context.Context) ([]*ProcessedEvent
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_c *ProcessedEventCreateBulk) SaveX(ctx context.Context) []*ProcessedEvent {
-	v, err := _c.Save(ctx)
+func (pecb *ProcessedEventCreateBulk) SaveX(ctx context.Context) []*ProcessedEvent {
+	v, err := pecb.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -287,14 +287,14 @@ func (_c *ProcessedEventCreateBulk) SaveX(ctx context.Context) []*ProcessedEvent
 }
 
 // Exec executes the query.
-func (_c *ProcessedEventCreateBulk) Exec(ctx context.Context) error {
-	_, err := _c.Save(ctx)
+func (pecb *ProcessedEventCreateBulk) Exec(ctx context.Context) error {
+	_, err := pecb.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_c *ProcessedEventCreateBulk) ExecX(ctx context.Context) {
-	if err := _c.Exec(ctx); err != nil {
+func (pecb *ProcessedEventCreateBulk) ExecX(ctx context.Context) {
+	if err := pecb.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

@@ -22,151 +22,151 @@ type UserProfileCreate struct {
 }
 
 // SetUserID sets the "user_id" field.
-func (_c *UserProfileCreate) SetUserID(v uuid.UUID) *UserProfileCreate {
-	_c.mutation.SetUserID(v)
-	return _c
+func (upc *UserProfileCreate) SetUserID(u uuid.UUID) *UserProfileCreate {
+	upc.mutation.SetUserID(u)
+	return upc
 }
 
 // SetDisplayName sets the "display_name" field.
-func (_c *UserProfileCreate) SetDisplayName(v string) *UserProfileCreate {
-	_c.mutation.SetDisplayName(v)
-	return _c
+func (upc *UserProfileCreate) SetDisplayName(s string) *UserProfileCreate {
+	upc.mutation.SetDisplayName(s)
+	return upc
 }
 
 // SetNillableDisplayName sets the "display_name" field if the given value is not nil.
-func (_c *UserProfileCreate) SetNillableDisplayName(v *string) *UserProfileCreate {
-	if v != nil {
-		_c.SetDisplayName(*v)
+func (upc *UserProfileCreate) SetNillableDisplayName(s *string) *UserProfileCreate {
+	if s != nil {
+		upc.SetDisplayName(*s)
 	}
-	return _c
+	return upc
 }
 
 // SetBio sets the "bio" field.
-func (_c *UserProfileCreate) SetBio(v string) *UserProfileCreate {
-	_c.mutation.SetBio(v)
-	return _c
+func (upc *UserProfileCreate) SetBio(s string) *UserProfileCreate {
+	upc.mutation.SetBio(s)
+	return upc
 }
 
 // SetNillableBio sets the "bio" field if the given value is not nil.
-func (_c *UserProfileCreate) SetNillableBio(v *string) *UserProfileCreate {
-	if v != nil {
-		_c.SetBio(*v)
+func (upc *UserProfileCreate) SetNillableBio(s *string) *UserProfileCreate {
+	if s != nil {
+		upc.SetBio(*s)
 	}
-	return _c
+	return upc
 }
 
 // SetAvatarURL sets the "avatar_url" field.
-func (_c *UserProfileCreate) SetAvatarURL(v string) *UserProfileCreate {
-	_c.mutation.SetAvatarURL(v)
-	return _c
+func (upc *UserProfileCreate) SetAvatarURL(s string) *UserProfileCreate {
+	upc.mutation.SetAvatarURL(s)
+	return upc
 }
 
 // SetNillableAvatarURL sets the "avatar_url" field if the given value is not nil.
-func (_c *UserProfileCreate) SetNillableAvatarURL(v *string) *UserProfileCreate {
-	if v != nil {
-		_c.SetAvatarURL(*v)
+func (upc *UserProfileCreate) SetNillableAvatarURL(s *string) *UserProfileCreate {
+	if s != nil {
+		upc.SetAvatarURL(*s)
 	}
-	return _c
+	return upc
 }
 
 // SetCoverURL sets the "cover_url" field.
-func (_c *UserProfileCreate) SetCoverURL(v string) *UserProfileCreate {
-	_c.mutation.SetCoverURL(v)
-	return _c
+func (upc *UserProfileCreate) SetCoverURL(s string) *UserProfileCreate {
+	upc.mutation.SetCoverURL(s)
+	return upc
 }
 
 // SetNillableCoverURL sets the "cover_url" field if the given value is not nil.
-func (_c *UserProfileCreate) SetNillableCoverURL(v *string) *UserProfileCreate {
-	if v != nil {
-		_c.SetCoverURL(*v)
+func (upc *UserProfileCreate) SetNillableCoverURL(s *string) *UserProfileCreate {
+	if s != nil {
+		upc.SetCoverURL(*s)
 	}
-	return _c
+	return upc
 }
 
 // SetLocation sets the "location" field.
-func (_c *UserProfileCreate) SetLocation(v string) *UserProfileCreate {
-	_c.mutation.SetLocation(v)
-	return _c
+func (upc *UserProfileCreate) SetLocation(s string) *UserProfileCreate {
+	upc.mutation.SetLocation(s)
+	return upc
 }
 
 // SetNillableLocation sets the "location" field if the given value is not nil.
-func (_c *UserProfileCreate) SetNillableLocation(v *string) *UserProfileCreate {
-	if v != nil {
-		_c.SetLocation(*v)
+func (upc *UserProfileCreate) SetNillableLocation(s *string) *UserProfileCreate {
+	if s != nil {
+		upc.SetLocation(*s)
 	}
-	return _c
+	return upc
 }
 
 // SetWebsite sets the "website" field.
-func (_c *UserProfileCreate) SetWebsite(v string) *UserProfileCreate {
-	_c.mutation.SetWebsite(v)
-	return _c
+func (upc *UserProfileCreate) SetWebsite(s string) *UserProfileCreate {
+	upc.mutation.SetWebsite(s)
+	return upc
 }
 
 // SetNillableWebsite sets the "website" field if the given value is not nil.
-func (_c *UserProfileCreate) SetNillableWebsite(v *string) *UserProfileCreate {
-	if v != nil {
-		_c.SetWebsite(*v)
+func (upc *UserProfileCreate) SetNillableWebsite(s *string) *UserProfileCreate {
+	if s != nil {
+		upc.SetWebsite(*s)
 	}
-	return _c
+	return upc
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (_c *UserProfileCreate) SetCreatedAt(v time.Time) *UserProfileCreate {
-	_c.mutation.SetCreatedAt(v)
-	return _c
+func (upc *UserProfileCreate) SetCreatedAt(t time.Time) *UserProfileCreate {
+	upc.mutation.SetCreatedAt(t)
+	return upc
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (_c *UserProfileCreate) SetNillableCreatedAt(v *time.Time) *UserProfileCreate {
-	if v != nil {
-		_c.SetCreatedAt(*v)
+func (upc *UserProfileCreate) SetNillableCreatedAt(t *time.Time) *UserProfileCreate {
+	if t != nil {
+		upc.SetCreatedAt(*t)
 	}
-	return _c
+	return upc
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (_c *UserProfileCreate) SetUpdatedAt(v time.Time) *UserProfileCreate {
-	_c.mutation.SetUpdatedAt(v)
-	return _c
+func (upc *UserProfileCreate) SetUpdatedAt(t time.Time) *UserProfileCreate {
+	upc.mutation.SetUpdatedAt(t)
+	return upc
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (_c *UserProfileCreate) SetNillableUpdatedAt(v *time.Time) *UserProfileCreate {
-	if v != nil {
-		_c.SetUpdatedAt(*v)
+func (upc *UserProfileCreate) SetNillableUpdatedAt(t *time.Time) *UserProfileCreate {
+	if t != nil {
+		upc.SetUpdatedAt(*t)
 	}
-	return _c
+	return upc
 }
 
 // SetID sets the "id" field.
-func (_c *UserProfileCreate) SetID(v uuid.UUID) *UserProfileCreate {
-	_c.mutation.SetID(v)
-	return _c
+func (upc *UserProfileCreate) SetID(u uuid.UUID) *UserProfileCreate {
+	upc.mutation.SetID(u)
+	return upc
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (_c *UserProfileCreate) SetNillableID(v *uuid.UUID) *UserProfileCreate {
-	if v != nil {
-		_c.SetID(*v)
+func (upc *UserProfileCreate) SetNillableID(u *uuid.UUID) *UserProfileCreate {
+	if u != nil {
+		upc.SetID(*u)
 	}
-	return _c
+	return upc
 }
 
 // Mutation returns the UserProfileMutation object of the builder.
-func (_c *UserProfileCreate) Mutation() *UserProfileMutation {
-	return _c.mutation
+func (upc *UserProfileCreate) Mutation() *UserProfileMutation {
+	return upc.mutation
 }
 
 // Save creates the UserProfile in the database.
-func (_c *UserProfileCreate) Save(ctx context.Context) (*UserProfile, error) {
-	_c.defaults()
-	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
+func (upc *UserProfileCreate) Save(ctx context.Context) (*UserProfile, error) {
+	upc.defaults()
+	return withHooks(ctx, upc.sqlSave, upc.mutation, upc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (_c *UserProfileCreate) SaveX(ctx context.Context) *UserProfile {
-	v, err := _c.Save(ctx)
+func (upc *UserProfileCreate) SaveX(ctx context.Context) *UserProfile {
+	v, err := upc.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -174,126 +174,126 @@ func (_c *UserProfileCreate) SaveX(ctx context.Context) *UserProfile {
 }
 
 // Exec executes the query.
-func (_c *UserProfileCreate) Exec(ctx context.Context) error {
-	_, err := _c.Save(ctx)
+func (upc *UserProfileCreate) Exec(ctx context.Context) error {
+	_, err := upc.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_c *UserProfileCreate) ExecX(ctx context.Context) {
-	if err := _c.Exec(ctx); err != nil {
+func (upc *UserProfileCreate) ExecX(ctx context.Context) {
+	if err := upc.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *UserProfileCreate) defaults() {
-	if _, ok := _c.mutation.DisplayName(); !ok {
+func (upc *UserProfileCreate) defaults() {
+	if _, ok := upc.mutation.DisplayName(); !ok {
 		v := userprofile.DefaultDisplayName
-		_c.mutation.SetDisplayName(v)
+		upc.mutation.SetDisplayName(v)
 	}
-	if _, ok := _c.mutation.Bio(); !ok {
+	if _, ok := upc.mutation.Bio(); !ok {
 		v := userprofile.DefaultBio
-		_c.mutation.SetBio(v)
+		upc.mutation.SetBio(v)
 	}
-	if _, ok := _c.mutation.AvatarURL(); !ok {
+	if _, ok := upc.mutation.AvatarURL(); !ok {
 		v := userprofile.DefaultAvatarURL
-		_c.mutation.SetAvatarURL(v)
+		upc.mutation.SetAvatarURL(v)
 	}
-	if _, ok := _c.mutation.CoverURL(); !ok {
+	if _, ok := upc.mutation.CoverURL(); !ok {
 		v := userprofile.DefaultCoverURL
-		_c.mutation.SetCoverURL(v)
+		upc.mutation.SetCoverURL(v)
 	}
-	if _, ok := _c.mutation.Location(); !ok {
+	if _, ok := upc.mutation.Location(); !ok {
 		v := userprofile.DefaultLocation
-		_c.mutation.SetLocation(v)
+		upc.mutation.SetLocation(v)
 	}
-	if _, ok := _c.mutation.Website(); !ok {
+	if _, ok := upc.mutation.Website(); !ok {
 		v := userprofile.DefaultWebsite
-		_c.mutation.SetWebsite(v)
+		upc.mutation.SetWebsite(v)
 	}
-	if _, ok := _c.mutation.CreatedAt(); !ok {
+	if _, ok := upc.mutation.CreatedAt(); !ok {
 		v := userprofile.DefaultCreatedAt()
-		_c.mutation.SetCreatedAt(v)
+		upc.mutation.SetCreatedAt(v)
 	}
-	if _, ok := _c.mutation.UpdatedAt(); !ok {
+	if _, ok := upc.mutation.UpdatedAt(); !ok {
 		v := userprofile.DefaultUpdatedAt()
-		_c.mutation.SetUpdatedAt(v)
+		upc.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := _c.mutation.ID(); !ok {
+	if _, ok := upc.mutation.ID(); !ok {
 		v := userprofile.DefaultID()
-		_c.mutation.SetID(v)
+		upc.mutation.SetID(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (_c *UserProfileCreate) check() error {
-	if _, ok := _c.mutation.UserID(); !ok {
+func (upc *UserProfileCreate) check() error {
+	if _, ok := upc.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "UserProfile.user_id"`)}
 	}
-	if _, ok := _c.mutation.DisplayName(); !ok {
+	if _, ok := upc.mutation.DisplayName(); !ok {
 		return &ValidationError{Name: "display_name", err: errors.New(`ent: missing required field "UserProfile.display_name"`)}
 	}
-	if v, ok := _c.mutation.DisplayName(); ok {
+	if v, ok := upc.mutation.DisplayName(); ok {
 		if err := userprofile.DisplayNameValidator(v); err != nil {
 			return &ValidationError{Name: "display_name", err: fmt.Errorf(`ent: validator failed for field "UserProfile.display_name": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.Bio(); !ok {
+	if _, ok := upc.mutation.Bio(); !ok {
 		return &ValidationError{Name: "bio", err: errors.New(`ent: missing required field "UserProfile.bio"`)}
 	}
-	if v, ok := _c.mutation.Bio(); ok {
+	if v, ok := upc.mutation.Bio(); ok {
 		if err := userprofile.BioValidator(v); err != nil {
 			return &ValidationError{Name: "bio", err: fmt.Errorf(`ent: validator failed for field "UserProfile.bio": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.AvatarURL(); !ok {
+	if _, ok := upc.mutation.AvatarURL(); !ok {
 		return &ValidationError{Name: "avatar_url", err: errors.New(`ent: missing required field "UserProfile.avatar_url"`)}
 	}
-	if v, ok := _c.mutation.AvatarURL(); ok {
+	if v, ok := upc.mutation.AvatarURL(); ok {
 		if err := userprofile.AvatarURLValidator(v); err != nil {
 			return &ValidationError{Name: "avatar_url", err: fmt.Errorf(`ent: validator failed for field "UserProfile.avatar_url": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.CoverURL(); !ok {
+	if _, ok := upc.mutation.CoverURL(); !ok {
 		return &ValidationError{Name: "cover_url", err: errors.New(`ent: missing required field "UserProfile.cover_url"`)}
 	}
-	if v, ok := _c.mutation.CoverURL(); ok {
+	if v, ok := upc.mutation.CoverURL(); ok {
 		if err := userprofile.CoverURLValidator(v); err != nil {
 			return &ValidationError{Name: "cover_url", err: fmt.Errorf(`ent: validator failed for field "UserProfile.cover_url": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.Location(); !ok {
+	if _, ok := upc.mutation.Location(); !ok {
 		return &ValidationError{Name: "location", err: errors.New(`ent: missing required field "UserProfile.location"`)}
 	}
-	if v, ok := _c.mutation.Location(); ok {
+	if v, ok := upc.mutation.Location(); ok {
 		if err := userprofile.LocationValidator(v); err != nil {
 			return &ValidationError{Name: "location", err: fmt.Errorf(`ent: validator failed for field "UserProfile.location": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.Website(); !ok {
+	if _, ok := upc.mutation.Website(); !ok {
 		return &ValidationError{Name: "website", err: errors.New(`ent: missing required field "UserProfile.website"`)}
 	}
-	if v, ok := _c.mutation.Website(); ok {
+	if v, ok := upc.mutation.Website(); ok {
 		if err := userprofile.WebsiteValidator(v); err != nil {
 			return &ValidationError{Name: "website", err: fmt.Errorf(`ent: validator failed for field "UserProfile.website": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.CreatedAt(); !ok {
+	if _, ok := upc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "UserProfile.created_at"`)}
 	}
-	if _, ok := _c.mutation.UpdatedAt(); !ok {
+	if _, ok := upc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "UserProfile.updated_at"`)}
 	}
 	return nil
 }
 
-func (_c *UserProfileCreate) sqlSave(ctx context.Context) (*UserProfile, error) {
-	if err := _c.check(); err != nil {
+func (upc *UserProfileCreate) sqlSave(ctx context.Context) (*UserProfile, error) {
+	if err := upc.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := _c.createSpec()
-	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
+	_node, _spec := upc.createSpec()
+	if err := sqlgraph.CreateNode(ctx, upc.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -306,53 +306,53 @@ func (_c *UserProfileCreate) sqlSave(ctx context.Context) (*UserProfile, error) 
 			return nil, err
 		}
 	}
-	_c.mutation.id = &_node.ID
-	_c.mutation.done = true
+	upc.mutation.id = &_node.ID
+	upc.mutation.done = true
 	return _node, nil
 }
 
-func (_c *UserProfileCreate) createSpec() (*UserProfile, *sqlgraph.CreateSpec) {
+func (upc *UserProfileCreate) createSpec() (*UserProfile, *sqlgraph.CreateSpec) {
 	var (
-		_node = &UserProfile{config: _c.config}
+		_node = &UserProfile{config: upc.config}
 		_spec = sqlgraph.NewCreateSpec(userprofile.Table, sqlgraph.NewFieldSpec(userprofile.FieldID, field.TypeUUID))
 	)
-	if id, ok := _c.mutation.ID(); ok {
+	if id, ok := upc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = &id
 	}
-	if value, ok := _c.mutation.UserID(); ok {
+	if value, ok := upc.mutation.UserID(); ok {
 		_spec.SetField(userprofile.FieldUserID, field.TypeUUID, value)
 		_node.UserID = value
 	}
-	if value, ok := _c.mutation.DisplayName(); ok {
+	if value, ok := upc.mutation.DisplayName(); ok {
 		_spec.SetField(userprofile.FieldDisplayName, field.TypeString, value)
 		_node.DisplayName = value
 	}
-	if value, ok := _c.mutation.Bio(); ok {
+	if value, ok := upc.mutation.Bio(); ok {
 		_spec.SetField(userprofile.FieldBio, field.TypeString, value)
 		_node.Bio = value
 	}
-	if value, ok := _c.mutation.AvatarURL(); ok {
+	if value, ok := upc.mutation.AvatarURL(); ok {
 		_spec.SetField(userprofile.FieldAvatarURL, field.TypeString, value)
 		_node.AvatarURL = value
 	}
-	if value, ok := _c.mutation.CoverURL(); ok {
+	if value, ok := upc.mutation.CoverURL(); ok {
 		_spec.SetField(userprofile.FieldCoverURL, field.TypeString, value)
 		_node.CoverURL = value
 	}
-	if value, ok := _c.mutation.Location(); ok {
+	if value, ok := upc.mutation.Location(); ok {
 		_spec.SetField(userprofile.FieldLocation, field.TypeString, value)
 		_node.Location = value
 	}
-	if value, ok := _c.mutation.Website(); ok {
+	if value, ok := upc.mutation.Website(); ok {
 		_spec.SetField(userprofile.FieldWebsite, field.TypeString, value)
 		_node.Website = value
 	}
-	if value, ok := _c.mutation.CreatedAt(); ok {
+	if value, ok := upc.mutation.CreatedAt(); ok {
 		_spec.SetField(userprofile.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := _c.mutation.UpdatedAt(); ok {
+	if value, ok := upc.mutation.UpdatedAt(); ok {
 		_spec.SetField(userprofile.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
@@ -367,16 +367,16 @@ type UserProfileCreateBulk struct {
 }
 
 // Save creates the UserProfile entities in the database.
-func (_c *UserProfileCreateBulk) Save(ctx context.Context) ([]*UserProfile, error) {
-	if _c.err != nil {
-		return nil, _c.err
+func (upcb *UserProfileCreateBulk) Save(ctx context.Context) ([]*UserProfile, error) {
+	if upcb.err != nil {
+		return nil, upcb.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
-	nodes := make([]*UserProfile, len(_c.builders))
-	mutators := make([]Mutator, len(_c.builders))
-	for i := range _c.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(upcb.builders))
+	nodes := make([]*UserProfile, len(upcb.builders))
+	mutators := make([]Mutator, len(upcb.builders))
+	for i := range upcb.builders {
 		func(i int, root context.Context) {
-			builder := _c.builders[i]
+			builder := upcb.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*UserProfileMutation)
@@ -390,11 +390,11 @@ func (_c *UserProfileCreateBulk) Save(ctx context.Context) ([]*UserProfile, erro
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, upcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, upcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -414,7 +414,7 @@ func (_c *UserProfileCreateBulk) Save(ctx context.Context) ([]*UserProfile, erro
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, upcb.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -422,8 +422,8 @@ func (_c *UserProfileCreateBulk) Save(ctx context.Context) ([]*UserProfile, erro
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_c *UserProfileCreateBulk) SaveX(ctx context.Context) []*UserProfile {
-	v, err := _c.Save(ctx)
+func (upcb *UserProfileCreateBulk) SaveX(ctx context.Context) []*UserProfile {
+	v, err := upcb.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -431,14 +431,14 @@ func (_c *UserProfileCreateBulk) SaveX(ctx context.Context) []*UserProfile {
 }
 
 // Exec executes the query.
-func (_c *UserProfileCreateBulk) Exec(ctx context.Context) error {
-	_, err := _c.Save(ctx)
+func (upcb *UserProfileCreateBulk) Exec(ctx context.Context) error {
+	_, err := upcb.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_c *UserProfileCreateBulk) ExecX(ctx context.Context) {
-	if err := _c.Exec(ctx); err != nil {
+func (upcb *UserProfileCreateBulk) ExecX(ctx context.Context) {
+	if err := upcb.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

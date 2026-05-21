@@ -20,56 +20,56 @@ type ProcessedEventDelete struct {
 }
 
 // Where appends a list predicates to the ProcessedEventDelete builder.
-func (_d *ProcessedEventDelete) Where(ps ...predicate.ProcessedEvent) *ProcessedEventDelete {
-	_d.mutation.Where(ps...)
-	return _d
+func (ped *ProcessedEventDelete) Where(ps ...predicate.ProcessedEvent) *ProcessedEventDelete {
+	ped.mutation.Where(ps...)
+	return ped
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (_d *ProcessedEventDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
+func (ped *ProcessedEventDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, ped.sqlExec, ped.mutation, ped.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_d *ProcessedEventDelete) ExecX(ctx context.Context) int {
-	n, err := _d.Exec(ctx)
+func (ped *ProcessedEventDelete) ExecX(ctx context.Context) int {
+	n, err := ped.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (_d *ProcessedEventDelete) sqlExec(ctx context.Context) (int, error) {
+func (ped *ProcessedEventDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(processedevent.Table, sqlgraph.NewFieldSpec(processedevent.FieldID, field.TypeUUID))
-	if ps := _d.mutation.predicates; len(ps) > 0 {
+	if ps := ped.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, ped.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	_d.mutation.done = true
+	ped.mutation.done = true
 	return affected, err
 }
 
 // ProcessedEventDeleteOne is the builder for deleting a single ProcessedEvent entity.
 type ProcessedEventDeleteOne struct {
-	_d *ProcessedEventDelete
+	ped *ProcessedEventDelete
 }
 
 // Where appends a list predicates to the ProcessedEventDelete builder.
-func (_d *ProcessedEventDeleteOne) Where(ps ...predicate.ProcessedEvent) *ProcessedEventDeleteOne {
-	_d._d.mutation.Where(ps...)
-	return _d
+func (pedo *ProcessedEventDeleteOne) Where(ps ...predicate.ProcessedEvent) *ProcessedEventDeleteOne {
+	pedo.ped.mutation.Where(ps...)
+	return pedo
 }
 
 // Exec executes the deletion query.
-func (_d *ProcessedEventDeleteOne) Exec(ctx context.Context) error {
-	n, err := _d._d.Exec(ctx)
+func (pedo *ProcessedEventDeleteOne) Exec(ctx context.Context) error {
+	n, err := pedo.ped.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (_d *ProcessedEventDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_d *ProcessedEventDeleteOne) ExecX(ctx context.Context) {
-	if err := _d.Exec(ctx); err != nil {
+func (pedo *ProcessedEventDeleteOne) ExecX(ctx context.Context) {
+	if err := pedo.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

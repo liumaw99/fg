@@ -24,94 +24,94 @@ type UserSessionUpdate struct {
 }
 
 // Where appends a list predicates to the UserSessionUpdate builder.
-func (_u *UserSessionUpdate) Where(ps ...predicate.UserSession) *UserSessionUpdate {
-	_u.mutation.Where(ps...)
-	return _u
+func (usu *UserSessionUpdate) Where(ps ...predicate.UserSession) *UserSessionUpdate {
+	usu.mutation.Where(ps...)
+	return usu
 }
 
 // SetUserID sets the "user_id" field.
-func (_u *UserSessionUpdate) SetUserID(v uuid.UUID) *UserSessionUpdate {
-	_u.mutation.SetUserID(v)
-	return _u
+func (usu *UserSessionUpdate) SetUserID(u uuid.UUID) *UserSessionUpdate {
+	usu.mutation.SetUserID(u)
+	return usu
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (_u *UserSessionUpdate) SetNillableUserID(v *uuid.UUID) *UserSessionUpdate {
-	if v != nil {
-		_u.SetUserID(*v)
+func (usu *UserSessionUpdate) SetNillableUserID(u *uuid.UUID) *UserSessionUpdate {
+	if u != nil {
+		usu.SetUserID(*u)
 	}
-	return _u
+	return usu
 }
 
 // SetTokenID sets the "token_id" field.
-func (_u *UserSessionUpdate) SetTokenID(v string) *UserSessionUpdate {
-	_u.mutation.SetTokenID(v)
-	return _u
+func (usu *UserSessionUpdate) SetTokenID(s string) *UserSessionUpdate {
+	usu.mutation.SetTokenID(s)
+	return usu
 }
 
 // SetNillableTokenID sets the "token_id" field if the given value is not nil.
-func (_u *UserSessionUpdate) SetNillableTokenID(v *string) *UserSessionUpdate {
-	if v != nil {
-		_u.SetTokenID(*v)
+func (usu *UserSessionUpdate) SetNillableTokenID(s *string) *UserSessionUpdate {
+	if s != nil {
+		usu.SetTokenID(*s)
 	}
-	return _u
+	return usu
 }
 
 // SetDeviceInfo sets the "device_info" field.
-func (_u *UserSessionUpdate) SetDeviceInfo(v string) *UserSessionUpdate {
-	_u.mutation.SetDeviceInfo(v)
-	return _u
+func (usu *UserSessionUpdate) SetDeviceInfo(s string) *UserSessionUpdate {
+	usu.mutation.SetDeviceInfo(s)
+	return usu
 }
 
 // SetNillableDeviceInfo sets the "device_info" field if the given value is not nil.
-func (_u *UserSessionUpdate) SetNillableDeviceInfo(v *string) *UserSessionUpdate {
-	if v != nil {
-		_u.SetDeviceInfo(*v)
+func (usu *UserSessionUpdate) SetNillableDeviceInfo(s *string) *UserSessionUpdate {
+	if s != nil {
+		usu.SetDeviceInfo(*s)
 	}
-	return _u
+	return usu
 }
 
 // SetIPAddress sets the "ip_address" field.
-func (_u *UserSessionUpdate) SetIPAddress(v string) *UserSessionUpdate {
-	_u.mutation.SetIPAddress(v)
-	return _u
+func (usu *UserSessionUpdate) SetIPAddress(s string) *UserSessionUpdate {
+	usu.mutation.SetIPAddress(s)
+	return usu
 }
 
 // SetNillableIPAddress sets the "ip_address" field if the given value is not nil.
-func (_u *UserSessionUpdate) SetNillableIPAddress(v *string) *UserSessionUpdate {
-	if v != nil {
-		_u.SetIPAddress(*v)
+func (usu *UserSessionUpdate) SetNillableIPAddress(s *string) *UserSessionUpdate {
+	if s != nil {
+		usu.SetIPAddress(*s)
 	}
-	return _u
+	return usu
 }
 
 // SetExpiresAt sets the "expires_at" field.
-func (_u *UserSessionUpdate) SetExpiresAt(v time.Time) *UserSessionUpdate {
-	_u.mutation.SetExpiresAt(v)
-	return _u
+func (usu *UserSessionUpdate) SetExpiresAt(t time.Time) *UserSessionUpdate {
+	usu.mutation.SetExpiresAt(t)
+	return usu
 }
 
 // SetNillableExpiresAt sets the "expires_at" field if the given value is not nil.
-func (_u *UserSessionUpdate) SetNillableExpiresAt(v *time.Time) *UserSessionUpdate {
-	if v != nil {
-		_u.SetExpiresAt(*v)
+func (usu *UserSessionUpdate) SetNillableExpiresAt(t *time.Time) *UserSessionUpdate {
+	if t != nil {
+		usu.SetExpiresAt(*t)
 	}
-	return _u
+	return usu
 }
 
 // Mutation returns the UserSessionMutation object of the builder.
-func (_u *UserSessionUpdate) Mutation() *UserSessionMutation {
-	return _u.mutation
+func (usu *UserSessionUpdate) Mutation() *UserSessionMutation {
+	return usu.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (_u *UserSessionUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
+func (usu *UserSessionUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, usu.sqlSave, usu.mutation, usu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_u *UserSessionUpdate) SaveX(ctx context.Context) int {
-	affected, err := _u.Save(ctx)
+func (usu *UserSessionUpdate) SaveX(ctx context.Context) int {
+	affected, err := usu.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -119,31 +119,31 @@ func (_u *UserSessionUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (_u *UserSessionUpdate) Exec(ctx context.Context) error {
-	_, err := _u.Save(ctx)
+func (usu *UserSessionUpdate) Exec(ctx context.Context) error {
+	_, err := usu.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_u *UserSessionUpdate) ExecX(ctx context.Context) {
-	if err := _u.Exec(ctx); err != nil {
+func (usu *UserSessionUpdate) ExecX(ctx context.Context) {
+	if err := usu.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (_u *UserSessionUpdate) check() error {
-	if v, ok := _u.mutation.TokenID(); ok {
+func (usu *UserSessionUpdate) check() error {
+	if v, ok := usu.mutation.TokenID(); ok {
 		if err := usersession.TokenIDValidator(v); err != nil {
 			return &ValidationError{Name: "token_id", err: fmt.Errorf(`ent: validator failed for field "UserSession.token_id": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.DeviceInfo(); ok {
+	if v, ok := usu.mutation.DeviceInfo(); ok {
 		if err := usersession.DeviceInfoValidator(v); err != nil {
 			return &ValidationError{Name: "device_info", err: fmt.Errorf(`ent: validator failed for field "UserSession.device_info": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.IPAddress(); ok {
+	if v, ok := usu.mutation.IPAddress(); ok {
 		if err := usersession.IPAddressValidator(v); err != nil {
 			return &ValidationError{Name: "ip_address", err: fmt.Errorf(`ent: validator failed for field "UserSession.ip_address": %w`, err)}
 		}
@@ -151,34 +151,34 @@ func (_u *UserSessionUpdate) check() error {
 	return nil
 }
 
-func (_u *UserSessionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
-	if err := _u.check(); err != nil {
-		return _node, err
+func (usu *UserSessionUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := usu.check(); err != nil {
+		return n, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(usersession.Table, usersession.Columns, sqlgraph.NewFieldSpec(usersession.FieldID, field.TypeUUID))
-	if ps := _u.mutation.predicates; len(ps) > 0 {
+	if ps := usu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := _u.mutation.UserID(); ok {
+	if value, ok := usu.mutation.UserID(); ok {
 		_spec.SetField(usersession.FieldUserID, field.TypeUUID, value)
 	}
-	if value, ok := _u.mutation.TokenID(); ok {
+	if value, ok := usu.mutation.TokenID(); ok {
 		_spec.SetField(usersession.FieldTokenID, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.DeviceInfo(); ok {
+	if value, ok := usu.mutation.DeviceInfo(); ok {
 		_spec.SetField(usersession.FieldDeviceInfo, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.IPAddress(); ok {
+	if value, ok := usu.mutation.IPAddress(); ok {
 		_spec.SetField(usersession.FieldIPAddress, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.ExpiresAt(); ok {
+	if value, ok := usu.mutation.ExpiresAt(); ok {
 		_spec.SetField(usersession.FieldExpiresAt, field.TypeTime, value)
 	}
-	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
+	if n, err = sqlgraph.UpdateNodes(ctx, usu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{usersession.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -186,8 +186,8 @@ func (_u *UserSessionUpdate) sqlSave(ctx context.Context) (_node int, err error)
 		}
 		return 0, err
 	}
-	_u.mutation.done = true
-	return _node, nil
+	usu.mutation.done = true
+	return n, nil
 }
 
 // UserSessionUpdateOne is the builder for updating a single UserSession entity.
@@ -199,101 +199,101 @@ type UserSessionUpdateOne struct {
 }
 
 // SetUserID sets the "user_id" field.
-func (_u *UserSessionUpdateOne) SetUserID(v uuid.UUID) *UserSessionUpdateOne {
-	_u.mutation.SetUserID(v)
-	return _u
+func (usuo *UserSessionUpdateOne) SetUserID(u uuid.UUID) *UserSessionUpdateOne {
+	usuo.mutation.SetUserID(u)
+	return usuo
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (_u *UserSessionUpdateOne) SetNillableUserID(v *uuid.UUID) *UserSessionUpdateOne {
-	if v != nil {
-		_u.SetUserID(*v)
+func (usuo *UserSessionUpdateOne) SetNillableUserID(u *uuid.UUID) *UserSessionUpdateOne {
+	if u != nil {
+		usuo.SetUserID(*u)
 	}
-	return _u
+	return usuo
 }
 
 // SetTokenID sets the "token_id" field.
-func (_u *UserSessionUpdateOne) SetTokenID(v string) *UserSessionUpdateOne {
-	_u.mutation.SetTokenID(v)
-	return _u
+func (usuo *UserSessionUpdateOne) SetTokenID(s string) *UserSessionUpdateOne {
+	usuo.mutation.SetTokenID(s)
+	return usuo
 }
 
 // SetNillableTokenID sets the "token_id" field if the given value is not nil.
-func (_u *UserSessionUpdateOne) SetNillableTokenID(v *string) *UserSessionUpdateOne {
-	if v != nil {
-		_u.SetTokenID(*v)
+func (usuo *UserSessionUpdateOne) SetNillableTokenID(s *string) *UserSessionUpdateOne {
+	if s != nil {
+		usuo.SetTokenID(*s)
 	}
-	return _u
+	return usuo
 }
 
 // SetDeviceInfo sets the "device_info" field.
-func (_u *UserSessionUpdateOne) SetDeviceInfo(v string) *UserSessionUpdateOne {
-	_u.mutation.SetDeviceInfo(v)
-	return _u
+func (usuo *UserSessionUpdateOne) SetDeviceInfo(s string) *UserSessionUpdateOne {
+	usuo.mutation.SetDeviceInfo(s)
+	return usuo
 }
 
 // SetNillableDeviceInfo sets the "device_info" field if the given value is not nil.
-func (_u *UserSessionUpdateOne) SetNillableDeviceInfo(v *string) *UserSessionUpdateOne {
-	if v != nil {
-		_u.SetDeviceInfo(*v)
+func (usuo *UserSessionUpdateOne) SetNillableDeviceInfo(s *string) *UserSessionUpdateOne {
+	if s != nil {
+		usuo.SetDeviceInfo(*s)
 	}
-	return _u
+	return usuo
 }
 
 // SetIPAddress sets the "ip_address" field.
-func (_u *UserSessionUpdateOne) SetIPAddress(v string) *UserSessionUpdateOne {
-	_u.mutation.SetIPAddress(v)
-	return _u
+func (usuo *UserSessionUpdateOne) SetIPAddress(s string) *UserSessionUpdateOne {
+	usuo.mutation.SetIPAddress(s)
+	return usuo
 }
 
 // SetNillableIPAddress sets the "ip_address" field if the given value is not nil.
-func (_u *UserSessionUpdateOne) SetNillableIPAddress(v *string) *UserSessionUpdateOne {
-	if v != nil {
-		_u.SetIPAddress(*v)
+func (usuo *UserSessionUpdateOne) SetNillableIPAddress(s *string) *UserSessionUpdateOne {
+	if s != nil {
+		usuo.SetIPAddress(*s)
 	}
-	return _u
+	return usuo
 }
 
 // SetExpiresAt sets the "expires_at" field.
-func (_u *UserSessionUpdateOne) SetExpiresAt(v time.Time) *UserSessionUpdateOne {
-	_u.mutation.SetExpiresAt(v)
-	return _u
+func (usuo *UserSessionUpdateOne) SetExpiresAt(t time.Time) *UserSessionUpdateOne {
+	usuo.mutation.SetExpiresAt(t)
+	return usuo
 }
 
 // SetNillableExpiresAt sets the "expires_at" field if the given value is not nil.
-func (_u *UserSessionUpdateOne) SetNillableExpiresAt(v *time.Time) *UserSessionUpdateOne {
-	if v != nil {
-		_u.SetExpiresAt(*v)
+func (usuo *UserSessionUpdateOne) SetNillableExpiresAt(t *time.Time) *UserSessionUpdateOne {
+	if t != nil {
+		usuo.SetExpiresAt(*t)
 	}
-	return _u
+	return usuo
 }
 
 // Mutation returns the UserSessionMutation object of the builder.
-func (_u *UserSessionUpdateOne) Mutation() *UserSessionMutation {
-	return _u.mutation
+func (usuo *UserSessionUpdateOne) Mutation() *UserSessionMutation {
+	return usuo.mutation
 }
 
 // Where appends a list predicates to the UserSessionUpdate builder.
-func (_u *UserSessionUpdateOne) Where(ps ...predicate.UserSession) *UserSessionUpdateOne {
-	_u.mutation.Where(ps...)
-	return _u
+func (usuo *UserSessionUpdateOne) Where(ps ...predicate.UserSession) *UserSessionUpdateOne {
+	usuo.mutation.Where(ps...)
+	return usuo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (_u *UserSessionUpdateOne) Select(field string, fields ...string) *UserSessionUpdateOne {
-	_u.fields = append([]string{field}, fields...)
-	return _u
+func (usuo *UserSessionUpdateOne) Select(field string, fields ...string) *UserSessionUpdateOne {
+	usuo.fields = append([]string{field}, fields...)
+	return usuo
 }
 
 // Save executes the query and returns the updated UserSession entity.
-func (_u *UserSessionUpdateOne) Save(ctx context.Context) (*UserSession, error) {
-	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
+func (usuo *UserSessionUpdateOne) Save(ctx context.Context) (*UserSession, error) {
+	return withHooks(ctx, usuo.sqlSave, usuo.mutation, usuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_u *UserSessionUpdateOne) SaveX(ctx context.Context) *UserSession {
-	node, err := _u.Save(ctx)
+func (usuo *UserSessionUpdateOne) SaveX(ctx context.Context) *UserSession {
+	node, err := usuo.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -301,31 +301,31 @@ func (_u *UserSessionUpdateOne) SaveX(ctx context.Context) *UserSession {
 }
 
 // Exec executes the query on the entity.
-func (_u *UserSessionUpdateOne) Exec(ctx context.Context) error {
-	_, err := _u.Save(ctx)
+func (usuo *UserSessionUpdateOne) Exec(ctx context.Context) error {
+	_, err := usuo.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_u *UserSessionUpdateOne) ExecX(ctx context.Context) {
-	if err := _u.Exec(ctx); err != nil {
+func (usuo *UserSessionUpdateOne) ExecX(ctx context.Context) {
+	if err := usuo.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (_u *UserSessionUpdateOne) check() error {
-	if v, ok := _u.mutation.TokenID(); ok {
+func (usuo *UserSessionUpdateOne) check() error {
+	if v, ok := usuo.mutation.TokenID(); ok {
 		if err := usersession.TokenIDValidator(v); err != nil {
 			return &ValidationError{Name: "token_id", err: fmt.Errorf(`ent: validator failed for field "UserSession.token_id": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.DeviceInfo(); ok {
+	if v, ok := usuo.mutation.DeviceInfo(); ok {
 		if err := usersession.DeviceInfoValidator(v); err != nil {
 			return &ValidationError{Name: "device_info", err: fmt.Errorf(`ent: validator failed for field "UserSession.device_info": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.IPAddress(); ok {
+	if v, ok := usuo.mutation.IPAddress(); ok {
 		if err := usersession.IPAddressValidator(v); err != nil {
 			return &ValidationError{Name: "ip_address", err: fmt.Errorf(`ent: validator failed for field "UserSession.ip_address": %w`, err)}
 		}
@@ -333,17 +333,17 @@ func (_u *UserSessionUpdateOne) check() error {
 	return nil
 }
 
-func (_u *UserSessionUpdateOne) sqlSave(ctx context.Context) (_node *UserSession, err error) {
-	if err := _u.check(); err != nil {
+func (usuo *UserSessionUpdateOne) sqlSave(ctx context.Context) (_node *UserSession, err error) {
+	if err := usuo.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(usersession.Table, usersession.Columns, sqlgraph.NewFieldSpec(usersession.FieldID, field.TypeUUID))
-	id, ok := _u.mutation.ID()
+	id, ok := usuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "UserSession.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := _u.fields; len(fields) > 0 {
+	if fields := usuo.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, usersession.FieldID)
 		for _, f := range fields {
@@ -355,32 +355,32 @@ func (_u *UserSessionUpdateOne) sqlSave(ctx context.Context) (_node *UserSession
 			}
 		}
 	}
-	if ps := _u.mutation.predicates; len(ps) > 0 {
+	if ps := usuo.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := _u.mutation.UserID(); ok {
+	if value, ok := usuo.mutation.UserID(); ok {
 		_spec.SetField(usersession.FieldUserID, field.TypeUUID, value)
 	}
-	if value, ok := _u.mutation.TokenID(); ok {
+	if value, ok := usuo.mutation.TokenID(); ok {
 		_spec.SetField(usersession.FieldTokenID, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.DeviceInfo(); ok {
+	if value, ok := usuo.mutation.DeviceInfo(); ok {
 		_spec.SetField(usersession.FieldDeviceInfo, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.IPAddress(); ok {
+	if value, ok := usuo.mutation.IPAddress(); ok {
 		_spec.SetField(usersession.FieldIPAddress, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.ExpiresAt(); ok {
+	if value, ok := usuo.mutation.ExpiresAt(); ok {
 		_spec.SetField(usersession.FieldExpiresAt, field.TypeTime, value)
 	}
-	_node = &UserSession{config: _u.config}
+	_node = &UserSession{config: usuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, usuo.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{usersession.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -388,6 +388,6 @@ func (_u *UserSessionUpdateOne) sqlSave(ctx context.Context) (_node *UserSession
 		}
 		return nil, err
 	}
-	_u.mutation.done = true
+	usuo.mutation.done = true
 	return _node, nil
 }

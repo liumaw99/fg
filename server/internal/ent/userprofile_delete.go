@@ -20,56 +20,56 @@ type UserProfileDelete struct {
 }
 
 // Where appends a list predicates to the UserProfileDelete builder.
-func (_d *UserProfileDelete) Where(ps ...predicate.UserProfile) *UserProfileDelete {
-	_d.mutation.Where(ps...)
-	return _d
+func (upd *UserProfileDelete) Where(ps ...predicate.UserProfile) *UserProfileDelete {
+	upd.mutation.Where(ps...)
+	return upd
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (_d *UserProfileDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
+func (upd *UserProfileDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, upd.sqlExec, upd.mutation, upd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_d *UserProfileDelete) ExecX(ctx context.Context) int {
-	n, err := _d.Exec(ctx)
+func (upd *UserProfileDelete) ExecX(ctx context.Context) int {
+	n, err := upd.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (_d *UserProfileDelete) sqlExec(ctx context.Context) (int, error) {
+func (upd *UserProfileDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(userprofile.Table, sqlgraph.NewFieldSpec(userprofile.FieldID, field.TypeUUID))
-	if ps := _d.mutation.predicates; len(ps) > 0 {
+	if ps := upd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, upd.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	_d.mutation.done = true
+	upd.mutation.done = true
 	return affected, err
 }
 
 // UserProfileDeleteOne is the builder for deleting a single UserProfile entity.
 type UserProfileDeleteOne struct {
-	_d *UserProfileDelete
+	upd *UserProfileDelete
 }
 
 // Where appends a list predicates to the UserProfileDelete builder.
-func (_d *UserProfileDeleteOne) Where(ps ...predicate.UserProfile) *UserProfileDeleteOne {
-	_d._d.mutation.Where(ps...)
-	return _d
+func (updo *UserProfileDeleteOne) Where(ps ...predicate.UserProfile) *UserProfileDeleteOne {
+	updo.upd.mutation.Where(ps...)
+	return updo
 }
 
 // Exec executes the deletion query.
-func (_d *UserProfileDeleteOne) Exec(ctx context.Context) error {
-	n, err := _d._d.Exec(ctx)
+func (updo *UserProfileDeleteOne) Exec(ctx context.Context) error {
+	n, err := updo.upd.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (_d *UserProfileDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_d *UserProfileDeleteOne) ExecX(ctx context.Context) {
-	if err := _d.Exec(ctx); err != nil {
+func (updo *UserProfileDeleteOne) ExecX(ctx context.Context) {
+	if err := updo.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

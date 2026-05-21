@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"social-server/internal/module/auth"
+	"social-server/internal/module/post"
 	"social-server/internal/module/user"
 	"social-server/internal/platform/middleware"
 	"social-server/internal/platform/response"
@@ -43,6 +44,7 @@ func (a *App) setupRouter() {
 	// Init modules
 	authHandler := auth.NewAuthModule(a.ent, a.jwt, a.log)
 	userHandler := user.NewUserModule(a.ent, a.storage, a.log)
+	postHandler := post.NewPostModule(a.ent, a.log)
 
 	// API v1
 	v1 := r.Group("/api/v1")
@@ -74,15 +76,15 @@ func (a *App) setupRouter() {
 			// Posts
 			posts := protected.Group("/posts")
 			{
-				posts.POST("", func(c *gin.Context) {
-					response.Created(c, gin.H{"message": "create post placeholder"})
-				})
+				posts.POST("", postHandler.CreatePost)
+				posts.GET("/feed", postHandler.ListPosts)
+				posts.GET("/:id", postHandler.GetPost)
+				posts.DELETE("/:id", postHandler.DeletePost)
+				posts.GET("/user/:user_id", postHandler.ListUserPosts)
 			}
 
 			// Timeline
-			protected.GET("/timeline", func(c *gin.Context) {
-				response.OK(c, gin.H{"message": "timeline placeholder"})
-			})
+			protected.GET("/timeline", postHandler.ListPosts)
 		}
 	}
 

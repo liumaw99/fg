@@ -23,66 +23,66 @@ type ProcessedEventUpdate struct {
 }
 
 // Where appends a list predicates to the ProcessedEventUpdate builder.
-func (_u *ProcessedEventUpdate) Where(ps ...predicate.ProcessedEvent) *ProcessedEventUpdate {
-	_u.mutation.Where(ps...)
-	return _u
+func (peu *ProcessedEventUpdate) Where(ps ...predicate.ProcessedEvent) *ProcessedEventUpdate {
+	peu.mutation.Where(ps...)
+	return peu
 }
 
 // SetEventID sets the "event_id" field.
-func (_u *ProcessedEventUpdate) SetEventID(v uuid.UUID) *ProcessedEventUpdate {
-	_u.mutation.SetEventID(v)
-	return _u
+func (peu *ProcessedEventUpdate) SetEventID(u uuid.UUID) *ProcessedEventUpdate {
+	peu.mutation.SetEventID(u)
+	return peu
 }
 
 // SetNillableEventID sets the "event_id" field if the given value is not nil.
-func (_u *ProcessedEventUpdate) SetNillableEventID(v *uuid.UUID) *ProcessedEventUpdate {
-	if v != nil {
-		_u.SetEventID(*v)
+func (peu *ProcessedEventUpdate) SetNillableEventID(u *uuid.UUID) *ProcessedEventUpdate {
+	if u != nil {
+		peu.SetEventID(*u)
 	}
-	return _u
+	return peu
 }
 
 // SetEventType sets the "event_type" field.
-func (_u *ProcessedEventUpdate) SetEventType(v string) *ProcessedEventUpdate {
-	_u.mutation.SetEventType(v)
-	return _u
+func (peu *ProcessedEventUpdate) SetEventType(s string) *ProcessedEventUpdate {
+	peu.mutation.SetEventType(s)
+	return peu
 }
 
 // SetNillableEventType sets the "event_type" field if the given value is not nil.
-func (_u *ProcessedEventUpdate) SetNillableEventType(v *string) *ProcessedEventUpdate {
-	if v != nil {
-		_u.SetEventType(*v)
+func (peu *ProcessedEventUpdate) SetNillableEventType(s *string) *ProcessedEventUpdate {
+	if s != nil {
+		peu.SetEventType(*s)
 	}
-	return _u
+	return peu
 }
 
 // SetConsumerGroup sets the "consumer_group" field.
-func (_u *ProcessedEventUpdate) SetConsumerGroup(v string) *ProcessedEventUpdate {
-	_u.mutation.SetConsumerGroup(v)
-	return _u
+func (peu *ProcessedEventUpdate) SetConsumerGroup(s string) *ProcessedEventUpdate {
+	peu.mutation.SetConsumerGroup(s)
+	return peu
 }
 
 // SetNillableConsumerGroup sets the "consumer_group" field if the given value is not nil.
-func (_u *ProcessedEventUpdate) SetNillableConsumerGroup(v *string) *ProcessedEventUpdate {
-	if v != nil {
-		_u.SetConsumerGroup(*v)
+func (peu *ProcessedEventUpdate) SetNillableConsumerGroup(s *string) *ProcessedEventUpdate {
+	if s != nil {
+		peu.SetConsumerGroup(*s)
 	}
-	return _u
+	return peu
 }
 
 // Mutation returns the ProcessedEventMutation object of the builder.
-func (_u *ProcessedEventUpdate) Mutation() *ProcessedEventMutation {
-	return _u.mutation
+func (peu *ProcessedEventUpdate) Mutation() *ProcessedEventMutation {
+	return peu.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (_u *ProcessedEventUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
+func (peu *ProcessedEventUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, peu.sqlSave, peu.mutation, peu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_u *ProcessedEventUpdate) SaveX(ctx context.Context) int {
-	affected, err := _u.Save(ctx)
+func (peu *ProcessedEventUpdate) SaveX(ctx context.Context) int {
+	affected, err := peu.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -90,26 +90,26 @@ func (_u *ProcessedEventUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (_u *ProcessedEventUpdate) Exec(ctx context.Context) error {
-	_, err := _u.Save(ctx)
+func (peu *ProcessedEventUpdate) Exec(ctx context.Context) error {
+	_, err := peu.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_u *ProcessedEventUpdate) ExecX(ctx context.Context) {
-	if err := _u.Exec(ctx); err != nil {
+func (peu *ProcessedEventUpdate) ExecX(ctx context.Context) {
+	if err := peu.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (_u *ProcessedEventUpdate) check() error {
-	if v, ok := _u.mutation.EventType(); ok {
+func (peu *ProcessedEventUpdate) check() error {
+	if v, ok := peu.mutation.EventType(); ok {
 		if err := processedevent.EventTypeValidator(v); err != nil {
 			return &ValidationError{Name: "event_type", err: fmt.Errorf(`ent: validator failed for field "ProcessedEvent.event_type": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.ConsumerGroup(); ok {
+	if v, ok := peu.mutation.ConsumerGroup(); ok {
 		if err := processedevent.ConsumerGroupValidator(v); err != nil {
 			return &ValidationError{Name: "consumer_group", err: fmt.Errorf(`ent: validator failed for field "ProcessedEvent.consumer_group": %w`, err)}
 		}
@@ -117,28 +117,28 @@ func (_u *ProcessedEventUpdate) check() error {
 	return nil
 }
 
-func (_u *ProcessedEventUpdate) sqlSave(ctx context.Context) (_node int, err error) {
-	if err := _u.check(); err != nil {
-		return _node, err
+func (peu *ProcessedEventUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := peu.check(); err != nil {
+		return n, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(processedevent.Table, processedevent.Columns, sqlgraph.NewFieldSpec(processedevent.FieldID, field.TypeUUID))
-	if ps := _u.mutation.predicates; len(ps) > 0 {
+	if ps := peu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := _u.mutation.EventID(); ok {
+	if value, ok := peu.mutation.EventID(); ok {
 		_spec.SetField(processedevent.FieldEventID, field.TypeUUID, value)
 	}
-	if value, ok := _u.mutation.EventType(); ok {
+	if value, ok := peu.mutation.EventType(); ok {
 		_spec.SetField(processedevent.FieldEventType, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.ConsumerGroup(); ok {
+	if value, ok := peu.mutation.ConsumerGroup(); ok {
 		_spec.SetField(processedevent.FieldConsumerGroup, field.TypeString, value)
 	}
-	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
+	if n, err = sqlgraph.UpdateNodes(ctx, peu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{processedevent.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -146,8 +146,8 @@ func (_u *ProcessedEventUpdate) sqlSave(ctx context.Context) (_node int, err err
 		}
 		return 0, err
 	}
-	_u.mutation.done = true
-	return _node, nil
+	peu.mutation.done = true
+	return n, nil
 }
 
 // ProcessedEventUpdateOne is the builder for updating a single ProcessedEvent entity.
@@ -159,73 +159,73 @@ type ProcessedEventUpdateOne struct {
 }
 
 // SetEventID sets the "event_id" field.
-func (_u *ProcessedEventUpdateOne) SetEventID(v uuid.UUID) *ProcessedEventUpdateOne {
-	_u.mutation.SetEventID(v)
-	return _u
+func (peuo *ProcessedEventUpdateOne) SetEventID(u uuid.UUID) *ProcessedEventUpdateOne {
+	peuo.mutation.SetEventID(u)
+	return peuo
 }
 
 // SetNillableEventID sets the "event_id" field if the given value is not nil.
-func (_u *ProcessedEventUpdateOne) SetNillableEventID(v *uuid.UUID) *ProcessedEventUpdateOne {
-	if v != nil {
-		_u.SetEventID(*v)
+func (peuo *ProcessedEventUpdateOne) SetNillableEventID(u *uuid.UUID) *ProcessedEventUpdateOne {
+	if u != nil {
+		peuo.SetEventID(*u)
 	}
-	return _u
+	return peuo
 }
 
 // SetEventType sets the "event_type" field.
-func (_u *ProcessedEventUpdateOne) SetEventType(v string) *ProcessedEventUpdateOne {
-	_u.mutation.SetEventType(v)
-	return _u
+func (peuo *ProcessedEventUpdateOne) SetEventType(s string) *ProcessedEventUpdateOne {
+	peuo.mutation.SetEventType(s)
+	return peuo
 }
 
 // SetNillableEventType sets the "event_type" field if the given value is not nil.
-func (_u *ProcessedEventUpdateOne) SetNillableEventType(v *string) *ProcessedEventUpdateOne {
-	if v != nil {
-		_u.SetEventType(*v)
+func (peuo *ProcessedEventUpdateOne) SetNillableEventType(s *string) *ProcessedEventUpdateOne {
+	if s != nil {
+		peuo.SetEventType(*s)
 	}
-	return _u
+	return peuo
 }
 
 // SetConsumerGroup sets the "consumer_group" field.
-func (_u *ProcessedEventUpdateOne) SetConsumerGroup(v string) *ProcessedEventUpdateOne {
-	_u.mutation.SetConsumerGroup(v)
-	return _u
+func (peuo *ProcessedEventUpdateOne) SetConsumerGroup(s string) *ProcessedEventUpdateOne {
+	peuo.mutation.SetConsumerGroup(s)
+	return peuo
 }
 
 // SetNillableConsumerGroup sets the "consumer_group" field if the given value is not nil.
-func (_u *ProcessedEventUpdateOne) SetNillableConsumerGroup(v *string) *ProcessedEventUpdateOne {
-	if v != nil {
-		_u.SetConsumerGroup(*v)
+func (peuo *ProcessedEventUpdateOne) SetNillableConsumerGroup(s *string) *ProcessedEventUpdateOne {
+	if s != nil {
+		peuo.SetConsumerGroup(*s)
 	}
-	return _u
+	return peuo
 }
 
 // Mutation returns the ProcessedEventMutation object of the builder.
-func (_u *ProcessedEventUpdateOne) Mutation() *ProcessedEventMutation {
-	return _u.mutation
+func (peuo *ProcessedEventUpdateOne) Mutation() *ProcessedEventMutation {
+	return peuo.mutation
 }
 
 // Where appends a list predicates to the ProcessedEventUpdate builder.
-func (_u *ProcessedEventUpdateOne) Where(ps ...predicate.ProcessedEvent) *ProcessedEventUpdateOne {
-	_u.mutation.Where(ps...)
-	return _u
+func (peuo *ProcessedEventUpdateOne) Where(ps ...predicate.ProcessedEvent) *ProcessedEventUpdateOne {
+	peuo.mutation.Where(ps...)
+	return peuo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (_u *ProcessedEventUpdateOne) Select(field string, fields ...string) *ProcessedEventUpdateOne {
-	_u.fields = append([]string{field}, fields...)
-	return _u
+func (peuo *ProcessedEventUpdateOne) Select(field string, fields ...string) *ProcessedEventUpdateOne {
+	peuo.fields = append([]string{field}, fields...)
+	return peuo
 }
 
 // Save executes the query and returns the updated ProcessedEvent entity.
-func (_u *ProcessedEventUpdateOne) Save(ctx context.Context) (*ProcessedEvent, error) {
-	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
+func (peuo *ProcessedEventUpdateOne) Save(ctx context.Context) (*ProcessedEvent, error) {
+	return withHooks(ctx, peuo.sqlSave, peuo.mutation, peuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_u *ProcessedEventUpdateOne) SaveX(ctx context.Context) *ProcessedEvent {
-	node, err := _u.Save(ctx)
+func (peuo *ProcessedEventUpdateOne) SaveX(ctx context.Context) *ProcessedEvent {
+	node, err := peuo.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -233,26 +233,26 @@ func (_u *ProcessedEventUpdateOne) SaveX(ctx context.Context) *ProcessedEvent {
 }
 
 // Exec executes the query on the entity.
-func (_u *ProcessedEventUpdateOne) Exec(ctx context.Context) error {
-	_, err := _u.Save(ctx)
+func (peuo *ProcessedEventUpdateOne) Exec(ctx context.Context) error {
+	_, err := peuo.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_u *ProcessedEventUpdateOne) ExecX(ctx context.Context) {
-	if err := _u.Exec(ctx); err != nil {
+func (peuo *ProcessedEventUpdateOne) ExecX(ctx context.Context) {
+	if err := peuo.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (_u *ProcessedEventUpdateOne) check() error {
-	if v, ok := _u.mutation.EventType(); ok {
+func (peuo *ProcessedEventUpdateOne) check() error {
+	if v, ok := peuo.mutation.EventType(); ok {
 		if err := processedevent.EventTypeValidator(v); err != nil {
 			return &ValidationError{Name: "event_type", err: fmt.Errorf(`ent: validator failed for field "ProcessedEvent.event_type": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.ConsumerGroup(); ok {
+	if v, ok := peuo.mutation.ConsumerGroup(); ok {
 		if err := processedevent.ConsumerGroupValidator(v); err != nil {
 			return &ValidationError{Name: "consumer_group", err: fmt.Errorf(`ent: validator failed for field "ProcessedEvent.consumer_group": %w`, err)}
 		}
@@ -260,17 +260,17 @@ func (_u *ProcessedEventUpdateOne) check() error {
 	return nil
 }
 
-func (_u *ProcessedEventUpdateOne) sqlSave(ctx context.Context) (_node *ProcessedEvent, err error) {
-	if err := _u.check(); err != nil {
+func (peuo *ProcessedEventUpdateOne) sqlSave(ctx context.Context) (_node *ProcessedEvent, err error) {
+	if err := peuo.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(processedevent.Table, processedevent.Columns, sqlgraph.NewFieldSpec(processedevent.FieldID, field.TypeUUID))
-	id, ok := _u.mutation.ID()
+	id, ok := peuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "ProcessedEvent.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := _u.fields; len(fields) > 0 {
+	if fields := peuo.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, processedevent.FieldID)
 		for _, f := range fields {
@@ -282,26 +282,26 @@ func (_u *ProcessedEventUpdateOne) sqlSave(ctx context.Context) (_node *Processe
 			}
 		}
 	}
-	if ps := _u.mutation.predicates; len(ps) > 0 {
+	if ps := peuo.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := _u.mutation.EventID(); ok {
+	if value, ok := peuo.mutation.EventID(); ok {
 		_spec.SetField(processedevent.FieldEventID, field.TypeUUID, value)
 	}
-	if value, ok := _u.mutation.EventType(); ok {
+	if value, ok := peuo.mutation.EventType(); ok {
 		_spec.SetField(processedevent.FieldEventType, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.ConsumerGroup(); ok {
+	if value, ok := peuo.mutation.ConsumerGroup(); ok {
 		_spec.SetField(processedevent.FieldConsumerGroup, field.TypeString, value)
 	}
-	_node = &ProcessedEvent{config: _u.config}
+	_node = &ProcessedEvent{config: peuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, peuo.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{processedevent.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -309,6 +309,6 @@ func (_u *ProcessedEventUpdateOne) sqlSave(ctx context.Context) (_node *Processe
 		}
 		return nil, err
 	}
-	_u.mutation.done = true
+	peuo.mutation.done = true
 	return _node, nil
 }

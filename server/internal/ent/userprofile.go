@@ -59,7 +59,7 @@ func (*UserProfile) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the UserProfile fields.
-func (_m *UserProfile) assignValues(columns []string, values []any) error {
+func (up *UserProfile) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -69,64 +69,64 @@ func (_m *UserProfile) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
-				_m.ID = *value
+				up.ID = *value
 			}
 		case userprofile.FieldUserID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value != nil {
-				_m.UserID = *value
+				up.UserID = *value
 			}
 		case userprofile.FieldDisplayName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field display_name", values[i])
 			} else if value.Valid {
-				_m.DisplayName = value.String
+				up.DisplayName = value.String
 			}
 		case userprofile.FieldBio:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field bio", values[i])
 			} else if value.Valid {
-				_m.Bio = value.String
+				up.Bio = value.String
 			}
 		case userprofile.FieldAvatarURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field avatar_url", values[i])
 			} else if value.Valid {
-				_m.AvatarURL = value.String
+				up.AvatarURL = value.String
 			}
 		case userprofile.FieldCoverURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field cover_url", values[i])
 			} else if value.Valid {
-				_m.CoverURL = value.String
+				up.CoverURL = value.String
 			}
 		case userprofile.FieldLocation:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field location", values[i])
 			} else if value.Valid {
-				_m.Location = value.String
+				up.Location = value.String
 			}
 		case userprofile.FieldWebsite:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field website", values[i])
 			} else if value.Valid {
-				_m.Website = value.String
+				up.Website = value.String
 			}
 		case userprofile.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				_m.CreatedAt = value.Time
+				up.CreatedAt = value.Time
 			}
 		case userprofile.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				_m.UpdatedAt = value.Time
+				up.UpdatedAt = value.Time
 			}
 		default:
-			_m.selectValues.Set(columns[i], values[i])
+			up.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -134,59 +134,59 @@ func (_m *UserProfile) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the UserProfile.
 // This includes values selected through modifiers, order, etc.
-func (_m *UserProfile) Value(name string) (ent.Value, error) {
-	return _m.selectValues.Get(name)
+func (up *UserProfile) Value(name string) (ent.Value, error) {
+	return up.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this UserProfile.
 // Note that you need to call UserProfile.Unwrap() before calling this method if this UserProfile
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (_m *UserProfile) Update() *UserProfileUpdateOne {
-	return NewUserProfileClient(_m.config).UpdateOne(_m)
+func (up *UserProfile) Update() *UserProfileUpdateOne {
+	return NewUserProfileClient(up.config).UpdateOne(up)
 }
 
 // Unwrap unwraps the UserProfile entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (_m *UserProfile) Unwrap() *UserProfile {
-	_tx, ok := _m.config.driver.(*txDriver)
+func (up *UserProfile) Unwrap() *UserProfile {
+	_tx, ok := up.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: UserProfile is not a transactional entity")
 	}
-	_m.config.driver = _tx.drv
-	return _m
+	up.config.driver = _tx.drv
+	return up
 }
 
 // String implements the fmt.Stringer.
-func (_m *UserProfile) String() string {
+func (up *UserProfile) String() string {
 	var builder strings.Builder
 	builder.WriteString("UserProfile(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", up.ID))
 	builder.WriteString("user_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.UserID))
+	builder.WriteString(fmt.Sprintf("%v", up.UserID))
 	builder.WriteString(", ")
 	builder.WriteString("display_name=")
-	builder.WriteString(_m.DisplayName)
+	builder.WriteString(up.DisplayName)
 	builder.WriteString(", ")
 	builder.WriteString("bio=")
-	builder.WriteString(_m.Bio)
+	builder.WriteString(up.Bio)
 	builder.WriteString(", ")
 	builder.WriteString("avatar_url=")
-	builder.WriteString(_m.AvatarURL)
+	builder.WriteString(up.AvatarURL)
 	builder.WriteString(", ")
 	builder.WriteString("cover_url=")
-	builder.WriteString(_m.CoverURL)
+	builder.WriteString(up.CoverURL)
 	builder.WriteString(", ")
 	builder.WriteString("location=")
-	builder.WriteString(_m.Location)
+	builder.WriteString(up.Location)
 	builder.WriteString(", ")
 	builder.WriteString("website=")
-	builder.WriteString(_m.Website)
+	builder.WriteString(up.Website)
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(up.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(up.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

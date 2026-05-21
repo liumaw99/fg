@@ -29,40 +29,40 @@ type UserStatsQuery struct {
 }
 
 // Where adds a new predicate for the UserStatsQuery builder.
-func (_q *UserStatsQuery) Where(ps ...predicate.UserStats) *UserStatsQuery {
-	_q.predicates = append(_q.predicates, ps...)
-	return _q
+func (usq *UserStatsQuery) Where(ps ...predicate.UserStats) *UserStatsQuery {
+	usq.predicates = append(usq.predicates, ps...)
+	return usq
 }
 
 // Limit the number of records to be returned by this query.
-func (_q *UserStatsQuery) Limit(limit int) *UserStatsQuery {
-	_q.ctx.Limit = &limit
-	return _q
+func (usq *UserStatsQuery) Limit(limit int) *UserStatsQuery {
+	usq.ctx.Limit = &limit
+	return usq
 }
 
 // Offset to start from.
-func (_q *UserStatsQuery) Offset(offset int) *UserStatsQuery {
-	_q.ctx.Offset = &offset
-	return _q
+func (usq *UserStatsQuery) Offset(offset int) *UserStatsQuery {
+	usq.ctx.Offset = &offset
+	return usq
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (_q *UserStatsQuery) Unique(unique bool) *UserStatsQuery {
-	_q.ctx.Unique = &unique
-	return _q
+func (usq *UserStatsQuery) Unique(unique bool) *UserStatsQuery {
+	usq.ctx.Unique = &unique
+	return usq
 }
 
 // Order specifies how the records should be ordered.
-func (_q *UserStatsQuery) Order(o ...userstats.OrderOption) *UserStatsQuery {
-	_q.order = append(_q.order, o...)
-	return _q
+func (usq *UserStatsQuery) Order(o ...userstats.OrderOption) *UserStatsQuery {
+	usq.order = append(usq.order, o...)
+	return usq
 }
 
 // First returns the first UserStats entity from the query.
 // Returns a *NotFoundError when no UserStats was found.
-func (_q *UserStatsQuery) First(ctx context.Context) (*UserStats, error) {
-	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
+func (usq *UserStatsQuery) First(ctx context.Context) (*UserStats, error) {
+	nodes, err := usq.Limit(1).All(setContextOp(ctx, usq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -73,8 +73,8 @@ func (_q *UserStatsQuery) First(ctx context.Context) (*UserStats, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (_q *UserStatsQuery) FirstX(ctx context.Context) *UserStats {
-	node, err := _q.First(ctx)
+func (usq *UserStatsQuery) FirstX(ctx context.Context) *UserStats {
+	node, err := usq.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -83,9 +83,9 @@ func (_q *UserStatsQuery) FirstX(ctx context.Context) *UserStats {
 
 // FirstID returns the first UserStats ID from the query.
 // Returns a *NotFoundError when no UserStats ID was found.
-func (_q *UserStatsQuery) FirstID(ctx context.Context) (id uuid.UUID, err error) {
+func (usq *UserStatsQuery) FirstID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
-	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = usq.Limit(1).IDs(setContextOp(ctx, usq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -96,8 +96,8 @@ func (_q *UserStatsQuery) FirstID(ctx context.Context) (id uuid.UUID, err error)
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (_q *UserStatsQuery) FirstIDX(ctx context.Context) uuid.UUID {
-	id, err := _q.FirstID(ctx)
+func (usq *UserStatsQuery) FirstIDX(ctx context.Context) uuid.UUID {
+	id, err := usq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -107,8 +107,8 @@ func (_q *UserStatsQuery) FirstIDX(ctx context.Context) uuid.UUID {
 // Only returns a single UserStats entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one UserStats entity is found.
 // Returns a *NotFoundError when no UserStats entities are found.
-func (_q *UserStatsQuery) Only(ctx context.Context) (*UserStats, error) {
-	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
+func (usq *UserStatsQuery) Only(ctx context.Context) (*UserStats, error) {
+	nodes, err := usq.Limit(2).All(setContextOp(ctx, usq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -123,8 +123,8 @@ func (_q *UserStatsQuery) Only(ctx context.Context) (*UserStats, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (_q *UserStatsQuery) OnlyX(ctx context.Context) *UserStats {
-	node, err := _q.Only(ctx)
+func (usq *UserStatsQuery) OnlyX(ctx context.Context) *UserStats {
+	node, err := usq.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -134,9 +134,9 @@ func (_q *UserStatsQuery) OnlyX(ctx context.Context) *UserStats {
 // OnlyID is like Only, but returns the only UserStats ID in the query.
 // Returns a *NotSingularError when more than one UserStats ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (_q *UserStatsQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error) {
+func (usq *UserStatsQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
-	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = usq.Limit(2).IDs(setContextOp(ctx, usq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -151,8 +151,8 @@ func (_q *UserStatsQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error) 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (_q *UserStatsQuery) OnlyIDX(ctx context.Context) uuid.UUID {
-	id, err := _q.OnlyID(ctx)
+func (usq *UserStatsQuery) OnlyIDX(ctx context.Context) uuid.UUID {
+	id, err := usq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -160,18 +160,18 @@ func (_q *UserStatsQuery) OnlyIDX(ctx context.Context) uuid.UUID {
 }
 
 // All executes the query and returns a list of UserStatsSlice.
-func (_q *UserStatsQuery) All(ctx context.Context) ([]*UserStats, error) {
-	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
-	if err := _q.prepareQuery(ctx); err != nil {
+func (usq *UserStatsQuery) All(ctx context.Context) ([]*UserStats, error) {
+	ctx = setContextOp(ctx, usq.ctx, ent.OpQueryAll)
+	if err := usq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*UserStats, *UserStatsQuery]()
-	return withInterceptors[[]*UserStats](ctx, _q, qr, _q.inters)
+	return withInterceptors[[]*UserStats](ctx, usq, qr, usq.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (_q *UserStatsQuery) AllX(ctx context.Context) []*UserStats {
-	nodes, err := _q.All(ctx)
+func (usq *UserStatsQuery) AllX(ctx context.Context) []*UserStats {
+	nodes, err := usq.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -179,20 +179,20 @@ func (_q *UserStatsQuery) AllX(ctx context.Context) []*UserStats {
 }
 
 // IDs executes the query and returns a list of UserStats IDs.
-func (_q *UserStatsQuery) IDs(ctx context.Context) (ids []uuid.UUID, err error) {
-	if _q.ctx.Unique == nil && _q.path != nil {
-		_q.Unique(true)
+func (usq *UserStatsQuery) IDs(ctx context.Context) (ids []uuid.UUID, err error) {
+	if usq.ctx.Unique == nil && usq.path != nil {
+		usq.Unique(true)
 	}
-	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
-	if err = _q.Select(userstats.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, usq.ctx, ent.OpQueryIDs)
+	if err = usq.Select(userstats.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (_q *UserStatsQuery) IDsX(ctx context.Context) []uuid.UUID {
-	ids, err := _q.IDs(ctx)
+func (usq *UserStatsQuery) IDsX(ctx context.Context) []uuid.UUID {
+	ids, err := usq.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -200,17 +200,17 @@ func (_q *UserStatsQuery) IDsX(ctx context.Context) []uuid.UUID {
 }
 
 // Count returns the count of the given query.
-func (_q *UserStatsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
-	if err := _q.prepareQuery(ctx); err != nil {
+func (usq *UserStatsQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, usq.ctx, ent.OpQueryCount)
+	if err := usq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, _q, querierCount[*UserStatsQuery](), _q.inters)
+	return withInterceptors[int](ctx, usq, querierCount[*UserStatsQuery](), usq.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (_q *UserStatsQuery) CountX(ctx context.Context) int {
-	count, err := _q.Count(ctx)
+func (usq *UserStatsQuery) CountX(ctx context.Context) int {
+	count, err := usq.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -218,9 +218,9 @@ func (_q *UserStatsQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (_q *UserStatsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
-	switch _, err := _q.FirstID(ctx); {
+func (usq *UserStatsQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, usq.ctx, ent.OpQueryExist)
+	switch _, err := usq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -231,8 +231,8 @@ func (_q *UserStatsQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (_q *UserStatsQuery) ExistX(ctx context.Context) bool {
-	exist, err := _q.Exist(ctx)
+func (usq *UserStatsQuery) ExistX(ctx context.Context) bool {
+	exist, err := usq.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -241,19 +241,19 @@ func (_q *UserStatsQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the UserStatsQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (_q *UserStatsQuery) Clone() *UserStatsQuery {
-	if _q == nil {
+func (usq *UserStatsQuery) Clone() *UserStatsQuery {
+	if usq == nil {
 		return nil
 	}
 	return &UserStatsQuery{
-		config:     _q.config,
-		ctx:        _q.ctx.Clone(),
-		order:      append([]userstats.OrderOption{}, _q.order...),
-		inters:     append([]Interceptor{}, _q.inters...),
-		predicates: append([]predicate.UserStats{}, _q.predicates...),
+		config:     usq.config,
+		ctx:        usq.ctx.Clone(),
+		order:      append([]userstats.OrderOption{}, usq.order...),
+		inters:     append([]Interceptor{}, usq.inters...),
+		predicates: append([]predicate.UserStats{}, usq.predicates...),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:  usq.sql.Clone(),
+		path: usq.path,
 	}
 }
 
@@ -271,10 +271,10 @@ func (_q *UserStatsQuery) Clone() *UserStatsQuery {
 //		GroupBy(userstats.FieldUserID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (_q *UserStatsQuery) GroupBy(field string, fields ...string) *UserStatsGroupBy {
-	_q.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &UserStatsGroupBy{build: _q}
-	grbuild.flds = &_q.ctx.Fields
+func (usq *UserStatsQuery) GroupBy(field string, fields ...string) *UserStatsGroupBy {
+	usq.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &UserStatsGroupBy{build: usq}
+	grbuild.flds = &usq.ctx.Fields
 	grbuild.label = userstats.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -292,62 +292,62 @@ func (_q *UserStatsQuery) GroupBy(field string, fields ...string) *UserStatsGrou
 //	client.UserStats.Query().
 //		Select(userstats.FieldUserID).
 //		Scan(ctx, &v)
-func (_q *UserStatsQuery) Select(fields ...string) *UserStatsSelect {
-	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
-	sbuild := &UserStatsSelect{UserStatsQuery: _q}
+func (usq *UserStatsQuery) Select(fields ...string) *UserStatsSelect {
+	usq.ctx.Fields = append(usq.ctx.Fields, fields...)
+	sbuild := &UserStatsSelect{UserStatsQuery: usq}
 	sbuild.label = userstats.Label
-	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &usq.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a UserStatsSelect configured with the given aggregations.
-func (_q *UserStatsQuery) Aggregate(fns ...AggregateFunc) *UserStatsSelect {
-	return _q.Select().Aggregate(fns...)
+func (usq *UserStatsQuery) Aggregate(fns ...AggregateFunc) *UserStatsSelect {
+	return usq.Select().Aggregate(fns...)
 }
 
-func (_q *UserStatsQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range _q.inters {
+func (usq *UserStatsQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range usq.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, _q); err != nil {
+			if err := trv.Traverse(ctx, usq); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range _q.ctx.Fields {
+	for _, f := range usq.ctx.Fields {
 		if !userstats.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if _q.path != nil {
-		prev, err := _q.path(ctx)
+	if usq.path != nil {
+		prev, err := usq.path(ctx)
 		if err != nil {
 			return err
 		}
-		_q.sql = prev
+		usq.sql = prev
 	}
 	return nil
 }
 
-func (_q *UserStatsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*UserStats, error) {
+func (usq *UserStatsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*UserStats, error) {
 	var (
 		nodes = []*UserStats{}
-		_spec = _q.querySpec()
+		_spec = usq.querySpec()
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*UserStats).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &UserStats{config: _q.config}
+		node := &UserStats{config: usq.config}
 		nodes = append(nodes, node)
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, usq.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
@@ -356,24 +356,24 @@ func (_q *UserStatsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Us
 	return nodes, nil
 }
 
-func (_q *UserStatsQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := _q.querySpec()
-	_spec.Node.Columns = _q.ctx.Fields
-	if len(_q.ctx.Fields) > 0 {
-		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
+func (usq *UserStatsQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := usq.querySpec()
+	_spec.Node.Columns = usq.ctx.Fields
+	if len(usq.ctx.Fields) > 0 {
+		_spec.Unique = usq.ctx.Unique != nil && *usq.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
+	return sqlgraph.CountNodes(ctx, usq.driver, _spec)
 }
 
-func (_q *UserStatsQuery) querySpec() *sqlgraph.QuerySpec {
+func (usq *UserStatsQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(userstats.Table, userstats.Columns, sqlgraph.NewFieldSpec(userstats.FieldID, field.TypeUUID))
-	_spec.From = _q.sql
-	if unique := _q.ctx.Unique; unique != nil {
+	_spec.From = usq.sql
+	if unique := usq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if _q.path != nil {
+	} else if usq.path != nil {
 		_spec.Unique = true
 	}
-	if fields := _q.ctx.Fields; len(fields) > 0 {
+	if fields := usq.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, userstats.FieldID)
 		for i := range fields {
@@ -382,20 +382,20 @@ func (_q *UserStatsQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := _q.predicates; len(ps) > 0 {
+	if ps := usq.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := _q.ctx.Limit; limit != nil {
+	if limit := usq.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := _q.ctx.Offset; offset != nil {
+	if offset := usq.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := _q.order; len(ps) > 0 {
+	if ps := usq.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -405,33 +405,33 @@ func (_q *UserStatsQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (_q *UserStatsQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(_q.driver.Dialect())
+func (usq *UserStatsQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(usq.driver.Dialect())
 	t1 := builder.Table(userstats.Table)
-	columns := _q.ctx.Fields
+	columns := usq.ctx.Fields
 	if len(columns) == 0 {
 		columns = userstats.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if _q.sql != nil {
-		selector = _q.sql
+	if usq.sql != nil {
+		selector = usq.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if _q.ctx.Unique != nil && *_q.ctx.Unique {
+	if usq.ctx.Unique != nil && *usq.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range _q.predicates {
+	for _, p := range usq.predicates {
 		p(selector)
 	}
-	for _, p := range _q.order {
+	for _, p := range usq.order {
 		p(selector)
 	}
-	if offset := _q.ctx.Offset; offset != nil {
+	if offset := usq.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := _q.ctx.Limit; limit != nil {
+	if limit := usq.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -444,41 +444,41 @@ type UserStatsGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (_g *UserStatsGroupBy) Aggregate(fns ...AggregateFunc) *UserStatsGroupBy {
-	_g.fns = append(_g.fns, fns...)
-	return _g
+func (usgb *UserStatsGroupBy) Aggregate(fns ...AggregateFunc) *UserStatsGroupBy {
+	usgb.fns = append(usgb.fns, fns...)
+	return usgb
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (_g *UserStatsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
-	if err := _g.build.prepareQuery(ctx); err != nil {
+func (usgb *UserStatsGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, usgb.build.ctx, ent.OpQueryGroupBy)
+	if err := usgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*UserStatsQuery, *UserStatsGroupBy](ctx, _g.build, _g, _g.build.inters, v)
+	return scanWithInterceptors[*UserStatsQuery, *UserStatsGroupBy](ctx, usgb.build, usgb, usgb.build.inters, v)
 }
 
-func (_g *UserStatsGroupBy) sqlScan(ctx context.Context, root *UserStatsQuery, v any) error {
+func (usgb *UserStatsGroupBy) sqlScan(ctx context.Context, root *UserStatsQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(_g.fns))
-	for _, fn := range _g.fns {
+	aggregation := make([]string, 0, len(usgb.fns))
+	for _, fn := range usgb.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
-		for _, f := range *_g.flds {
+		columns := make([]string, 0, len(*usgb.flds)+len(usgb.fns))
+		for _, f := range *usgb.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*_g.flds...)...)
+	selector.GroupBy(selector.Columns(*usgb.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := usgb.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -492,27 +492,27 @@ type UserStatsSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (_s *UserStatsSelect) Aggregate(fns ...AggregateFunc) *UserStatsSelect {
-	_s.fns = append(_s.fns, fns...)
-	return _s
+func (uss *UserStatsSelect) Aggregate(fns ...AggregateFunc) *UserStatsSelect {
+	uss.fns = append(uss.fns, fns...)
+	return uss
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (_s *UserStatsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
-	if err := _s.prepareQuery(ctx); err != nil {
+func (uss *UserStatsSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, uss.ctx, ent.OpQuerySelect)
+	if err := uss.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*UserStatsQuery, *UserStatsSelect](ctx, _s.UserStatsQuery, _s, _s.inters, v)
+	return scanWithInterceptors[*UserStatsQuery, *UserStatsSelect](ctx, uss.UserStatsQuery, uss, uss.inters, v)
 }
 
-func (_s *UserStatsSelect) sqlScan(ctx context.Context, root *UserStatsQuery, v any) error {
+func (uss *UserStatsSelect) sqlScan(ctx context.Context, root *UserStatsQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(_s.fns))
-	for _, fn := range _s.fns {
+	aggregation := make([]string, 0, len(uss.fns))
+	for _, fn := range uss.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*_s.selector.flds); {
+	switch n := len(*uss.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -520,7 +520,7 @@ func (_s *UserStatsSelect) sqlScan(ctx context.Context, root *UserStatsQuery, v 
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
+	if err := uss.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

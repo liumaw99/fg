@@ -61,7 +61,7 @@ func (*MediaAsset) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the MediaAsset fields.
-func (_m *MediaAsset) assignValues(columns []string, values []any) error {
+func (ma *MediaAsset) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -71,64 +71,64 @@ func (_m *MediaAsset) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
-				_m.ID = *value
+				ma.ID = *value
 			}
 		case mediaasset.FieldOwnerID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field owner_id", values[i])
 			} else if value != nil {
-				_m.OwnerID = *value
+				ma.OwnerID = *value
 			}
 		case mediaasset.FieldFilename:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field filename", values[i])
 			} else if value.Valid {
-				_m.Filename = value.String
+				ma.Filename = value.String
 			}
 		case mediaasset.FieldMimeType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field mime_type", values[i])
 			} else if value.Valid {
-				_m.MimeType = value.String
+				ma.MimeType = value.String
 			}
 		case mediaasset.FieldSize:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field size", values[i])
 			} else if value.Valid {
-				_m.Size = value.Int64
+				ma.Size = value.Int64
 			}
 		case mediaasset.FieldURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field url", values[i])
 			} else if value.Valid {
-				_m.URL = value.String
+				ma.URL = value.String
 			}
 		case mediaasset.FieldThumbnailURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field thumbnail_url", values[i])
 			} else if value.Valid {
-				_m.ThumbnailURL = value.String
+				ma.ThumbnailURL = value.String
 			}
 		case mediaasset.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				_m.Status = value.String
+				ma.Status = value.String
 			}
 		case mediaasset.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				_m.CreatedAt = value.Time
+				ma.CreatedAt = value.Time
 			}
 		case mediaasset.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				_m.UpdatedAt = value.Time
+				ma.UpdatedAt = value.Time
 			}
 		default:
-			_m.selectValues.Set(columns[i], values[i])
+			ma.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -136,59 +136,59 @@ func (_m *MediaAsset) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the MediaAsset.
 // This includes values selected through modifiers, order, etc.
-func (_m *MediaAsset) Value(name string) (ent.Value, error) {
-	return _m.selectValues.Get(name)
+func (ma *MediaAsset) Value(name string) (ent.Value, error) {
+	return ma.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this MediaAsset.
 // Note that you need to call MediaAsset.Unwrap() before calling this method if this MediaAsset
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (_m *MediaAsset) Update() *MediaAssetUpdateOne {
-	return NewMediaAssetClient(_m.config).UpdateOne(_m)
+func (ma *MediaAsset) Update() *MediaAssetUpdateOne {
+	return NewMediaAssetClient(ma.config).UpdateOne(ma)
 }
 
 // Unwrap unwraps the MediaAsset entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (_m *MediaAsset) Unwrap() *MediaAsset {
-	_tx, ok := _m.config.driver.(*txDriver)
+func (ma *MediaAsset) Unwrap() *MediaAsset {
+	_tx, ok := ma.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: MediaAsset is not a transactional entity")
 	}
-	_m.config.driver = _tx.drv
-	return _m
+	ma.config.driver = _tx.drv
+	return ma
 }
 
 // String implements the fmt.Stringer.
-func (_m *MediaAsset) String() string {
+func (ma *MediaAsset) String() string {
 	var builder strings.Builder
 	builder.WriteString("MediaAsset(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", ma.ID))
 	builder.WriteString("owner_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.OwnerID))
+	builder.WriteString(fmt.Sprintf("%v", ma.OwnerID))
 	builder.WriteString(", ")
 	builder.WriteString("filename=")
-	builder.WriteString(_m.Filename)
+	builder.WriteString(ma.Filename)
 	builder.WriteString(", ")
 	builder.WriteString("mime_type=")
-	builder.WriteString(_m.MimeType)
+	builder.WriteString(ma.MimeType)
 	builder.WriteString(", ")
 	builder.WriteString("size=")
-	builder.WriteString(fmt.Sprintf("%v", _m.Size))
+	builder.WriteString(fmt.Sprintf("%v", ma.Size))
 	builder.WriteString(", ")
 	builder.WriteString("url=")
-	builder.WriteString(_m.URL)
+	builder.WriteString(ma.URL)
 	builder.WriteString(", ")
 	builder.WriteString("thumbnail_url=")
-	builder.WriteString(_m.ThumbnailURL)
+	builder.WriteString(ma.ThumbnailURL)
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(_m.Status)
+	builder.WriteString(ma.Status)
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(ma.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(ma.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

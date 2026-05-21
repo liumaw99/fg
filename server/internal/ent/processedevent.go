@@ -51,7 +51,7 @@ func (*ProcessedEvent) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the ProcessedEvent fields.
-func (_m *ProcessedEvent) assignValues(columns []string, values []any) error {
+func (pe *ProcessedEvent) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -61,40 +61,40 @@ func (_m *ProcessedEvent) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
-				_m.ID = *value
+				pe.ID = *value
 			}
 		case processedevent.FieldEventID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field event_id", values[i])
 			} else if value != nil {
-				_m.EventID = *value
+				pe.EventID = *value
 			}
 		case processedevent.FieldEventType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field event_type", values[i])
 			} else if value.Valid {
-				_m.EventType = value.String
+				pe.EventType = value.String
 			}
 		case processedevent.FieldConsumerGroup:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field consumer_group", values[i])
 			} else if value.Valid {
-				_m.ConsumerGroup = value.String
+				pe.ConsumerGroup = value.String
 			}
 		case processedevent.FieldProcessedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field processed_at", values[i])
 			} else if value.Valid {
-				_m.ProcessedAt = value.Time
+				pe.ProcessedAt = value.Time
 			}
 		case processedevent.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				_m.CreatedAt = value.Time
+				pe.CreatedAt = value.Time
 			}
 		default:
-			_m.selectValues.Set(columns[i], values[i])
+			pe.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -102,47 +102,47 @@ func (_m *ProcessedEvent) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the ProcessedEvent.
 // This includes values selected through modifiers, order, etc.
-func (_m *ProcessedEvent) Value(name string) (ent.Value, error) {
-	return _m.selectValues.Get(name)
+func (pe *ProcessedEvent) Value(name string) (ent.Value, error) {
+	return pe.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this ProcessedEvent.
 // Note that you need to call ProcessedEvent.Unwrap() before calling this method if this ProcessedEvent
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (_m *ProcessedEvent) Update() *ProcessedEventUpdateOne {
-	return NewProcessedEventClient(_m.config).UpdateOne(_m)
+func (pe *ProcessedEvent) Update() *ProcessedEventUpdateOne {
+	return NewProcessedEventClient(pe.config).UpdateOne(pe)
 }
 
 // Unwrap unwraps the ProcessedEvent entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (_m *ProcessedEvent) Unwrap() *ProcessedEvent {
-	_tx, ok := _m.config.driver.(*txDriver)
+func (pe *ProcessedEvent) Unwrap() *ProcessedEvent {
+	_tx, ok := pe.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: ProcessedEvent is not a transactional entity")
 	}
-	_m.config.driver = _tx.drv
-	return _m
+	pe.config.driver = _tx.drv
+	return pe
 }
 
 // String implements the fmt.Stringer.
-func (_m *ProcessedEvent) String() string {
+func (pe *ProcessedEvent) String() string {
 	var builder strings.Builder
 	builder.WriteString("ProcessedEvent(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", pe.ID))
 	builder.WriteString("event_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.EventID))
+	builder.WriteString(fmt.Sprintf("%v", pe.EventID))
 	builder.WriteString(", ")
 	builder.WriteString("event_type=")
-	builder.WriteString(_m.EventType)
+	builder.WriteString(pe.EventType)
 	builder.WriteString(", ")
 	builder.WriteString("consumer_group=")
-	builder.WriteString(_m.ConsumerGroup)
+	builder.WriteString(pe.ConsumerGroup)
 	builder.WriteString(", ")
 	builder.WriteString("processed_at=")
-	builder.WriteString(_m.ProcessedAt.Format(time.ANSIC))
+	builder.WriteString(pe.ProcessedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(pe.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

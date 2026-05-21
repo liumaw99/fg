@@ -23,122 +23,122 @@ type UserProfileUpdate struct {
 }
 
 // Where appends a list predicates to the UserProfileUpdate builder.
-func (_u *UserProfileUpdate) Where(ps ...predicate.UserProfile) *UserProfileUpdate {
-	_u.mutation.Where(ps...)
-	return _u
+func (upu *UserProfileUpdate) Where(ps ...predicate.UserProfile) *UserProfileUpdate {
+	upu.mutation.Where(ps...)
+	return upu
 }
 
 // SetUserID sets the "user_id" field.
-func (_u *UserProfileUpdate) SetUserID(v uuid.UUID) *UserProfileUpdate {
-	_u.mutation.SetUserID(v)
-	return _u
+func (upu *UserProfileUpdate) SetUserID(u uuid.UUID) *UserProfileUpdate {
+	upu.mutation.SetUserID(u)
+	return upu
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (_u *UserProfileUpdate) SetNillableUserID(v *uuid.UUID) *UserProfileUpdate {
-	if v != nil {
-		_u.SetUserID(*v)
+func (upu *UserProfileUpdate) SetNillableUserID(u *uuid.UUID) *UserProfileUpdate {
+	if u != nil {
+		upu.SetUserID(*u)
 	}
-	return _u
+	return upu
 }
 
 // SetDisplayName sets the "display_name" field.
-func (_u *UserProfileUpdate) SetDisplayName(v string) *UserProfileUpdate {
-	_u.mutation.SetDisplayName(v)
-	return _u
+func (upu *UserProfileUpdate) SetDisplayName(s string) *UserProfileUpdate {
+	upu.mutation.SetDisplayName(s)
+	return upu
 }
 
 // SetNillableDisplayName sets the "display_name" field if the given value is not nil.
-func (_u *UserProfileUpdate) SetNillableDisplayName(v *string) *UserProfileUpdate {
-	if v != nil {
-		_u.SetDisplayName(*v)
+func (upu *UserProfileUpdate) SetNillableDisplayName(s *string) *UserProfileUpdate {
+	if s != nil {
+		upu.SetDisplayName(*s)
 	}
-	return _u
+	return upu
 }
 
 // SetBio sets the "bio" field.
-func (_u *UserProfileUpdate) SetBio(v string) *UserProfileUpdate {
-	_u.mutation.SetBio(v)
-	return _u
+func (upu *UserProfileUpdate) SetBio(s string) *UserProfileUpdate {
+	upu.mutation.SetBio(s)
+	return upu
 }
 
 // SetNillableBio sets the "bio" field if the given value is not nil.
-func (_u *UserProfileUpdate) SetNillableBio(v *string) *UserProfileUpdate {
-	if v != nil {
-		_u.SetBio(*v)
+func (upu *UserProfileUpdate) SetNillableBio(s *string) *UserProfileUpdate {
+	if s != nil {
+		upu.SetBio(*s)
 	}
-	return _u
+	return upu
 }
 
 // SetAvatarURL sets the "avatar_url" field.
-func (_u *UserProfileUpdate) SetAvatarURL(v string) *UserProfileUpdate {
-	_u.mutation.SetAvatarURL(v)
-	return _u
+func (upu *UserProfileUpdate) SetAvatarURL(s string) *UserProfileUpdate {
+	upu.mutation.SetAvatarURL(s)
+	return upu
 }
 
 // SetNillableAvatarURL sets the "avatar_url" field if the given value is not nil.
-func (_u *UserProfileUpdate) SetNillableAvatarURL(v *string) *UserProfileUpdate {
-	if v != nil {
-		_u.SetAvatarURL(*v)
+func (upu *UserProfileUpdate) SetNillableAvatarURL(s *string) *UserProfileUpdate {
+	if s != nil {
+		upu.SetAvatarURL(*s)
 	}
-	return _u
+	return upu
 }
 
 // SetCoverURL sets the "cover_url" field.
-func (_u *UserProfileUpdate) SetCoverURL(v string) *UserProfileUpdate {
-	_u.mutation.SetCoverURL(v)
-	return _u
+func (upu *UserProfileUpdate) SetCoverURL(s string) *UserProfileUpdate {
+	upu.mutation.SetCoverURL(s)
+	return upu
 }
 
 // SetNillableCoverURL sets the "cover_url" field if the given value is not nil.
-func (_u *UserProfileUpdate) SetNillableCoverURL(v *string) *UserProfileUpdate {
-	if v != nil {
-		_u.SetCoverURL(*v)
+func (upu *UserProfileUpdate) SetNillableCoverURL(s *string) *UserProfileUpdate {
+	if s != nil {
+		upu.SetCoverURL(*s)
 	}
-	return _u
+	return upu
 }
 
 // SetLocation sets the "location" field.
-func (_u *UserProfileUpdate) SetLocation(v string) *UserProfileUpdate {
-	_u.mutation.SetLocation(v)
-	return _u
+func (upu *UserProfileUpdate) SetLocation(s string) *UserProfileUpdate {
+	upu.mutation.SetLocation(s)
+	return upu
 }
 
 // SetNillableLocation sets the "location" field if the given value is not nil.
-func (_u *UserProfileUpdate) SetNillableLocation(v *string) *UserProfileUpdate {
-	if v != nil {
-		_u.SetLocation(*v)
+func (upu *UserProfileUpdate) SetNillableLocation(s *string) *UserProfileUpdate {
+	if s != nil {
+		upu.SetLocation(*s)
 	}
-	return _u
+	return upu
 }
 
 // SetWebsite sets the "website" field.
-func (_u *UserProfileUpdate) SetWebsite(v string) *UserProfileUpdate {
-	_u.mutation.SetWebsite(v)
-	return _u
+func (upu *UserProfileUpdate) SetWebsite(s string) *UserProfileUpdate {
+	upu.mutation.SetWebsite(s)
+	return upu
 }
 
 // SetNillableWebsite sets the "website" field if the given value is not nil.
-func (_u *UserProfileUpdate) SetNillableWebsite(v *string) *UserProfileUpdate {
-	if v != nil {
-		_u.SetWebsite(*v)
+func (upu *UserProfileUpdate) SetNillableWebsite(s *string) *UserProfileUpdate {
+	if s != nil {
+		upu.SetWebsite(*s)
 	}
-	return _u
+	return upu
 }
 
 // Mutation returns the UserProfileMutation object of the builder.
-func (_u *UserProfileUpdate) Mutation() *UserProfileMutation {
-	return _u.mutation
+func (upu *UserProfileUpdate) Mutation() *UserProfileMutation {
+	return upu.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (_u *UserProfileUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
+func (upu *UserProfileUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, upu.sqlSave, upu.mutation, upu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_u *UserProfileUpdate) SaveX(ctx context.Context) int {
-	affected, err := _u.Save(ctx)
+func (upu *UserProfileUpdate) SaveX(ctx context.Context) int {
+	affected, err := upu.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -146,46 +146,46 @@ func (_u *UserProfileUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (_u *UserProfileUpdate) Exec(ctx context.Context) error {
-	_, err := _u.Save(ctx)
+func (upu *UserProfileUpdate) Exec(ctx context.Context) error {
+	_, err := upu.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_u *UserProfileUpdate) ExecX(ctx context.Context) {
-	if err := _u.Exec(ctx); err != nil {
+func (upu *UserProfileUpdate) ExecX(ctx context.Context) {
+	if err := upu.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (_u *UserProfileUpdate) check() error {
-	if v, ok := _u.mutation.DisplayName(); ok {
+func (upu *UserProfileUpdate) check() error {
+	if v, ok := upu.mutation.DisplayName(); ok {
 		if err := userprofile.DisplayNameValidator(v); err != nil {
 			return &ValidationError{Name: "display_name", err: fmt.Errorf(`ent: validator failed for field "UserProfile.display_name": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.Bio(); ok {
+	if v, ok := upu.mutation.Bio(); ok {
 		if err := userprofile.BioValidator(v); err != nil {
 			return &ValidationError{Name: "bio", err: fmt.Errorf(`ent: validator failed for field "UserProfile.bio": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.AvatarURL(); ok {
+	if v, ok := upu.mutation.AvatarURL(); ok {
 		if err := userprofile.AvatarURLValidator(v); err != nil {
 			return &ValidationError{Name: "avatar_url", err: fmt.Errorf(`ent: validator failed for field "UserProfile.avatar_url": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.CoverURL(); ok {
+	if v, ok := upu.mutation.CoverURL(); ok {
 		if err := userprofile.CoverURLValidator(v); err != nil {
 			return &ValidationError{Name: "cover_url", err: fmt.Errorf(`ent: validator failed for field "UserProfile.cover_url": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.Location(); ok {
+	if v, ok := upu.mutation.Location(); ok {
 		if err := userprofile.LocationValidator(v); err != nil {
 			return &ValidationError{Name: "location", err: fmt.Errorf(`ent: validator failed for field "UserProfile.location": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.Website(); ok {
+	if v, ok := upu.mutation.Website(); ok {
 		if err := userprofile.WebsiteValidator(v); err != nil {
 			return &ValidationError{Name: "website", err: fmt.Errorf(`ent: validator failed for field "UserProfile.website": %w`, err)}
 		}
@@ -193,40 +193,40 @@ func (_u *UserProfileUpdate) check() error {
 	return nil
 }
 
-func (_u *UserProfileUpdate) sqlSave(ctx context.Context) (_node int, err error) {
-	if err := _u.check(); err != nil {
-		return _node, err
+func (upu *UserProfileUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := upu.check(); err != nil {
+		return n, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(userprofile.Table, userprofile.Columns, sqlgraph.NewFieldSpec(userprofile.FieldID, field.TypeUUID))
-	if ps := _u.mutation.predicates; len(ps) > 0 {
+	if ps := upu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := _u.mutation.UserID(); ok {
+	if value, ok := upu.mutation.UserID(); ok {
 		_spec.SetField(userprofile.FieldUserID, field.TypeUUID, value)
 	}
-	if value, ok := _u.mutation.DisplayName(); ok {
+	if value, ok := upu.mutation.DisplayName(); ok {
 		_spec.SetField(userprofile.FieldDisplayName, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.Bio(); ok {
+	if value, ok := upu.mutation.Bio(); ok {
 		_spec.SetField(userprofile.FieldBio, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.AvatarURL(); ok {
+	if value, ok := upu.mutation.AvatarURL(); ok {
 		_spec.SetField(userprofile.FieldAvatarURL, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.CoverURL(); ok {
+	if value, ok := upu.mutation.CoverURL(); ok {
 		_spec.SetField(userprofile.FieldCoverURL, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.Location(); ok {
+	if value, ok := upu.mutation.Location(); ok {
 		_spec.SetField(userprofile.FieldLocation, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.Website(); ok {
+	if value, ok := upu.mutation.Website(); ok {
 		_spec.SetField(userprofile.FieldWebsite, field.TypeString, value)
 	}
-	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
+	if n, err = sqlgraph.UpdateNodes(ctx, upu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{userprofile.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -234,8 +234,8 @@ func (_u *UserProfileUpdate) sqlSave(ctx context.Context) (_node int, err error)
 		}
 		return 0, err
 	}
-	_u.mutation.done = true
-	return _node, nil
+	upu.mutation.done = true
+	return n, nil
 }
 
 // UserProfileUpdateOne is the builder for updating a single UserProfile entity.
@@ -247,129 +247,129 @@ type UserProfileUpdateOne struct {
 }
 
 // SetUserID sets the "user_id" field.
-func (_u *UserProfileUpdateOne) SetUserID(v uuid.UUID) *UserProfileUpdateOne {
-	_u.mutation.SetUserID(v)
-	return _u
+func (upuo *UserProfileUpdateOne) SetUserID(u uuid.UUID) *UserProfileUpdateOne {
+	upuo.mutation.SetUserID(u)
+	return upuo
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (_u *UserProfileUpdateOne) SetNillableUserID(v *uuid.UUID) *UserProfileUpdateOne {
-	if v != nil {
-		_u.SetUserID(*v)
+func (upuo *UserProfileUpdateOne) SetNillableUserID(u *uuid.UUID) *UserProfileUpdateOne {
+	if u != nil {
+		upuo.SetUserID(*u)
 	}
-	return _u
+	return upuo
 }
 
 // SetDisplayName sets the "display_name" field.
-func (_u *UserProfileUpdateOne) SetDisplayName(v string) *UserProfileUpdateOne {
-	_u.mutation.SetDisplayName(v)
-	return _u
+func (upuo *UserProfileUpdateOne) SetDisplayName(s string) *UserProfileUpdateOne {
+	upuo.mutation.SetDisplayName(s)
+	return upuo
 }
 
 // SetNillableDisplayName sets the "display_name" field if the given value is not nil.
-func (_u *UserProfileUpdateOne) SetNillableDisplayName(v *string) *UserProfileUpdateOne {
-	if v != nil {
-		_u.SetDisplayName(*v)
+func (upuo *UserProfileUpdateOne) SetNillableDisplayName(s *string) *UserProfileUpdateOne {
+	if s != nil {
+		upuo.SetDisplayName(*s)
 	}
-	return _u
+	return upuo
 }
 
 // SetBio sets the "bio" field.
-func (_u *UserProfileUpdateOne) SetBio(v string) *UserProfileUpdateOne {
-	_u.mutation.SetBio(v)
-	return _u
+func (upuo *UserProfileUpdateOne) SetBio(s string) *UserProfileUpdateOne {
+	upuo.mutation.SetBio(s)
+	return upuo
 }
 
 // SetNillableBio sets the "bio" field if the given value is not nil.
-func (_u *UserProfileUpdateOne) SetNillableBio(v *string) *UserProfileUpdateOne {
-	if v != nil {
-		_u.SetBio(*v)
+func (upuo *UserProfileUpdateOne) SetNillableBio(s *string) *UserProfileUpdateOne {
+	if s != nil {
+		upuo.SetBio(*s)
 	}
-	return _u
+	return upuo
 }
 
 // SetAvatarURL sets the "avatar_url" field.
-func (_u *UserProfileUpdateOne) SetAvatarURL(v string) *UserProfileUpdateOne {
-	_u.mutation.SetAvatarURL(v)
-	return _u
+func (upuo *UserProfileUpdateOne) SetAvatarURL(s string) *UserProfileUpdateOne {
+	upuo.mutation.SetAvatarURL(s)
+	return upuo
 }
 
 // SetNillableAvatarURL sets the "avatar_url" field if the given value is not nil.
-func (_u *UserProfileUpdateOne) SetNillableAvatarURL(v *string) *UserProfileUpdateOne {
-	if v != nil {
-		_u.SetAvatarURL(*v)
+func (upuo *UserProfileUpdateOne) SetNillableAvatarURL(s *string) *UserProfileUpdateOne {
+	if s != nil {
+		upuo.SetAvatarURL(*s)
 	}
-	return _u
+	return upuo
 }
 
 // SetCoverURL sets the "cover_url" field.
-func (_u *UserProfileUpdateOne) SetCoverURL(v string) *UserProfileUpdateOne {
-	_u.mutation.SetCoverURL(v)
-	return _u
+func (upuo *UserProfileUpdateOne) SetCoverURL(s string) *UserProfileUpdateOne {
+	upuo.mutation.SetCoverURL(s)
+	return upuo
 }
 
 // SetNillableCoverURL sets the "cover_url" field if the given value is not nil.
-func (_u *UserProfileUpdateOne) SetNillableCoverURL(v *string) *UserProfileUpdateOne {
-	if v != nil {
-		_u.SetCoverURL(*v)
+func (upuo *UserProfileUpdateOne) SetNillableCoverURL(s *string) *UserProfileUpdateOne {
+	if s != nil {
+		upuo.SetCoverURL(*s)
 	}
-	return _u
+	return upuo
 }
 
 // SetLocation sets the "location" field.
-func (_u *UserProfileUpdateOne) SetLocation(v string) *UserProfileUpdateOne {
-	_u.mutation.SetLocation(v)
-	return _u
+func (upuo *UserProfileUpdateOne) SetLocation(s string) *UserProfileUpdateOne {
+	upuo.mutation.SetLocation(s)
+	return upuo
 }
 
 // SetNillableLocation sets the "location" field if the given value is not nil.
-func (_u *UserProfileUpdateOne) SetNillableLocation(v *string) *UserProfileUpdateOne {
-	if v != nil {
-		_u.SetLocation(*v)
+func (upuo *UserProfileUpdateOne) SetNillableLocation(s *string) *UserProfileUpdateOne {
+	if s != nil {
+		upuo.SetLocation(*s)
 	}
-	return _u
+	return upuo
 }
 
 // SetWebsite sets the "website" field.
-func (_u *UserProfileUpdateOne) SetWebsite(v string) *UserProfileUpdateOne {
-	_u.mutation.SetWebsite(v)
-	return _u
+func (upuo *UserProfileUpdateOne) SetWebsite(s string) *UserProfileUpdateOne {
+	upuo.mutation.SetWebsite(s)
+	return upuo
 }
 
 // SetNillableWebsite sets the "website" field if the given value is not nil.
-func (_u *UserProfileUpdateOne) SetNillableWebsite(v *string) *UserProfileUpdateOne {
-	if v != nil {
-		_u.SetWebsite(*v)
+func (upuo *UserProfileUpdateOne) SetNillableWebsite(s *string) *UserProfileUpdateOne {
+	if s != nil {
+		upuo.SetWebsite(*s)
 	}
-	return _u
+	return upuo
 }
 
 // Mutation returns the UserProfileMutation object of the builder.
-func (_u *UserProfileUpdateOne) Mutation() *UserProfileMutation {
-	return _u.mutation
+func (upuo *UserProfileUpdateOne) Mutation() *UserProfileMutation {
+	return upuo.mutation
 }
 
 // Where appends a list predicates to the UserProfileUpdate builder.
-func (_u *UserProfileUpdateOne) Where(ps ...predicate.UserProfile) *UserProfileUpdateOne {
-	_u.mutation.Where(ps...)
-	return _u
+func (upuo *UserProfileUpdateOne) Where(ps ...predicate.UserProfile) *UserProfileUpdateOne {
+	upuo.mutation.Where(ps...)
+	return upuo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (_u *UserProfileUpdateOne) Select(field string, fields ...string) *UserProfileUpdateOne {
-	_u.fields = append([]string{field}, fields...)
-	return _u
+func (upuo *UserProfileUpdateOne) Select(field string, fields ...string) *UserProfileUpdateOne {
+	upuo.fields = append([]string{field}, fields...)
+	return upuo
 }
 
 // Save executes the query and returns the updated UserProfile entity.
-func (_u *UserProfileUpdateOne) Save(ctx context.Context) (*UserProfile, error) {
-	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
+func (upuo *UserProfileUpdateOne) Save(ctx context.Context) (*UserProfile, error) {
+	return withHooks(ctx, upuo.sqlSave, upuo.mutation, upuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_u *UserProfileUpdateOne) SaveX(ctx context.Context) *UserProfile {
-	node, err := _u.Save(ctx)
+func (upuo *UserProfileUpdateOne) SaveX(ctx context.Context) *UserProfile {
+	node, err := upuo.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -377,46 +377,46 @@ func (_u *UserProfileUpdateOne) SaveX(ctx context.Context) *UserProfile {
 }
 
 // Exec executes the query on the entity.
-func (_u *UserProfileUpdateOne) Exec(ctx context.Context) error {
-	_, err := _u.Save(ctx)
+func (upuo *UserProfileUpdateOne) Exec(ctx context.Context) error {
+	_, err := upuo.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_u *UserProfileUpdateOne) ExecX(ctx context.Context) {
-	if err := _u.Exec(ctx); err != nil {
+func (upuo *UserProfileUpdateOne) ExecX(ctx context.Context) {
+	if err := upuo.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (_u *UserProfileUpdateOne) check() error {
-	if v, ok := _u.mutation.DisplayName(); ok {
+func (upuo *UserProfileUpdateOne) check() error {
+	if v, ok := upuo.mutation.DisplayName(); ok {
 		if err := userprofile.DisplayNameValidator(v); err != nil {
 			return &ValidationError{Name: "display_name", err: fmt.Errorf(`ent: validator failed for field "UserProfile.display_name": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.Bio(); ok {
+	if v, ok := upuo.mutation.Bio(); ok {
 		if err := userprofile.BioValidator(v); err != nil {
 			return &ValidationError{Name: "bio", err: fmt.Errorf(`ent: validator failed for field "UserProfile.bio": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.AvatarURL(); ok {
+	if v, ok := upuo.mutation.AvatarURL(); ok {
 		if err := userprofile.AvatarURLValidator(v); err != nil {
 			return &ValidationError{Name: "avatar_url", err: fmt.Errorf(`ent: validator failed for field "UserProfile.avatar_url": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.CoverURL(); ok {
+	if v, ok := upuo.mutation.CoverURL(); ok {
 		if err := userprofile.CoverURLValidator(v); err != nil {
 			return &ValidationError{Name: "cover_url", err: fmt.Errorf(`ent: validator failed for field "UserProfile.cover_url": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.Location(); ok {
+	if v, ok := upuo.mutation.Location(); ok {
 		if err := userprofile.LocationValidator(v); err != nil {
 			return &ValidationError{Name: "location", err: fmt.Errorf(`ent: validator failed for field "UserProfile.location": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.Website(); ok {
+	if v, ok := upuo.mutation.Website(); ok {
 		if err := userprofile.WebsiteValidator(v); err != nil {
 			return &ValidationError{Name: "website", err: fmt.Errorf(`ent: validator failed for field "UserProfile.website": %w`, err)}
 		}
@@ -424,17 +424,17 @@ func (_u *UserProfileUpdateOne) check() error {
 	return nil
 }
 
-func (_u *UserProfileUpdateOne) sqlSave(ctx context.Context) (_node *UserProfile, err error) {
-	if err := _u.check(); err != nil {
+func (upuo *UserProfileUpdateOne) sqlSave(ctx context.Context) (_node *UserProfile, err error) {
+	if err := upuo.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(userprofile.Table, userprofile.Columns, sqlgraph.NewFieldSpec(userprofile.FieldID, field.TypeUUID))
-	id, ok := _u.mutation.ID()
+	id, ok := upuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "UserProfile.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := _u.fields; len(fields) > 0 {
+	if fields := upuo.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, userprofile.FieldID)
 		for _, f := range fields {
@@ -446,38 +446,38 @@ func (_u *UserProfileUpdateOne) sqlSave(ctx context.Context) (_node *UserProfile
 			}
 		}
 	}
-	if ps := _u.mutation.predicates; len(ps) > 0 {
+	if ps := upuo.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := _u.mutation.UserID(); ok {
+	if value, ok := upuo.mutation.UserID(); ok {
 		_spec.SetField(userprofile.FieldUserID, field.TypeUUID, value)
 	}
-	if value, ok := _u.mutation.DisplayName(); ok {
+	if value, ok := upuo.mutation.DisplayName(); ok {
 		_spec.SetField(userprofile.FieldDisplayName, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.Bio(); ok {
+	if value, ok := upuo.mutation.Bio(); ok {
 		_spec.SetField(userprofile.FieldBio, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.AvatarURL(); ok {
+	if value, ok := upuo.mutation.AvatarURL(); ok {
 		_spec.SetField(userprofile.FieldAvatarURL, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.CoverURL(); ok {
+	if value, ok := upuo.mutation.CoverURL(); ok {
 		_spec.SetField(userprofile.FieldCoverURL, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.Location(); ok {
+	if value, ok := upuo.mutation.Location(); ok {
 		_spec.SetField(userprofile.FieldLocation, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.Website(); ok {
+	if value, ok := upuo.mutation.Website(); ok {
 		_spec.SetField(userprofile.FieldWebsite, field.TypeString, value)
 	}
-	_node = &UserProfile{config: _u.config}
+	_node = &UserProfile{config: upuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, upuo.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{userprofile.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -485,6 +485,6 @@ func (_u *UserProfileUpdateOne) sqlSave(ctx context.Context) (_node *UserProfile
 		}
 		return nil, err
 	}
-	_u.mutation.done = true
+	upuo.mutation.done = true
 	return _node, nil
 }

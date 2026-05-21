@@ -22,123 +22,123 @@ type UserStatsCreate struct {
 }
 
 // SetUserID sets the "user_id" field.
-func (_c *UserStatsCreate) SetUserID(v uuid.UUID) *UserStatsCreate {
-	_c.mutation.SetUserID(v)
-	return _c
+func (usc *UserStatsCreate) SetUserID(u uuid.UUID) *UserStatsCreate {
+	usc.mutation.SetUserID(u)
+	return usc
 }
 
 // SetPostCount sets the "post_count" field.
-func (_c *UserStatsCreate) SetPostCount(v int) *UserStatsCreate {
-	_c.mutation.SetPostCount(v)
-	return _c
+func (usc *UserStatsCreate) SetPostCount(i int) *UserStatsCreate {
+	usc.mutation.SetPostCount(i)
+	return usc
 }
 
 // SetNillablePostCount sets the "post_count" field if the given value is not nil.
-func (_c *UserStatsCreate) SetNillablePostCount(v *int) *UserStatsCreate {
-	if v != nil {
-		_c.SetPostCount(*v)
+func (usc *UserStatsCreate) SetNillablePostCount(i *int) *UserStatsCreate {
+	if i != nil {
+		usc.SetPostCount(*i)
 	}
-	return _c
+	return usc
 }
 
 // SetFollowerCount sets the "follower_count" field.
-func (_c *UserStatsCreate) SetFollowerCount(v int) *UserStatsCreate {
-	_c.mutation.SetFollowerCount(v)
-	return _c
+func (usc *UserStatsCreate) SetFollowerCount(i int) *UserStatsCreate {
+	usc.mutation.SetFollowerCount(i)
+	return usc
 }
 
 // SetNillableFollowerCount sets the "follower_count" field if the given value is not nil.
-func (_c *UserStatsCreate) SetNillableFollowerCount(v *int) *UserStatsCreate {
-	if v != nil {
-		_c.SetFollowerCount(*v)
+func (usc *UserStatsCreate) SetNillableFollowerCount(i *int) *UserStatsCreate {
+	if i != nil {
+		usc.SetFollowerCount(*i)
 	}
-	return _c
+	return usc
 }
 
 // SetFollowingCount sets the "following_count" field.
-func (_c *UserStatsCreate) SetFollowingCount(v int) *UserStatsCreate {
-	_c.mutation.SetFollowingCount(v)
-	return _c
+func (usc *UserStatsCreate) SetFollowingCount(i int) *UserStatsCreate {
+	usc.mutation.SetFollowingCount(i)
+	return usc
 }
 
 // SetNillableFollowingCount sets the "following_count" field if the given value is not nil.
-func (_c *UserStatsCreate) SetNillableFollowingCount(v *int) *UserStatsCreate {
-	if v != nil {
-		_c.SetFollowingCount(*v)
+func (usc *UserStatsCreate) SetNillableFollowingCount(i *int) *UserStatsCreate {
+	if i != nil {
+		usc.SetFollowingCount(*i)
 	}
-	return _c
+	return usc
 }
 
 // SetLikeReceivedCount sets the "like_received_count" field.
-func (_c *UserStatsCreate) SetLikeReceivedCount(v int) *UserStatsCreate {
-	_c.mutation.SetLikeReceivedCount(v)
-	return _c
+func (usc *UserStatsCreate) SetLikeReceivedCount(i int) *UserStatsCreate {
+	usc.mutation.SetLikeReceivedCount(i)
+	return usc
 }
 
 // SetNillableLikeReceivedCount sets the "like_received_count" field if the given value is not nil.
-func (_c *UserStatsCreate) SetNillableLikeReceivedCount(v *int) *UserStatsCreate {
-	if v != nil {
-		_c.SetLikeReceivedCount(*v)
+func (usc *UserStatsCreate) SetNillableLikeReceivedCount(i *int) *UserStatsCreate {
+	if i != nil {
+		usc.SetLikeReceivedCount(*i)
 	}
-	return _c
+	return usc
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (_c *UserStatsCreate) SetCreatedAt(v time.Time) *UserStatsCreate {
-	_c.mutation.SetCreatedAt(v)
-	return _c
+func (usc *UserStatsCreate) SetCreatedAt(t time.Time) *UserStatsCreate {
+	usc.mutation.SetCreatedAt(t)
+	return usc
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (_c *UserStatsCreate) SetNillableCreatedAt(v *time.Time) *UserStatsCreate {
-	if v != nil {
-		_c.SetCreatedAt(*v)
+func (usc *UserStatsCreate) SetNillableCreatedAt(t *time.Time) *UserStatsCreate {
+	if t != nil {
+		usc.SetCreatedAt(*t)
 	}
-	return _c
+	return usc
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (_c *UserStatsCreate) SetUpdatedAt(v time.Time) *UserStatsCreate {
-	_c.mutation.SetUpdatedAt(v)
-	return _c
+func (usc *UserStatsCreate) SetUpdatedAt(t time.Time) *UserStatsCreate {
+	usc.mutation.SetUpdatedAt(t)
+	return usc
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (_c *UserStatsCreate) SetNillableUpdatedAt(v *time.Time) *UserStatsCreate {
-	if v != nil {
-		_c.SetUpdatedAt(*v)
+func (usc *UserStatsCreate) SetNillableUpdatedAt(t *time.Time) *UserStatsCreate {
+	if t != nil {
+		usc.SetUpdatedAt(*t)
 	}
-	return _c
+	return usc
 }
 
 // SetID sets the "id" field.
-func (_c *UserStatsCreate) SetID(v uuid.UUID) *UserStatsCreate {
-	_c.mutation.SetID(v)
-	return _c
+func (usc *UserStatsCreate) SetID(u uuid.UUID) *UserStatsCreate {
+	usc.mutation.SetID(u)
+	return usc
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (_c *UserStatsCreate) SetNillableID(v *uuid.UUID) *UserStatsCreate {
-	if v != nil {
-		_c.SetID(*v)
+func (usc *UserStatsCreate) SetNillableID(u *uuid.UUID) *UserStatsCreate {
+	if u != nil {
+		usc.SetID(*u)
 	}
-	return _c
+	return usc
 }
 
 // Mutation returns the UserStatsMutation object of the builder.
-func (_c *UserStatsCreate) Mutation() *UserStatsMutation {
-	return _c.mutation
+func (usc *UserStatsCreate) Mutation() *UserStatsMutation {
+	return usc.mutation
 }
 
 // Save creates the UserStats in the database.
-func (_c *UserStatsCreate) Save(ctx context.Context) (*UserStats, error) {
-	_c.defaults()
-	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
+func (usc *UserStatsCreate) Save(ctx context.Context) (*UserStats, error) {
+	usc.defaults()
+	return withHooks(ctx, usc.sqlSave, usc.mutation, usc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (_c *UserStatsCreate) SaveX(ctx context.Context) *UserStats {
-	v, err := _c.Save(ctx)
+func (usc *UserStatsCreate) SaveX(ctx context.Context) *UserStats {
+	v, err := usc.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -146,82 +146,82 @@ func (_c *UserStatsCreate) SaveX(ctx context.Context) *UserStats {
 }
 
 // Exec executes the query.
-func (_c *UserStatsCreate) Exec(ctx context.Context) error {
-	_, err := _c.Save(ctx)
+func (usc *UserStatsCreate) Exec(ctx context.Context) error {
+	_, err := usc.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_c *UserStatsCreate) ExecX(ctx context.Context) {
-	if err := _c.Exec(ctx); err != nil {
+func (usc *UserStatsCreate) ExecX(ctx context.Context) {
+	if err := usc.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *UserStatsCreate) defaults() {
-	if _, ok := _c.mutation.PostCount(); !ok {
+func (usc *UserStatsCreate) defaults() {
+	if _, ok := usc.mutation.PostCount(); !ok {
 		v := userstats.DefaultPostCount
-		_c.mutation.SetPostCount(v)
+		usc.mutation.SetPostCount(v)
 	}
-	if _, ok := _c.mutation.FollowerCount(); !ok {
+	if _, ok := usc.mutation.FollowerCount(); !ok {
 		v := userstats.DefaultFollowerCount
-		_c.mutation.SetFollowerCount(v)
+		usc.mutation.SetFollowerCount(v)
 	}
-	if _, ok := _c.mutation.FollowingCount(); !ok {
+	if _, ok := usc.mutation.FollowingCount(); !ok {
 		v := userstats.DefaultFollowingCount
-		_c.mutation.SetFollowingCount(v)
+		usc.mutation.SetFollowingCount(v)
 	}
-	if _, ok := _c.mutation.LikeReceivedCount(); !ok {
+	if _, ok := usc.mutation.LikeReceivedCount(); !ok {
 		v := userstats.DefaultLikeReceivedCount
-		_c.mutation.SetLikeReceivedCount(v)
+		usc.mutation.SetLikeReceivedCount(v)
 	}
-	if _, ok := _c.mutation.CreatedAt(); !ok {
+	if _, ok := usc.mutation.CreatedAt(); !ok {
 		v := userstats.DefaultCreatedAt()
-		_c.mutation.SetCreatedAt(v)
+		usc.mutation.SetCreatedAt(v)
 	}
-	if _, ok := _c.mutation.UpdatedAt(); !ok {
+	if _, ok := usc.mutation.UpdatedAt(); !ok {
 		v := userstats.DefaultUpdatedAt()
-		_c.mutation.SetUpdatedAt(v)
+		usc.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := _c.mutation.ID(); !ok {
+	if _, ok := usc.mutation.ID(); !ok {
 		v := userstats.DefaultID()
-		_c.mutation.SetID(v)
+		usc.mutation.SetID(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (_c *UserStatsCreate) check() error {
-	if _, ok := _c.mutation.UserID(); !ok {
+func (usc *UserStatsCreate) check() error {
+	if _, ok := usc.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "UserStats.user_id"`)}
 	}
-	if _, ok := _c.mutation.PostCount(); !ok {
+	if _, ok := usc.mutation.PostCount(); !ok {
 		return &ValidationError{Name: "post_count", err: errors.New(`ent: missing required field "UserStats.post_count"`)}
 	}
-	if _, ok := _c.mutation.FollowerCount(); !ok {
+	if _, ok := usc.mutation.FollowerCount(); !ok {
 		return &ValidationError{Name: "follower_count", err: errors.New(`ent: missing required field "UserStats.follower_count"`)}
 	}
-	if _, ok := _c.mutation.FollowingCount(); !ok {
+	if _, ok := usc.mutation.FollowingCount(); !ok {
 		return &ValidationError{Name: "following_count", err: errors.New(`ent: missing required field "UserStats.following_count"`)}
 	}
-	if _, ok := _c.mutation.LikeReceivedCount(); !ok {
+	if _, ok := usc.mutation.LikeReceivedCount(); !ok {
 		return &ValidationError{Name: "like_received_count", err: errors.New(`ent: missing required field "UserStats.like_received_count"`)}
 	}
-	if _, ok := _c.mutation.CreatedAt(); !ok {
+	if _, ok := usc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "UserStats.created_at"`)}
 	}
-	if _, ok := _c.mutation.UpdatedAt(); !ok {
+	if _, ok := usc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "UserStats.updated_at"`)}
 	}
 	return nil
 }
 
-func (_c *UserStatsCreate) sqlSave(ctx context.Context) (*UserStats, error) {
-	if err := _c.check(); err != nil {
+func (usc *UserStatsCreate) sqlSave(ctx context.Context) (*UserStats, error) {
+	if err := usc.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := _c.createSpec()
-	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
+	_node, _spec := usc.createSpec()
+	if err := sqlgraph.CreateNode(ctx, usc.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -234,45 +234,45 @@ func (_c *UserStatsCreate) sqlSave(ctx context.Context) (*UserStats, error) {
 			return nil, err
 		}
 	}
-	_c.mutation.id = &_node.ID
-	_c.mutation.done = true
+	usc.mutation.id = &_node.ID
+	usc.mutation.done = true
 	return _node, nil
 }
 
-func (_c *UserStatsCreate) createSpec() (*UserStats, *sqlgraph.CreateSpec) {
+func (usc *UserStatsCreate) createSpec() (*UserStats, *sqlgraph.CreateSpec) {
 	var (
-		_node = &UserStats{config: _c.config}
+		_node = &UserStats{config: usc.config}
 		_spec = sqlgraph.NewCreateSpec(userstats.Table, sqlgraph.NewFieldSpec(userstats.FieldID, field.TypeUUID))
 	)
-	if id, ok := _c.mutation.ID(); ok {
+	if id, ok := usc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = &id
 	}
-	if value, ok := _c.mutation.UserID(); ok {
+	if value, ok := usc.mutation.UserID(); ok {
 		_spec.SetField(userstats.FieldUserID, field.TypeUUID, value)
 		_node.UserID = value
 	}
-	if value, ok := _c.mutation.PostCount(); ok {
+	if value, ok := usc.mutation.PostCount(); ok {
 		_spec.SetField(userstats.FieldPostCount, field.TypeInt, value)
 		_node.PostCount = value
 	}
-	if value, ok := _c.mutation.FollowerCount(); ok {
+	if value, ok := usc.mutation.FollowerCount(); ok {
 		_spec.SetField(userstats.FieldFollowerCount, field.TypeInt, value)
 		_node.FollowerCount = value
 	}
-	if value, ok := _c.mutation.FollowingCount(); ok {
+	if value, ok := usc.mutation.FollowingCount(); ok {
 		_spec.SetField(userstats.FieldFollowingCount, field.TypeInt, value)
 		_node.FollowingCount = value
 	}
-	if value, ok := _c.mutation.LikeReceivedCount(); ok {
+	if value, ok := usc.mutation.LikeReceivedCount(); ok {
 		_spec.SetField(userstats.FieldLikeReceivedCount, field.TypeInt, value)
 		_node.LikeReceivedCount = value
 	}
-	if value, ok := _c.mutation.CreatedAt(); ok {
+	if value, ok := usc.mutation.CreatedAt(); ok {
 		_spec.SetField(userstats.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := _c.mutation.UpdatedAt(); ok {
+	if value, ok := usc.mutation.UpdatedAt(); ok {
 		_spec.SetField(userstats.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
@@ -287,16 +287,16 @@ type UserStatsCreateBulk struct {
 }
 
 // Save creates the UserStats entities in the database.
-func (_c *UserStatsCreateBulk) Save(ctx context.Context) ([]*UserStats, error) {
-	if _c.err != nil {
-		return nil, _c.err
+func (uscb *UserStatsCreateBulk) Save(ctx context.Context) ([]*UserStats, error) {
+	if uscb.err != nil {
+		return nil, uscb.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
-	nodes := make([]*UserStats, len(_c.builders))
-	mutators := make([]Mutator, len(_c.builders))
-	for i := range _c.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(uscb.builders))
+	nodes := make([]*UserStats, len(uscb.builders))
+	mutators := make([]Mutator, len(uscb.builders))
+	for i := range uscb.builders {
 		func(i int, root context.Context) {
-			builder := _c.builders[i]
+			builder := uscb.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*UserStatsMutation)
@@ -310,11 +310,11 @@ func (_c *UserStatsCreateBulk) Save(ctx context.Context) ([]*UserStats, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, uscb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, uscb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -334,7 +334,7 @@ func (_c *UserStatsCreateBulk) Save(ctx context.Context) ([]*UserStats, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, uscb.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -342,8 +342,8 @@ func (_c *UserStatsCreateBulk) Save(ctx context.Context) ([]*UserStats, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_c *UserStatsCreateBulk) SaveX(ctx context.Context) []*UserStats {
-	v, err := _c.Save(ctx)
+func (uscb *UserStatsCreateBulk) SaveX(ctx context.Context) []*UserStats {
+	v, err := uscb.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -351,14 +351,14 @@ func (_c *UserStatsCreateBulk) SaveX(ctx context.Context) []*UserStats {
 }
 
 // Exec executes the query.
-func (_c *UserStatsCreateBulk) Exec(ctx context.Context) error {
-	_, err := _c.Save(ctx)
+func (uscb *UserStatsCreateBulk) Exec(ctx context.Context) error {
+	_, err := uscb.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_c *UserStatsCreateBulk) ExecX(ctx context.Context) {
-	if err := _c.Exec(ctx); err != nil {
+func (uscb *UserStatsCreateBulk) ExecX(ctx context.Context) {
+	if err := uscb.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

@@ -45,6 +45,91 @@ var (
 		Columns:    OutboxEventsColumns,
 		PrimaryKey: []*schema.Column{OutboxEventsColumns[0]},
 	}
+	// PostsColumns holds the columns for the "posts" table.
+	PostsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "user_id", Type: field.TypeUUID},
+		{Name: "content", Type: field.TypeString, Size: 2000, Default: ""},
+		{Name: "reply_to_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "repost_of_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "status", Type: field.TypeString, Default: "active"},
+		{Name: "visibility", Type: field.TypeString, Default: "public"},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
+	}
+	// PostsTable holds the schema information for the "posts" table.
+	PostsTable = &schema.Table{
+		Name:       "posts",
+		Columns:    PostsColumns,
+		PrimaryKey: []*schema.Column{PostsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "post_user_id_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{PostsColumns[1], PostsColumns[7]},
+			},
+			{
+				Name:    "post_reply_to_id_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{PostsColumns[3], PostsColumns[7]},
+			},
+			{
+				Name:    "post_repost_of_id_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{PostsColumns[4], PostsColumns[7]},
+			},
+			{
+				Name:    "post_status_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{PostsColumns[5], PostsColumns[7]},
+			},
+		},
+	}
+	// PostMediaColumns holds the columns for the "post_media" table.
+	PostMediaColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "post_id", Type: field.TypeUUID},
+		{Name: "media_asset_id", Type: field.TypeUUID},
+		{Name: "sort_order", Type: field.TypeInt, Default: 0},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// PostMediaTable holds the schema information for the "post_media" table.
+	PostMediaTable = &schema.Table{
+		Name:       "post_media",
+		Columns:    PostMediaColumns,
+		PrimaryKey: []*schema.Column{PostMediaColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "postmedia_post_id_sort_order",
+				Unique:  false,
+				Columns: []*schema.Column{PostMediaColumns[1], PostMediaColumns[3]},
+			},
+			{
+				Name:    "postmedia_media_asset_id",
+				Unique:  false,
+				Columns: []*schema.Column{PostMediaColumns[2]},
+			},
+		},
+	}
+	// PostStatsColumns holds the columns for the "post_stats" table.
+	PostStatsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "post_id", Type: field.TypeUUID, Unique: true},
+		{Name: "like_count", Type: field.TypeInt, Default: 0},
+		{Name: "reply_count", Type: field.TypeInt, Default: 0},
+		{Name: "repost_count", Type: field.TypeInt, Default: 0},
+		{Name: "bookmark_count", Type: field.TypeInt, Default: 0},
+		{Name: "view_count", Type: field.TypeInt, Default: 0},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// PostStatsTable holds the schema information for the "post_stats" table.
+	PostStatsTable = &schema.Table{
+		Name:       "post_stats",
+		Columns:    PostStatsColumns,
+		PrimaryKey: []*schema.Column{PostStatsColumns[0]},
+	}
 	// ProcessedEventsColumns holds the columns for the "processed_events" table.
 	ProcessedEventsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -151,6 +236,9 @@ var (
 	Tables = []*schema.Table{
 		MediaAssetsTable,
 		OutboxEventsTable,
+		PostsTable,
+		PostMediaTable,
+		PostStatsTable,
 		ProcessedEventsTable,
 		UsersTable,
 		UserProfilesTable,
