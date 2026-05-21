@@ -3,6 +3,7 @@ package moderation
 import (
 	"context"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/google/uuid"
 	"social-server/internal/ent"
@@ -202,8 +203,9 @@ func (s *Service) Search(ctx context.Context, req SearchRequest) (*SearchRespons
 		} else {
 			for _, p := range posts {
 				content := p.Content
-				if len(content) > 100 {
-					content = content[:100] + "..."
+				if utf8.RuneCountInString(content) > 100 {
+					runes := []rune(content)
+					content = string(runes[:100]) + "..."
 				}
 				results = append(results, SearchResult{
 					ID:      p.ID.String(),
