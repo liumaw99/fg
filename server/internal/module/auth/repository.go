@@ -125,3 +125,17 @@ func (r *Repository) DeleteSessionsByUser(ctx context.Context, userID uuid.UUID)
 		Exec(ctx)
 	return err
 }
+
+// CreateOutboxEvent creates an outbox event within the same transaction.
+func (r *Repository) CreateOutboxEvent(ctx context.Context, topic, key string, payload map[string]any) error {
+	err := r.client.OutboxEvent.Create().
+		SetTopic(topic).
+		SetKey(key).
+		SetPayload(payload).
+		SetStatus("pending").
+		Exec(ctx)
+	if err != nil {
+		return fmt.Errorf("create outbox event: %w", err)
+	}
+	return nil
+}

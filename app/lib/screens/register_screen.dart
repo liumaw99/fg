@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../providers/auth_provider.dart';
+import '../router/route_names.dart';
 import '../widgets/loading_overlay.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -16,7 +18,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -30,29 +31,35 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   Future<void> _register() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
-
-    // TODO: Call actual register API
-    await Future.delayed(const Duration(seconds: 1));
-
-    setState(() => _isLoading = false);
+    final auth = ref.read(authProvider);
+    await auth.register(
+      _usernameController.text,
+      _emailController.text,
+      _passwordController.text,
+    );
 
     if (!mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Registration successful! Please login.')),
-    );
-    context.pop();
+    if (auth.isAuthenticated) {
+      context.go(RouteNames.home);
+    } else if (auth.error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(auth.error!)),
+      );
+      auth.clearError();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final auth = ref.watch(authProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create Account'),
       ),
       body: LoadingOverlay(
-        isLoading: _isLoading,
+        isLoading: auth.isLoading,
         child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
@@ -128,7 +135,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ),
                   const SizedBox(height: 32),
                   ElevatedButton(
-                    onPressed: _isLoading ? null : _register,
+                    onPressed: auth.isLoading ? null : _register,
                     child: const Text('Create Account'),
                   ),
                   const SizedBox(height: 16),

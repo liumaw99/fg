@@ -71,6 +71,19 @@ func (s *Service) Register(ctx context.Context, req RegisterRequest) (*TokenResp
 		return nil, errors.ErrInternal
 	}
 
+	// Create outbox event for UserRegistered
+	err = repo.CreateOutboxEvent(ctx, "user.events.v1", user.ID.String(), map[string]any{
+		"event_type": "UserRegistered",
+		"user_id":    user.ID.String(),
+		"username":   user.Username,
+		"email":      user.Email,
+	})
+	if err != nil {
+		_ = tx.Rollback()
+		s.log.Error("failed to create outbox event", logger.Error(err))
+		return nil, errors.ErrInternal
+	}
+
 	if err := tx.Commit(); err != nil {
 		s.log.Error("failed to commit transaction", logger.Error(err))
 		return nil, errors.ErrInternal

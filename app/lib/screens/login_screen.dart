@@ -16,7 +16,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -28,27 +27,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
-
-    // TODO: Call actual login API
-    await Future.delayed(const Duration(seconds: 1));
+    final auth = ref.read(authProvider);
+    await auth.login(_emailController.text, _passwordController.text);
 
     if (!mounted) return;
 
-    // Mock login - replace with actual API call
-    await ref.read(authProvider).login('mock_access_token', 'mock_refresh_token');
-
-    setState(() => _isLoading = false);
-
-    if (!mounted) return;
-    context.go(RouteNames.home);
+    if (auth.isAuthenticated) {
+      context.go(RouteNames.home);
+    } else if (auth.error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(auth.error!)),
+      );
+      auth.clearError();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final auth = ref.watch(authProvider);
+
     return Scaffold(
       body: LoadingOverlay(
-        isLoading: _isLoading,
+        isLoading: auth.isLoading,
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -117,7 +117,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
-                    onPressed: _isLoading ? null : _login,
+                    onPressed: auth.isLoading ? null : _login,
                     child: const Text('Sign In'),
                   ),
                   const Spacer(),
