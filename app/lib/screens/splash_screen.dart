@@ -12,6 +12,8 @@ class SplashScreen extends ConsumerStatefulWidget {
 }
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
+  bool _navigated = false;
+
   @override
   void initState() {
     super.initState();
@@ -19,15 +21,22 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   Future<void> _checkAuth() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
 
-    if (!mounted) return;
+    if (!mounted || _navigated) return;
 
     final auth = ref.read(authProvider);
-    await auth.refreshAuth();
 
-    if (!mounted) return;
+    // 给 refreshAuth 加一个超时保护，防止 Web 端 flutter_secure_storage 卡住
+    try {
+      await auth.refreshAuth().timeout(const Duration(seconds: 2));
+    } catch (_) {
+      // 超时或出错，继续走未登录流程
+    }
 
+    if (!mounted || _navigated) return;
+
+    _navigated = true;
     if (auth.isAuthenticated) {
       context.go(RouteNames.home);
     } else {

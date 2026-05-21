@@ -17,6 +17,11 @@ func CORS(origins []string) gin.HandlerFunc {
 			}
 		}
 
+		// Development: allow all localhost origins
+		if !allowed && strings.HasPrefix(origin, "http://localhost:") {
+			allowed = true
+		}
+
 		if allowed {
 			c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
 		}
