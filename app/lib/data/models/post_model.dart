@@ -12,6 +12,7 @@ class PostModel {
   final int bookmarkCount;
   final int viewCount;
   final List<PostMedia> mediaUrls;
+  final bool isLiked;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -29,6 +30,7 @@ class PostModel {
     this.bookmarkCount = 0,
     this.viewCount = 0,
     this.mediaUrls = const [],
+    this.isLiked = false,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -51,6 +53,7 @@ class PostModel {
               ?.map((e) => PostMedia.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
+      isLiked: json['is_liked'] as bool? ?? false,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );

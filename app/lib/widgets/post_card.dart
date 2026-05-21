@@ -17,53 +17,43 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
-  bool _isLiked = false;
-  int _likeCount = 0;
+  late bool _isLiked;
+  late int _likeCount;
   bool _isLoading = false;
   final _interactionApi = InteractionApi();
 
   @override
   void initState() {
     super.initState();
+    _isLiked = widget.post.isLiked;
     _likeCount = widget.post.likeCount;
-    _checkLikeStatus();
-  }
-
-  Future<void> _checkLikeStatus() async {
-    try {
-      final status = await _interactionApi.getLikeStatus(widget.post.id);
-      if (mounted) {
-        setState(() {
-          _isLiked = status['is_liked'] as bool;
-          _likeCount = status['count'] as int;
-        });
-      }
-    } catch (_) {
-      // Ignore errors
-    }
   }
 
   Future<void> _toggleLike() async {
     if (_isLoading) return;
 
-    setState(() => _isLoading = true);
+    // Optimistic update
+    final newIsLiked = !_isLiked;
+    final newCount = newIsLiked ? _likeCount + 1 : _likeCount - 1;
+    setState(() {
+      _isLiked = newIsLiked;
+      _likeCount = newCount;
+      _isLoading = true;
+    });
 
     try {
-      if (_isLiked) {
-        await _interactionApi.unlike(widget.post.id);
-        setState(() {
-          _isLiked = false;
-          _likeCount--;
-        });
-      } else {
+      if (newIsLiked) {
         await _interactionApi.like(widget.post.id);
-        setState(() {
-          _isLiked = true;
-          _likeCount++;
-        });
+      } else {
+        await _interactionApi.unlike(widget.post.id);
       }
     } catch (e) {
+      // Revert on error
       if (mounted) {
+        setState(() {
+          _isLiked = !newIsLiked;
+          _likeCount = _isLiked ? _likeCount + 1 : _likeCount - 1;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed: $e')),
         );

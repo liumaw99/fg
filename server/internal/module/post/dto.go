@@ -23,6 +23,7 @@ type PostResponse struct {
 	BookmarkCount int          `json:"bookmark_count"`
 	ViewCount     int          `json:"view_count"`
 	MediaURLs     []MediaItem  `json:"media_urls,omitempty"`
+	IsLiked       bool         `json:"is_liked"`
 	CreatedAt     time.Time    `json:"created_at"`
 	UpdatedAt     time.Time    `json:"updated_at"`
 }

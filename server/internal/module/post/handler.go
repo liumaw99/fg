@@ -54,6 +54,13 @@ func (h *Handler) CreatePost(c *gin.Context) {
 
 // GetPost retrieves a post by ID.
 func (h *Handler) GetPost(c *gin.Context) {
+	userIDStr := middleware.GetUserID(c)
+	userID, err := uuid.Parse(userIDStr)
+	if err != nil {
+		response.Unauthorized(c, "invalid_user", "invalid user id")
+		return
+	}
+
 	postIDStr := c.Param("id")
 	postID, err := uuid.Parse(postIDStr)
 	if err != nil {
@@ -61,7 +68,7 @@ func (h *Handler) GetPost(c *gin.Context) {
 		return
 	}
 
-	post, err := h.service.GetPost(c.Request.Context(), postID)
+	post, err := h.service.GetPost(c.Request.Context(), userID, postID)
 	if err != nil {
 		var appErr *errors.AppError
 		if errors.As(err, &appErr) {
@@ -106,8 +113,15 @@ func (h *Handler) DeletePost(c *gin.Context) {
 
 // ListUserPosts retrieves posts by a user.
 func (h *Handler) ListUserPosts(c *gin.Context) {
-	userIDStr := c.Param("user_id")
-	userID, err := uuid.Parse(userIDStr)
+	currentUserIDStr := middleware.GetUserID(c)
+	currentUserID, err := uuid.Parse(currentUserIDStr)
+	if err != nil {
+		response.Unauthorized(c, "invalid_user", "invalid user id")
+		return
+	}
+
+	targetUserIDStr := c.Param("user_id")
+	targetUserID, err := uuid.Parse(targetUserIDStr)
 	if err != nil {
 		response.BadRequest(c, "invalid_user_id", "invalid user id")
 		return
@@ -121,7 +135,7 @@ func (h *Handler) ListUserPosts(c *gin.Context) {
 		}
 	}
 
-	result, err := h.service.ListUserPosts(c.Request.Context(), userID, params)
+	result, err := h.service.ListUserPosts(c.Request.Context(), targetUserID, currentUserID, params)
 	if err != nil {
 		var appErr *errors.AppError
 		if errors.As(err, &appErr) {
@@ -137,10 +151,17 @@ func (h *Handler) ListUserPosts(c *gin.Context) {
 
 // ListPosts retrieves all active posts (timeline).
 func (h *Handler) ListPosts(c *gin.Context) {
+	userIDStr := middleware.GetUserID(c)
+	userID, err := uuid.Parse(userIDStr)
+	if err != nil {
+		response.Unauthorized(c, "invalid_user", "invalid user id")
+		return
+	}
+
 	params := pagination.DefaultParams()
 	params.Cursor = c.Query("cursor")
 
-	result, err := h.service.ListPosts(c.Request.Context(), params)
+	result, err := h.service.ListPosts(c.Request.Context(), userID, params)
 	if err != nil {
 		var appErr *errors.AppError
 		if errors.As(err, &appErr) {

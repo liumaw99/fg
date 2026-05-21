@@ -8,6 +8,7 @@ import (
 	"social-server/internal/ent"
 	"social-server/internal/ent/mediaasset"
 	"social-server/internal/ent/post"
+	"social-server/internal/ent/postlike"
 	"social-server/internal/ent/postmedia"
 	"social-server/internal/ent/poststats"
 )
@@ -197,6 +198,20 @@ func (r *Repository) GetPostMediaAssets(ctx context.Context, postID uuid.UUID) (
 		return nil, fmt.Errorf("get post media: %w", err)
 	}
 	return media, nil
+}
+
+// IsLiked checks if a user liked a post.
+func (r *Repository) IsLiked(ctx context.Context, postID, userID uuid.UUID) (bool, error) {
+	exists, err := r.client.PostLike.Query().
+		Where(
+			postlike.PostID(postID),
+			postlike.UserID(userID),
+		).
+		Exist(ctx)
+	if err != nil {
+		return false, fmt.Errorf("check like: %w", err)
+	}
+	return exists, nil
 }
 
 // CreateOutboxEvent creates an outbox event within the same transaction.

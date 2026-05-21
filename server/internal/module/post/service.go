@@ -80,11 +80,11 @@ func (s *Service) CreatePost(ctx context.Context, userID uuid.UUID, req CreatePo
 		logger.String("user_id", userID.String()),
 	)
 
-	return s.buildPostResponse(ctx, post)
+	return s.buildPostResponse(ctx, post, uuid.Nil)
 }
 
 // GetPost retrieves a post by ID.
-func (s *Service) GetPost(ctx context.Context, postID uuid.UUID) (*PostResponse, error) {
+func (s *Service) GetPost(ctx context.Context, userID, postID uuid.UUID) (*PostResponse, error) {
 	post, err := s.repo.GetPostByID(ctx, postID)
 	if err != nil {
 		return nil, errors.ErrNotFound
@@ -94,7 +94,7 @@ func (s *Service) GetPost(ctx context.Context, postID uuid.UUID) (*PostResponse,
 		return nil, errors.New("post_deleted", 404, "post not found")
 	}
 
-	return s.buildPostResponse(ctx, post)
+	return s.buildPostResponse(ctx, post, userID)
 }
 
 // DeletePost soft-deletes a post if the user owns it.
@@ -122,20 +122,20 @@ func (s *Service) DeletePost(ctx context.Context, userID, postID uuid.UUID) erro
 }
 
 // ListUserPosts retrieves posts by a user.
-func (s *Service) ListUserPosts(ctx context.Context, userID uuid.UUID, params pagination.Params) (*PostListResponse, error) {
+func (s *Service) ListUserPosts(ctx context.Context, targetUserID, currentUserID uuid.UUID, params pagination.Params) (*PostListResponse, error) {
 	params.ValidateAndNormalize(50)
 
-	posts, err := s.repo.ListUserPosts(ctx, userID, params.Cursor, params.Limit)
+	posts, err := s.repo.ListUserPosts(ctx, targetUserID, params.Cursor, params.Limit)
 	if err != nil {
 		s.log.Error("failed to list user posts", logger.Error(err))
 		return nil, errors.ErrInternal
 	}
 
-	return s.buildPostListResponse(ctx, posts, params.Limit)
+	return s.buildPostListResponse(ctx, posts, params.Limit, currentUserID)
 }
 
 // ListPosts retrieves all active posts.
-func (s *Service) ListPosts(ctx context.Context, params pagination.Params) (*PostListResponse, error) {
+func (s *Service) ListPosts(ctx context.Context, currentUserID uuid.UUID, params pagination.Params) (*PostListResponse, error) {
 	params.ValidateAndNormalize(50)
 
 	posts, err := s.repo.ListPosts(ctx, params.Cursor, params.Limit)
@@ -144,11 +144,11 @@ func (s *Service) ListPosts(ctx context.Context, params pagination.Params) (*Pos
 		return nil, errors.ErrInternal
 	}
 
-	return s.buildPostListResponse(ctx, posts, params.Limit)
+	return s.buildPostListResponse(ctx, posts, params.Limit, currentUserID)
 }
 
 // buildPostResponse builds a PostResponse from an ent.Post.
-func (s *Service) buildPostResponse(ctx context.Context, post *ent.Post) (*PostResponse, error) {
+func (s *Service) buildPostResponse(ctx context.Context, post *ent.Post, currentUserID uuid.UUID) (*PostResponse, error) {
 	stats, err := s.repo.GetPostStats(ctx, post.ID)
 	if err != nil {
 		stats = &ent.PostStats{}
@@ -209,11 +209,17 @@ func (s *Service) buildPostResponse(ctx context.Context, post *ent.Post) (*PostR
 		resp.RepostOfID = post.RepostOfID.String()
 	}
 
+	// Check if current user liked this post
+	if currentUserID != uuid.Nil {
+		isLiked, _ := s.repo.IsLiked(ctx, post.ID, currentUserID)
+		resp.IsLiked = isLiked
+	}
+
 	return resp, nil
 }
 
 // buildPostListResponse builds a paginated list response.
-func (s *Service) buildPostListResponse(ctx context.Context, posts []*ent.Post, limit int) (*PostListResponse, error) {
+func (s *Service) buildPostListResponse(ctx context.Context, posts []*ent.Post, limit int, currentUserID uuid.UUID) (*PostListResponse, error) {
 	hasMore := len(posts) > limit
 	if hasMore {
 		posts = posts[:limit]
@@ -221,7 +227,7 @@ func (s *Service) buildPostListResponse(ctx context.Context, posts []*ent.Post, 
 
 	var items []PostResponse
 	for _, p := range posts {
-		resp, err := s.buildPostResponse(ctx, p)
+		resp, err := s.buildPostResponse(ctx, p, currentUserID)
 		if err != nil {
 			continue
 		}
