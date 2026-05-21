@@ -13,8 +13,10 @@ import (
 
 	"social-server/internal/ent/follow"
 	"social-server/internal/ent/mediaasset"
+	"social-server/internal/ent/notification"
 	"social-server/internal/ent/outboxevent"
 	"social-server/internal/ent/post"
+	"social-server/internal/ent/postlike"
 	"social-server/internal/ent/postmedia"
 	"social-server/internal/ent/poststats"
 	"social-server/internal/ent/processedevent"
@@ -38,10 +40,14 @@ type Client struct {
 	Follow *FollowClient
 	// MediaAsset is the client for interacting with the MediaAsset builders.
 	MediaAsset *MediaAssetClient
+	// Notification is the client for interacting with the Notification builders.
+	Notification *NotificationClient
 	// OutboxEvent is the client for interacting with the OutboxEvent builders.
 	OutboxEvent *OutboxEventClient
 	// Post is the client for interacting with the Post builders.
 	Post *PostClient
+	// PostLike is the client for interacting with the PostLike builders.
+	PostLike *PostLikeClient
 	// PostMedia is the client for interacting with the PostMedia builders.
 	PostMedia *PostMediaClient
 	// PostStats is the client for interacting with the PostStats builders.
@@ -69,8 +75,10 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Follow = NewFollowClient(c.config)
 	c.MediaAsset = NewMediaAssetClient(c.config)
+	c.Notification = NewNotificationClient(c.config)
 	c.OutboxEvent = NewOutboxEventClient(c.config)
 	c.Post = NewPostClient(c.config)
+	c.PostLike = NewPostLikeClient(c.config)
 	c.PostMedia = NewPostMediaClient(c.config)
 	c.PostStats = NewPostStatsClient(c.config)
 	c.ProcessedEvent = NewProcessedEventClient(c.config)
@@ -172,8 +180,10 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		config:         cfg,
 		Follow:         NewFollowClient(cfg),
 		MediaAsset:     NewMediaAssetClient(cfg),
+		Notification:   NewNotificationClient(cfg),
 		OutboxEvent:    NewOutboxEventClient(cfg),
 		Post:           NewPostClient(cfg),
+		PostLike:       NewPostLikeClient(cfg),
 		PostMedia:      NewPostMediaClient(cfg),
 		PostStats:      NewPostStatsClient(cfg),
 		ProcessedEvent: NewProcessedEventClient(cfg),
@@ -202,8 +212,10 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		config:         cfg,
 		Follow:         NewFollowClient(cfg),
 		MediaAsset:     NewMediaAssetClient(cfg),
+		Notification:   NewNotificationClient(cfg),
 		OutboxEvent:    NewOutboxEventClient(cfg),
 		Post:           NewPostClient(cfg),
+		PostLike:       NewPostLikeClient(cfg),
 		PostMedia:      NewPostMediaClient(cfg),
 		PostStats:      NewPostStatsClient(cfg),
 		ProcessedEvent: NewProcessedEventClient(cfg),
@@ -240,8 +252,9 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.Follow, c.MediaAsset, c.OutboxEvent, c.Post, c.PostMedia, c.PostStats,
-		c.ProcessedEvent, c.User, c.UserProfile, c.UserSession, c.UserStats,
+		c.Follow, c.MediaAsset, c.Notification, c.OutboxEvent, c.Post, c.PostLike,
+		c.PostMedia, c.PostStats, c.ProcessedEvent, c.User, c.UserProfile,
+		c.UserSession, c.UserStats,
 	} {
 		n.Use(hooks...)
 	}
@@ -251,8 +264,9 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Follow, c.MediaAsset, c.OutboxEvent, c.Post, c.PostMedia, c.PostStats,
-		c.ProcessedEvent, c.User, c.UserProfile, c.UserSession, c.UserStats,
+		c.Follow, c.MediaAsset, c.Notification, c.OutboxEvent, c.Post, c.PostLike,
+		c.PostMedia, c.PostStats, c.ProcessedEvent, c.User, c.UserProfile,
+		c.UserSession, c.UserStats,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -265,10 +279,14 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Follow.mutate(ctx, m)
 	case *MediaAssetMutation:
 		return c.MediaAsset.mutate(ctx, m)
+	case *NotificationMutation:
+		return c.Notification.mutate(ctx, m)
 	case *OutboxEventMutation:
 		return c.OutboxEvent.mutate(ctx, m)
 	case *PostMutation:
 		return c.Post.mutate(ctx, m)
+	case *PostLikeMutation:
+		return c.PostLike.mutate(ctx, m)
 	case *PostMediaMutation:
 		return c.PostMedia.mutate(ctx, m)
 	case *PostStatsMutation:
@@ -554,6 +572,139 @@ func (c *MediaAssetClient) mutate(ctx context.Context, m *MediaAssetMutation) (V
 	}
 }
 
+// NotificationClient is a client for the Notification schema.
+type NotificationClient struct {
+	config
+}
+
+// NewNotificationClient returns a client for the Notification from the given config.
+func NewNotificationClient(c config) *NotificationClient {
+	return &NotificationClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `notification.Hooks(f(g(h())))`.
+func (c *NotificationClient) Use(hooks ...Hook) {
+	c.hooks.Notification = append(c.hooks.Notification, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `notification.Intercept(f(g(h())))`.
+func (c *NotificationClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Notification = append(c.inters.Notification, interceptors...)
+}
+
+// Create returns a builder for creating a Notification entity.
+func (c *NotificationClient) Create() *NotificationCreate {
+	mutation := newNotificationMutation(c.config, OpCreate)
+	return &NotificationCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Notification entities.
+func (c *NotificationClient) CreateBulk(builders ...*NotificationCreate) *NotificationCreateBulk {
+	return &NotificationCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *NotificationClient) MapCreateBulk(slice any, setFunc func(*NotificationCreate, int)) *NotificationCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &NotificationCreateBulk{err: fmt.Errorf("calling to NotificationClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*NotificationCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &NotificationCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Notification.
+func (c *NotificationClient) Update() *NotificationUpdate {
+	mutation := newNotificationMutation(c.config, OpUpdate)
+	return &NotificationUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *NotificationClient) UpdateOne(n *Notification) *NotificationUpdateOne {
+	mutation := newNotificationMutation(c.config, OpUpdateOne, withNotification(n))
+	return &NotificationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *NotificationClient) UpdateOneID(id uuid.UUID) *NotificationUpdateOne {
+	mutation := newNotificationMutation(c.config, OpUpdateOne, withNotificationID(id))
+	return &NotificationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Notification.
+func (c *NotificationClient) Delete() *NotificationDelete {
+	mutation := newNotificationMutation(c.config, OpDelete)
+	return &NotificationDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *NotificationClient) DeleteOne(n *Notification) *NotificationDeleteOne {
+	return c.DeleteOneID(n.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *NotificationClient) DeleteOneID(id uuid.UUID) *NotificationDeleteOne {
+	builder := c.Delete().Where(notification.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &NotificationDeleteOne{builder}
+}
+
+// Query returns a query builder for Notification.
+func (c *NotificationClient) Query() *NotificationQuery {
+	return &NotificationQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeNotification},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Notification entity by its id.
+func (c *NotificationClient) Get(ctx context.Context, id uuid.UUID) (*Notification, error) {
+	return c.Query().Where(notification.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *NotificationClient) GetX(ctx context.Context, id uuid.UUID) *Notification {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *NotificationClient) Hooks() []Hook {
+	return c.hooks.Notification
+}
+
+// Interceptors returns the client interceptors.
+func (c *NotificationClient) Interceptors() []Interceptor {
+	return c.inters.Notification
+}
+
+func (c *NotificationClient) mutate(ctx context.Context, m *NotificationMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&NotificationCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&NotificationUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&NotificationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&NotificationDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Notification mutation op: %q", m.Op())
+	}
+}
+
 // OutboxEventClient is a client for the OutboxEvent schema.
 type OutboxEventClient struct {
 	config
@@ -817,6 +968,139 @@ func (c *PostClient) mutate(ctx context.Context, m *PostMutation) (Value, error)
 		return (&PostDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown Post mutation op: %q", m.Op())
+	}
+}
+
+// PostLikeClient is a client for the PostLike schema.
+type PostLikeClient struct {
+	config
+}
+
+// NewPostLikeClient returns a client for the PostLike from the given config.
+func NewPostLikeClient(c config) *PostLikeClient {
+	return &PostLikeClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `postlike.Hooks(f(g(h())))`.
+func (c *PostLikeClient) Use(hooks ...Hook) {
+	c.hooks.PostLike = append(c.hooks.PostLike, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `postlike.Intercept(f(g(h())))`.
+func (c *PostLikeClient) Intercept(interceptors ...Interceptor) {
+	c.inters.PostLike = append(c.inters.PostLike, interceptors...)
+}
+
+// Create returns a builder for creating a PostLike entity.
+func (c *PostLikeClient) Create() *PostLikeCreate {
+	mutation := newPostLikeMutation(c.config, OpCreate)
+	return &PostLikeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of PostLike entities.
+func (c *PostLikeClient) CreateBulk(builders ...*PostLikeCreate) *PostLikeCreateBulk {
+	return &PostLikeCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *PostLikeClient) MapCreateBulk(slice any, setFunc func(*PostLikeCreate, int)) *PostLikeCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &PostLikeCreateBulk{err: fmt.Errorf("calling to PostLikeClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*PostLikeCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &PostLikeCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for PostLike.
+func (c *PostLikeClient) Update() *PostLikeUpdate {
+	mutation := newPostLikeMutation(c.config, OpUpdate)
+	return &PostLikeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *PostLikeClient) UpdateOne(pl *PostLike) *PostLikeUpdateOne {
+	mutation := newPostLikeMutation(c.config, OpUpdateOne, withPostLike(pl))
+	return &PostLikeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *PostLikeClient) UpdateOneID(id uuid.UUID) *PostLikeUpdateOne {
+	mutation := newPostLikeMutation(c.config, OpUpdateOne, withPostLikeID(id))
+	return &PostLikeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for PostLike.
+func (c *PostLikeClient) Delete() *PostLikeDelete {
+	mutation := newPostLikeMutation(c.config, OpDelete)
+	return &PostLikeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *PostLikeClient) DeleteOne(pl *PostLike) *PostLikeDeleteOne {
+	return c.DeleteOneID(pl.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *PostLikeClient) DeleteOneID(id uuid.UUID) *PostLikeDeleteOne {
+	builder := c.Delete().Where(postlike.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &PostLikeDeleteOne{builder}
+}
+
+// Query returns a query builder for PostLike.
+func (c *PostLikeClient) Query() *PostLikeQuery {
+	return &PostLikeQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypePostLike},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a PostLike entity by its id.
+func (c *PostLikeClient) Get(ctx context.Context, id uuid.UUID) (*PostLike, error) {
+	return c.Query().Where(postlike.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *PostLikeClient) GetX(ctx context.Context, id uuid.UUID) *PostLike {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *PostLikeClient) Hooks() []Hook {
+	return c.hooks.PostLike
+}
+
+// Interceptors returns the client interceptors.
+func (c *PostLikeClient) Interceptors() []Interceptor {
+	return c.inters.PostLike
+}
+
+func (c *PostLikeClient) mutate(ctx context.Context, m *PostLikeMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&PostLikeCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&PostLikeUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&PostLikeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&PostLikeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown PostLike mutation op: %q", m.Op())
 	}
 }
 
@@ -1754,11 +2038,12 @@ func (c *UserStatsClient) mutate(ctx context.Context, m *UserStatsMutation) (Val
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Follow, MediaAsset, OutboxEvent, Post, PostMedia, PostStats, ProcessedEvent,
-		User, UserProfile, UserSession, UserStats []ent.Hook
+		Follow, MediaAsset, Notification, OutboxEvent, Post, PostLike, PostMedia,
+		PostStats, ProcessedEvent, User, UserProfile, UserSession, UserStats []ent.Hook
 	}
 	inters struct {
-		Follow, MediaAsset, OutboxEvent, Post, PostMedia, PostStats, ProcessedEvent,
-		User, UserProfile, UserSession, UserStats []ent.Interceptor
+		Follow, MediaAsset, Notification, OutboxEvent, Post, PostLike, PostMedia,
+		PostStats, ProcessedEvent, User, UserProfile, UserSession,
+		UserStats []ent.Interceptor
 	}
 )

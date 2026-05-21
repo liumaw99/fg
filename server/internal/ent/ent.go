@@ -9,8 +9,10 @@ import (
 	"reflect"
 	"social-server/internal/ent/follow"
 	"social-server/internal/ent/mediaasset"
+	"social-server/internal/ent/notification"
 	"social-server/internal/ent/outboxevent"
 	"social-server/internal/ent/post"
+	"social-server/internal/ent/postlike"
 	"social-server/internal/ent/postmedia"
 	"social-server/internal/ent/poststats"
 	"social-server/internal/ent/processedevent"
@@ -85,8 +87,10 @@ func checkColumn(table, column string) error {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			follow.Table:         follow.ValidColumn,
 			mediaasset.Table:     mediaasset.ValidColumn,
+			notification.Table:   notification.ValidColumn,
 			outboxevent.Table:    outboxevent.ValidColumn,
 			post.Table:           post.ValidColumn,
+			postlike.Table:       postlike.ValidColumn,
 			postmedia.Table:      postmedia.ValidColumn,
 			poststats.Table:      poststats.ValidColumn,
 			processedevent.Table: processedevent.ValidColumn,

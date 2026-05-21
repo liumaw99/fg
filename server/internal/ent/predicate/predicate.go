@@ -12,11 +12,17 @@ type Follow func(*sql.Selector)
 // MediaAsset is the predicate function for mediaasset builders.
 type MediaAsset func(*sql.Selector)
 
+// Notification is the predicate function for notification builders.
+type Notification func(*sql.Selector)
+
 // OutboxEvent is the predicate function for outboxevent builders.
 type OutboxEvent func(*sql.Selector)
 
 // Post is the predicate function for post builders.
 type Post func(*sql.Selector)
+
+// PostLike is the predicate function for postlike builders.
+type PostLike func(*sql.Selector)
 
 // PostMedia is the predicate function for postmedia builders.
 type PostMedia func(*sql.Selector)

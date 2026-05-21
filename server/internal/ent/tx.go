@@ -16,10 +16,14 @@ type Tx struct {
 	Follow *FollowClient
 	// MediaAsset is the client for interacting with the MediaAsset builders.
 	MediaAsset *MediaAssetClient
+	// Notification is the client for interacting with the Notification builders.
+	Notification *NotificationClient
 	// OutboxEvent is the client for interacting with the OutboxEvent builders.
 	OutboxEvent *OutboxEventClient
 	// Post is the client for interacting with the Post builders.
 	Post *PostClient
+	// PostLike is the client for interacting with the PostLike builders.
+	PostLike *PostLikeClient
 	// PostMedia is the client for interacting with the PostMedia builders.
 	PostMedia *PostMediaClient
 	// PostStats is the client for interacting with the PostStats builders.
@@ -167,8 +171,10 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Follow = NewFollowClient(tx.config)
 	tx.MediaAsset = NewMediaAssetClient(tx.config)
+	tx.Notification = NewNotificationClient(tx.config)
 	tx.OutboxEvent = NewOutboxEventClient(tx.config)
 	tx.Post = NewPostClient(tx.config)
+	tx.PostLike = NewPostLikeClient(tx.config)
 	tx.PostMedia = NewPostMediaClient(tx.config)
 	tx.PostStats = NewPostStatsClient(tx.config)
 	tx.ProcessedEvent = NewProcessedEventClient(tx.config)

@@ -5,8 +5,10 @@ package ent
 import (
 	"social-server/internal/ent/follow"
 	"social-server/internal/ent/mediaasset"
+	"social-server/internal/ent/notification"
 	"social-server/internal/ent/outboxevent"
 	"social-server/internal/ent/post"
+	"social-server/internal/ent/postlike"
 	"social-server/internal/ent/postmedia"
 	"social-server/internal/ent/poststats"
 	"social-server/internal/ent/processedevent"
@@ -104,6 +106,28 @@ func init() {
 	mediaassetDescID := mediaassetFields[0].Descriptor()
 	// mediaasset.DefaultID holds the default value on creation for the id field.
 	mediaasset.DefaultID = mediaassetDescID.Default.(func() uuid.UUID)
+	notificationFields := schema.Notification{}.Fields()
+	_ = notificationFields
+	// notificationDescType is the schema descriptor for type field.
+	notificationDescType := notificationFields[3].Descriptor()
+	// notification.TypeValidator is a validator for the "type" field. It is called by the builders before save.
+	notification.TypeValidator = notificationDescType.Validators[0].(func(string) error)
+	// notificationDescContent is the schema descriptor for content field.
+	notificationDescContent := notificationFields[5].Descriptor()
+	// notification.DefaultContent holds the default value on creation for the content field.
+	notification.DefaultContent = notificationDescContent.Default.(string)
+	// notificationDescIsRead is the schema descriptor for is_read field.
+	notificationDescIsRead := notificationFields[6].Descriptor()
+	// notification.DefaultIsRead holds the default value on creation for the is_read field.
+	notification.DefaultIsRead = notificationDescIsRead.Default.(bool)
+	// notificationDescCreatedAt is the schema descriptor for created_at field.
+	notificationDescCreatedAt := notificationFields[7].Descriptor()
+	// notification.DefaultCreatedAt holds the default value on creation for the created_at field.
+	notification.DefaultCreatedAt = notificationDescCreatedAt.Default.(func() time.Time)
+	// notificationDescID is the schema descriptor for id field.
+	notificationDescID := notificationFields[0].Descriptor()
+	// notification.DefaultID holds the default value on creation for the id field.
+	notification.DefaultID = notificationDescID.Default.(func() uuid.UUID)
 	outboxeventFields := schema.OutboxEvent{}.Fields()
 	_ = outboxeventFields
 	// outboxeventDescTopic is the schema descriptor for topic field.
@@ -180,6 +204,16 @@ func init() {
 	postDescID := postFields[0].Descriptor()
 	// post.DefaultID holds the default value on creation for the id field.
 	post.DefaultID = postDescID.Default.(func() uuid.UUID)
+	postlikeFields := schema.PostLike{}.Fields()
+	_ = postlikeFields
+	// postlikeDescCreatedAt is the schema descriptor for created_at field.
+	postlikeDescCreatedAt := postlikeFields[3].Descriptor()
+	// postlike.DefaultCreatedAt holds the default value on creation for the created_at field.
+	postlike.DefaultCreatedAt = postlikeDescCreatedAt.Default.(func() time.Time)
+	// postlikeDescID is the schema descriptor for id field.
+	postlikeDescID := postlikeFields[0].Descriptor()
+	// postlike.DefaultID holds the default value on creation for the id field.
+	postlike.DefaultID = postlikeDescID.Default.(func() uuid.UUID)
 	postmediaFields := schema.PostMedia{}.Fields()
 	_ = postmediaFields
 	// postmediaDescSortOrder is the schema descriptor for sort_order field.

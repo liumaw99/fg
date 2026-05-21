@@ -57,6 +57,35 @@ var (
 		Columns:    MediaAssetsColumns,
 		PrimaryKey: []*schema.Column{MediaAssetsColumns[0]},
 	}
+	// NotificationsColumns holds the columns for the "notifications" table.
+	NotificationsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "user_id", Type: field.TypeUUID},
+		{Name: "actor_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "type", Type: field.TypeString},
+		{Name: "post_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "content", Type: field.TypeString, Size: 2147483647, Default: ""},
+		{Name: "is_read", Type: field.TypeBool, Default: false},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// NotificationsTable holds the schema information for the "notifications" table.
+	NotificationsTable = &schema.Table{
+		Name:       "notifications",
+		Columns:    NotificationsColumns,
+		PrimaryKey: []*schema.Column{NotificationsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "notification_user_id_is_read_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{NotificationsColumns[1], NotificationsColumns[6], NotificationsColumns[7]},
+			},
+			{
+				Name:    "notification_user_id_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{NotificationsColumns[1], NotificationsColumns[7]},
+			},
+		},
+	}
 	// OutboxEventsColumns holds the columns for the "outbox_events" table.
 	OutboxEventsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -113,6 +142,36 @@ var (
 				Name:    "post_status_created_at",
 				Unique:  false,
 				Columns: []*schema.Column{PostsColumns[5], PostsColumns[7]},
+			},
+		},
+	}
+	// PostLikesColumns holds the columns for the "post_likes" table.
+	PostLikesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "post_id", Type: field.TypeUUID},
+		{Name: "user_id", Type: field.TypeUUID},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// PostLikesTable holds the schema information for the "post_likes" table.
+	PostLikesTable = &schema.Table{
+		Name:       "post_likes",
+		Columns:    PostLikesColumns,
+		PrimaryKey: []*schema.Column{PostLikesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "postlike_post_id_user_id",
+				Unique:  true,
+				Columns: []*schema.Column{PostLikesColumns[1], PostLikesColumns[2]},
+			},
+			{
+				Name:    "postlike_post_id_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{PostLikesColumns[1], PostLikesColumns[3]},
+			},
+			{
+				Name:    "postlike_user_id_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{PostLikesColumns[2], PostLikesColumns[3]},
 			},
 		},
 	}
@@ -266,8 +325,10 @@ var (
 	Tables = []*schema.Table{
 		FollowsTable,
 		MediaAssetsTable,
+		NotificationsTable,
 		OutboxEventsTable,
 		PostsTable,
+		PostLikesTable,
 		PostMediaTable,
 		PostStatsTable,
 		ProcessedEventsTable,

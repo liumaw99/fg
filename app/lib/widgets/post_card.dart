@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import '../data/api/interaction_api.dart';
 import '../data/models/post_model.dart';
 
-class PostCard extends StatelessWidget {
+class PostCard extends StatefulWidget {
   final PostModel post;
   final VoidCallback? onTap;
 
@@ -12,9 +13,72 @@ class PostCard extends StatelessWidget {
   });
 
   @override
+  State<PostCard> createState() => _PostCardState();
+}
+
+class _PostCardState extends State<PostCard> {
+  bool _isLiked = false;
+  int _likeCount = 0;
+  bool _isLoading = false;
+  final _interactionApi = InteractionApi();
+
+  @override
+  void initState() {
+    super.initState();
+    _likeCount = widget.post.likeCount;
+    _checkLikeStatus();
+  }
+
+  Future<void> _checkLikeStatus() async {
+    try {
+      final status = await _interactionApi.getLikeStatus(widget.post.id);
+      if (mounted) {
+        setState(() {
+          _isLiked = status['is_liked'] as bool;
+          _likeCount = status['count'] as int;
+        });
+      }
+    } catch (_) {
+      // Ignore errors
+    }
+  }
+
+  Future<void> _toggleLike() async {
+    if (_isLoading) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      if (_isLiked) {
+        await _interactionApi.unlike(widget.post.id);
+        setState(() {
+          _isLiked = false;
+          _likeCount--;
+        });
+      } else {
+        await _interactionApi.like(widget.post.id);
+        setState(() {
+          _isLiked = true;
+          _likeCount++;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed: $e')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: widget.onTap,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -31,7 +95,7 @@ class PostCard extends StatelessWidget {
                   radius: 20,
                   backgroundColor: Theme.of(context).colorScheme.primary.withAlpha(30),
                   child: Text(
-                    post.userId.substring(0, 2).toUpperCase(),
+                    widget.post.userId.substring(0, 2).toUpperCase(),
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.primary,
                       fontWeight: FontWeight.bold,
@@ -43,14 +107,14 @@ class PostCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'User',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
-                        post.formattedTime,
+                        widget.post.formattedTime,
                         style: TextStyle(
                           color: Colors.grey.shade600,
                           fontSize: 13,
@@ -63,10 +127,10 @@ class PostCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              post.content,
+              widget.post.content,
               style: const TextStyle(fontSize: 15, height: 1.4),
             ),
-            if (post.mediaUrls.isNotEmpty) ...[
+            if (widget.post.mediaUrls.isNotEmpty) ...[
               const SizedBox(height: 12),
               _buildMediaGrid(),
             ],
@@ -79,7 +143,7 @@ class PostCard extends StatelessWidget {
   }
 
   Widget _buildMediaGrid() {
-    final media = post.mediaUrls;
+    final media = widget.post.mediaUrls;
     if (media.length == 1) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(12),
@@ -124,18 +188,19 @@ class PostCard extends StatelessWidget {
       children: [
         _ActionButton(
           icon: Icons.chat_bubble_outline,
-          count: post.replyCount,
+          count: widget.post.replyCount,
           onTap: () {},
         ),
         _ActionButton(
           icon: Icons.repeat,
-          count: post.repostCount,
+          count: widget.post.repostCount,
           onTap: () {},
         ),
-        _ActionButton(
-          icon: Icons.favorite_outline,
-          count: post.likeCount,
-          onTap: () {},
+        _LikeButton(
+          isLiked: _isLiked,
+          count: _likeCount,
+          isLoading: _isLoading,
+          onTap: _toggleLike,
         ),
         _ActionButton(
           icon: Icons.bookmark_outline,
@@ -177,6 +242,61 @@ class _ActionButton extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.grey.shade600,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  String _formatCount(int n) {
+    if (n >= 1000000) return '${(n / 1000000).toStringAsFixed(1)}M';
+    if (n >= 1000) return '${(n / 1000).toStringAsFixed(1)}K';
+    return n.toString();
+  }
+}
+
+class _LikeButton extends StatelessWidget {
+  final bool isLiked;
+  final int count;
+  final bool isLoading;
+  final VoidCallback onTap;
+
+  const _LikeButton({
+    required this.isLiked,
+    required this.count,
+    required this.isLoading,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: isLoading ? null : onTap,
+      child: Row(
+        children: [
+          isLoading
+              ? SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: isLiked ? Colors.red : Colors.grey.shade600,
+                  ),
+                )
+              : Icon(
+                  isLiked ? Icons.favorite : Icons.favorite_outline,
+                  size: 18,
+                  color: isLiked ? Colors.red : Colors.grey.shade600,
+                ),
+          if (count > 0) ...[
+            const SizedBox(width: 4),
+            Text(
+              _formatCount(count),
+              style: TextStyle(
+                fontSize: 12,
+                color: isLiked ? Colors.red : Colors.grey.shade600,
               ),
             ),
           ],
