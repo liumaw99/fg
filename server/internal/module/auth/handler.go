@@ -127,10 +127,23 @@ func (h *Handler) Me(c *gin.Context) {
 		return
 	}
 
+	profile, _ := h.service.GetUserProfile(c.Request.Context(), userID)
+	displayName := ""
+	avatarURL := ""
+	coverURL := ""
+	if profile != nil {
+		displayName = profile.DisplayName
+		avatarURL = profile.AvatarURL
+		coverURL = profile.CoverURL
+	}
+
 	response.OK(c, gin.H{
-		"id":       user.ID.String(),
-		"username": user.Username,
-		"email":    user.Email,
-		"status":   user.Status,
+		"id":           user.ID.String(),
+		"username":     user.Username,
+		"email":        user.Email,
+		"status":       user.Status,
+		"display_name": displayName,
+		"avatar_url":   avatarURL,
+		"cover_url":    coverURL,
 	})
 }

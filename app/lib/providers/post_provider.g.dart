@@ -442,5 +442,21 @@ final createPostProvider =
     );
 
 typedef _$CreatePost = AutoDisposeAsyncNotifier<void>;
+String _$createRepostHash() => r'93c55f7173848df281785b5f9b4d6b94da0138a8';
+
+/// See also [CreateRepost].
+@ProviderFor(CreateRepost)
+final createRepostProvider =
+    AutoDisposeAsyncNotifierProvider<CreateRepost, void>.internal(
+      CreateRepost.new,
+      name: r'createRepostProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$createRepostHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$CreateRepost = AutoDisposeAsyncNotifier<void>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

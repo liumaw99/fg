@@ -165,3 +165,28 @@ class CreatePost extends _$CreatePost {
     }
   }
 }
+
+@riverpod
+class CreateRepost extends _$CreateRepost {
+  @override
+  FutureOr<void> build() => null;
+
+  Future<void> createRepost(
+    String postId, {
+    String content = '',
+    List<String>? mediaAssetIds,
+  }) async {
+    state = const AsyncValue.loading();
+    try {
+      final api = ref.read(postApiProvider);
+      await api.createRepost(
+        postId,
+        content: content,
+        mediaAssetIds: mediaAssetIds,
+      );
+      state = const AsyncValue.data(null);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+}

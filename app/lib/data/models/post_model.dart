@@ -36,6 +36,7 @@ class PostModel {
   final String content;
   final String? replyToId;
   final String? repostOfId;
+  final PostModel? repostOf;
   final String status;
   final String visibility;
   final int likeCount;
@@ -57,6 +58,7 @@ class PostModel {
     required this.content,
     this.replyToId,
     this.repostOfId,
+    this.repostOf,
     required this.status,
     required this.visibility,
     this.likeCount = 0,
@@ -82,6 +84,9 @@ class PostModel {
       content: json['content'] as String,
       replyToId: json['reply_to_id'] as String?,
       repostOfId: json['repost_of_id'] as String?,
+      repostOf: json['repost_of'] == null
+          ? null
+          : PostModel.fromJson(json['repost_of'] as Map<String, dynamic>),
       status: json['status'] as String,
       visibility: json['visibility'] as String,
       likeCount: json['like_count'] as int? ?? 0,
@@ -120,6 +125,7 @@ class PostModel {
       content: content,
       replyToId: replyToId,
       repostOfId: repostOfId,
+      repostOf: repostOf,
       status: status,
       visibility: visibility,
       likeCount: likeCount ?? this.likeCount,

@@ -102,6 +102,31 @@ class PostApi {
     }
   }
 
+  Future<PostModel> createRepost(
+    String postId, {
+    String content = '',
+    List<String>? mediaAssetIds,
+  }) async {
+    try {
+      final response = await _client.dio.post(
+        '${ApiConstants.posts}/$postId/reposts',
+        data: {
+          'content': content,
+          if (mediaAssetIds != null && mediaAssetIds.isNotEmpty)
+            'media_asset_ids': mediaAssetIds,
+        },
+      );
+      return PostModel.fromJson(response.data['data'] as Map<String, dynamic>);
+    } on ApiError {
+      rethrow;
+    } on DioException catch (e) {
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
+    }
+  }
+
   Future<PostListResponse> getFeed({String? cursor}) async {
     try {
       final response = await _client.dio.get(

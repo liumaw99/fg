@@ -13,6 +13,12 @@ type CreateReplyRequest struct {
 	Content string `json:"content" binding:"required,max=2000"`
 }
 
+// CreateRepostRequest represents a repost creation request.
+type CreateRepostRequest struct {
+	Content       string   `json:"content" binding:"max=2000"`
+	MediaAssetIDs []string `json:"media_asset_ids"`
+}
+
 // PostAuthor represents the author summary embedded in PostResponse.
 type PostAuthor struct {
 	ID          string `json:"id"`
@@ -30,6 +36,7 @@ type PostResponse struct {
 	ReplyToID         string         `json:"reply_to_id,omitempty"`
 	ReplyToAuthorName string         `json:"reply_to_author_name,omitempty"`
 	RepostOfID        string         `json:"repost_of_id,omitempty"`
+	RepostOf          *PostResponse  `json:"repost_of,omitempty"`
 	Status            string         `json:"status"`
 	Visibility        string         `json:"visibility"`
 	LikeCount         int            `json:"like_count"`

@@ -12,17 +12,17 @@ import (
 
 // Service handles authentication business logic.
 type Service struct {
-	repo       *Repository
-	jwt        *security.JWTManager
-	log        *logger.Logger
+	repo *Repository
+	jwt  *security.JWTManager
+	log  *logger.Logger
 }
 
 // NewService creates a new auth service.
 func NewService(repo *Repository, jwt *security.JWTManager, log *logger.Logger) *Service {
 	return &Service{
-		repo:       repo,
-		jwt:        jwt,
-		log:        log,
+		repo: repo,
+		jwt:  jwt,
+		log:  log,
 	}
 }
 
@@ -221,6 +221,15 @@ func (s *Service) GetUserByID(ctx context.Context, id uuid.UUID) (*ent.User, err
 		return nil, errors.ErrNotFound
 	}
 	return user, nil
+}
+
+// GetUserProfile retrieves a user profile by user ID.
+func (s *Service) GetUserProfile(ctx context.Context, id uuid.UUID) (*ent.UserProfile, error) {
+	profile, err := s.repo.GetUserProfile(ctx, id)
+	if err != nil {
+		return nil, errors.ErrNotFound
+	}
+	return profile, nil
 }
 
 func (s *Service) generateTokens(ctx context.Context, userID uuid.UUID) (*TokenResponse, error) {

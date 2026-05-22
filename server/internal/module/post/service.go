@@ -30,27 +30,9 @@ func (s *Service) CreatePost(ctx context.Context, userID uuid.UUID, req CreatePo
 		return nil, errors.New("invalid_content", 400, "content is required")
 	}
 
-	// Parse media asset IDs
-	var mediaAssetIDs []uuid.UUID
-	for _, idStr := range req.MediaAssetIDs {
-		id, err := uuid.Parse(idStr)
-		if err != nil {
-			return nil, errors.New("invalid_media_id", 400, fmt.Sprintf("invalid media asset id: %s", idStr))
-		}
-		mediaAssetIDs = append(mediaAssetIDs, id)
-	}
-	if len(mediaAssetIDs) > 4 {
-		return nil, errors.New("too_many_media", 400, "a post can include up to 4 images")
-	}
-	if len(mediaAssetIDs) > 0 {
-		count, err := s.repo.CountOwnedMediaAssets(ctx, userID, mediaAssetIDs)
-		if err != nil {
-			s.log.Error("failed to validate media assets", logger.Error(err))
-			return nil, errors.ErrInternal
-		}
-		if count != len(mediaAssetIDs) {
-			return nil, errors.New("invalid_media_id", 400, "one or more media assets are invalid")
-		}
+	mediaAssetIDs, err := s.validateMediaAssetIDs(ctx, userID, req.MediaAssetIDs)
+	if err != nil {
+		return nil, err
 	}
 
 	// Create post in transaction
@@ -94,6 +76,72 @@ func (s *Service) CreatePost(ctx context.Context, userID uuid.UUID, req CreatePo
 	)
 
 	return s.buildPostResponse(ctx, post, uuid.Nil)
+}
+
+// CreateRepost creates a repost of an active top-level post.
+func (s *Service) CreateRepost(ctx context.Context, userID, targetPostID uuid.UUID, req CreateRepostRequest) (*PostResponse, error) {
+	mediaAssetIDs, err := s.validateMediaAssetIDs(ctx, userID, req.MediaAssetIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	original, err := s.repo.GetPostByID(ctx, targetPostID)
+	if err != nil || original.Status != "active" {
+		return nil, errors.ErrNotFound
+	}
+	if original.ReplyToID != uuid.Nil {
+		return nil, errors.New("invalid_repost_target", 400, "replies cannot be reposted")
+	}
+	if original.RepostOfID != uuid.Nil {
+		original, err = s.repo.GetPostByID(ctx, original.RepostOfID)
+		if err != nil || original.Status != "active" {
+			return nil, errors.ErrNotFound
+		}
+	}
+
+	tx, err := s.repo.client.Tx(ctx)
+	if err != nil {
+		s.log.Error("failed to start transaction", logger.Error(err))
+		return nil, errors.ErrInternal
+	}
+	repo := NewRepository(tx.Client())
+
+	repost, err := repo.CreateRepost(ctx, userID, original.ID, req.Content, mediaAssetIDs)
+	if err != nil {
+		_ = tx.Rollback()
+		s.log.Error("failed to create repost", logger.Error(err))
+		return nil, errors.ErrInternal
+	}
+
+	if err := repo.IncrementRepostCount(ctx, original.ID); err != nil {
+		_ = tx.Rollback()
+		s.log.Error("failed to increment repost count", logger.Error(err))
+		return nil, errors.ErrInternal
+	}
+
+	if err := repo.CreateNotification(ctx, original.UserID, userID, "repost", original.ID, "reposted your post"); err != nil {
+		s.log.Error("failed to create repost notification", logger.Error(err))
+	}
+
+	err = repo.CreateOutboxEvent(ctx, "post.events.v1", repost.ID.String(), map[string]any{
+		"event_type":       "PostReposted",
+		"post_id":          repost.ID.String(),
+		"original_post_id": original.ID.String(),
+		"user_id":          userID.String(),
+		"created_at":       time.Now().UTC(),
+	})
+	if err != nil {
+		_ = tx.Rollback()
+		s.log.Error("failed to create outbox event", logger.Error(err))
+		return nil, errors.ErrInternal
+	}
+
+	if err := tx.Commit(); err != nil {
+		s.log.Error("failed to commit transaction", logger.Error(err))
+		return nil, errors.ErrInternal
+	}
+
+	return s.buildPostResponse(ctx, repost, userID)
 }
 
 // GetPost retrieves a post by ID.
@@ -241,6 +289,11 @@ func (s *Service) DeletePost(ctx context.Context, userID, postID uuid.UUID) erro
 			s.log.Error("failed to decrement reply count", logger.Error(err))
 		}
 	}
+	if post.RepostOfID != uuid.Nil {
+		if err := s.repo.DecrementRepostCount(ctx, post.RepostOfID); err != nil {
+			s.log.Error("failed to decrement repost count", logger.Error(err))
+		}
+	}
 
 	s.log.Info("post deleted",
 		logger.String("post_id", postID.String()),
@@ -279,11 +332,11 @@ func (s *Service) ListPosts(ctx context.Context, currentUserID uuid.UUID, params
 // buildPostResponse builds a PostResponse from an ent.Post (single-post path).
 func (s *Service) buildPostResponse(ctx context.Context, post *ent.Post, currentUserID uuid.UUID) (*PostResponse, error) {
 	authors, _ := s.repo.GetAuthorsByIDs(ctx, []uuid.UUID{post.UserID})
-	return s.assemblePostResponse(ctx, post, currentUserID, authors), nil
+	return s.assemblePostResponse(ctx, post, currentUserID, authors, true), nil
 }
 
 // assemblePostResponse turns a Post + prefetched authors map into a PostResponse.
-func (s *Service) assemblePostResponse(ctx context.Context, post *ent.Post, currentUserID uuid.UUID, authors map[uuid.UUID]*AuthorInfo) *PostResponse {
+func (s *Service) assemblePostResponse(ctx context.Context, post *ent.Post, currentUserID uuid.UUID, authors map[uuid.UUID]*AuthorInfo, includeRepost bool) *PostResponse {
 	stats, err := s.repo.GetPostStats(ctx, post.ID)
 	if err != nil {
 		stats = &ent.PostStats{}
@@ -363,6 +416,18 @@ func (s *Service) assemblePostResponse(ctx context.Context, post *ent.Post, curr
 	}
 	if post.RepostOfID != uuid.Nil {
 		resp.RepostOfID = post.RepostOfID.String()
+		if includeRepost {
+			if original, err := s.repo.GetPostByID(ctx, post.RepostOfID); err == nil && original.Status == "active" {
+				if _, ok := authors[original.UserID]; !ok {
+					if originalAuthors, err := s.repo.GetAuthorsByIDs(ctx, []uuid.UUID{original.UserID}); err == nil {
+						for id, author := range originalAuthors {
+							authors[id] = author
+						}
+					}
+				}
+				resp.RepostOf = s.assemblePostResponse(ctx, original, currentUserID, authors, false)
+			}
+		}
 	}
 
 	if currentUserID != uuid.Nil {
@@ -387,6 +452,14 @@ func (s *Service) buildPostListResponse(ctx context.Context, posts []*ent.Post, 
 			seen[p.UserID] = struct{}{}
 			authorIDs = append(authorIDs, p.UserID)
 		}
+		if p.RepostOfID != uuid.Nil {
+			if original, err := s.repo.GetPostByID(ctx, p.RepostOfID); err == nil {
+				if _, ok := seen[original.UserID]; !ok {
+					seen[original.UserID] = struct{}{}
+					authorIDs = append(authorIDs, original.UserID)
+				}
+			}
+		}
 		if p.ReplyToID != uuid.Nil {
 			if parent, err := s.repo.GetPostByID(ctx, p.ReplyToID); err == nil {
 				if _, ok := seen[parent.UserID]; !ok {
@@ -404,7 +477,7 @@ func (s *Service) buildPostListResponse(ctx context.Context, posts []*ent.Post, 
 
 	items := make([]PostResponse, 0, len(posts))
 	for _, p := range posts {
-		items = append(items, *s.assemblePostResponse(ctx, p, currentUserID, authors))
+		items = append(items, *s.assemblePostResponse(ctx, p, currentUserID, authors, true))
 	}
 
 	result := &PostListResponse{
@@ -417,4 +490,31 @@ func (s *Service) buildPostListResponse(ctx context.Context, posts []*ent.Post, 
 	}
 
 	return result, nil
+}
+
+func (s *Service) validateMediaAssetIDs(ctx context.Context, userID uuid.UUID, idStrings []string) ([]uuid.UUID, error) {
+	var mediaAssetIDs []uuid.UUID
+	for _, idStr := range idStrings {
+		id, err := uuid.Parse(idStr)
+		if err != nil {
+			return nil, errors.New("invalid_media_id", 400, fmt.Sprintf("invalid media asset id: %s", idStr))
+		}
+		mediaAssetIDs = append(mediaAssetIDs, id)
+	}
+	if len(mediaAssetIDs) > 4 {
+		return nil, errors.New("too_many_media", 400, "a post can include up to 4 images")
+	}
+	if len(mediaAssetIDs) == 0 {
+		return mediaAssetIDs, nil
+	}
+
+	count, err := s.repo.CountOwnedMediaAssets(ctx, userID, mediaAssetIDs)
+	if err != nil {
+		s.log.Error("failed to validate media assets", logger.Error(err))
+		return nil, errors.ErrInternal
+	}
+	if count != len(mediaAssetIDs) {
+		return nil, errors.New("invalid_media_id", 400, "one or more media assets are invalid")
+	}
+	return mediaAssetIDs, nil
 }

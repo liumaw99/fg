@@ -1,5 +1,4 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../data/api/auth_api.dart';
 import '../data/api/user_api.dart';
 import '../data/models/user_model.dart';
 
@@ -7,9 +6,9 @@ part 'user_provider.g.dart';
 
 @riverpod
 Future<UserModel?> currentUser(CurrentUserRef ref) async {
-  final api = AuthApi();
+  final api = UserApi();
   try {
-    final data = await api.getMe();
+    final data = await api.getProfile();
     return UserModel.fromJson(data);
   } catch (_) {
     return null;

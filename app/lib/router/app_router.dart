@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/theme/app_duration.dart';
+import '../data/models/post_model.dart';
 import '../providers/auth_provider.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/register_screen.dart';
@@ -27,12 +28,18 @@ CustomTransitionPage<T> _slidePage<T>(GoRouterState state, Widget child) {
     transitionDuration: AppDuration.page,
     reverseTransitionDuration: AppDuration.slow,
     transitionsBuilder: (context, animation, secondary, child) {
-      final slide = Tween<Offset>(
-        begin: const Offset(1.0, 0.0),
-        end: Offset.zero,
-      ).animate(CurvedAnimation(parent: animation, curve: AppDuration.standard));
+      final slide =
+          Tween<Offset>(
+            begin: const Offset(1.0, 0.0),
+            end: Offset.zero,
+          ).animate(
+            CurvedAnimation(parent: animation, curve: AppDuration.standard),
+          );
       final fade = CurvedAnimation(parent: animation, curve: Curves.easeOut);
-      return SlideTransition(position: slide, child: FadeTransition(opacity: fade, child: child));
+      return SlideTransition(
+        position: slide,
+        child: FadeTransition(opacity: fade, child: child),
+      );
     },
   );
 }
@@ -45,10 +52,13 @@ CustomTransitionPage<T> _modalPage<T>(GoRouterState state, Widget child) {
     transitionDuration: AppDuration.page,
     reverseTransitionDuration: AppDuration.slow,
     transitionsBuilder: (context, animation, secondary, child) {
-      final slide = Tween<Offset>(
-        begin: const Offset(0.0, 1.0),
-        end: Offset.zero,
-      ).animate(CurvedAnimation(parent: animation, curve: AppDuration.emphasized));
+      final slide =
+          Tween<Offset>(
+            begin: const Offset(0.0, 1.0),
+            end: Offset.zero,
+          ).animate(
+            CurvedAnimation(parent: animation, curve: AppDuration.emphasized),
+          );
       return SlideTransition(position: slide, child: child);
     },
   );
@@ -94,7 +104,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: RouteNames.register,
-        pageBuilder: (context, state) => _slidePage(state, const RegisterScreen()),
+        pageBuilder: (context, state) =>
+            _slidePage(state, const RegisterScreen()),
       ),
       GoRoute(
         path: RouteNames.home,
@@ -102,15 +113,22 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: RouteNames.profile,
-        pageBuilder: (context, state) => _slidePage(state, const MyProfileScreen()),
+        pageBuilder: (context, state) =>
+            _slidePage(state, const MyProfileScreen()),
       ),
       GoRoute(
         path: RouteNames.settings,
-        pageBuilder: (context, state) => _slidePage(state, const SettingsScreen()),
+        pageBuilder: (context, state) =>
+            _slidePage(state, const SettingsScreen()),
       ),
       GoRoute(
         path: RouteNames.createPost,
-        pageBuilder: (context, state) => _modalPage(state, const CreatePostScreen()),
+        pageBuilder: (context, state) {
+          final repostOf = state.extra is PostModel
+              ? state.extra as PostModel
+              : null;
+          return _modalPage(state, CreatePostScreen(repostOf: repostOf));
+        },
       ),
       GoRoute(
         path: RouteNames.imagePreview,
@@ -141,7 +159,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: RouteNames.editProfile,
-        pageBuilder: (context, state) => _modalPage(state, const EditProfileScreen()),
+        pageBuilder: (context, state) =>
+            _modalPage(state, const EditProfileScreen()),
       ),
       GoRoute(
         path: RouteNames.followers,

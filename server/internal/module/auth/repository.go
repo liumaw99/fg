@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"social-server/internal/ent"
 	"social-server/internal/ent/user"
+	"social-server/internal/ent/userprofile"
 	"social-server/internal/ent/usersession"
 )
 
@@ -60,6 +61,20 @@ func (r *Repository) GetUserByID(ctx context.Context, id uuid.UUID) (*ent.User, 
 		return nil, fmt.Errorf("get user by id: %w", err)
 	}
 	return u, nil
+}
+
+// GetUserProfile retrieves a user's profile by user ID.
+func (r *Repository) GetUserProfile(ctx context.Context, userID uuid.UUID) (*ent.UserProfile, error) {
+	p, err := r.client.UserProfile.Query().
+		Where(userprofile.UserID(userID)).
+		Only(ctx)
+	if err != nil {
+		if ent.IsNotFound(err) {
+			return nil, fmt.Errorf("profile not found")
+		}
+		return nil, fmt.Errorf("get user profile: %w", err)
+	}
+	return p, nil
 }
 
 // CreateUserProfile creates a user profile.

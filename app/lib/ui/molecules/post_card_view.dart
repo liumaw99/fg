@@ -18,6 +18,7 @@ class PostCardView extends StatelessWidget {
   final DateTime createdAt;
   final String content;
   final List<String> mediaUrls;
+  final Widget? repostPreview;
   final int likeCount;
   final int replyCount;
   final int repostCount;
@@ -40,6 +41,7 @@ class PostCardView extends StatelessWidget {
     required this.createdAt,
     required this.content,
     this.mediaUrls = const [],
+    this.repostPreview,
     this.likeCount = 0,
     this.replyCount = 0,
     this.repostCount = 0,
@@ -127,6 +129,13 @@ class PostCardView extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 52),
                 child: MediaGrid(imageUrls: mediaUrls, onTap: onMediaTap),
+              ),
+            ],
+            if (repostPreview != null) ...[
+              const SizedBox(height: AppSpacing.md),
+              Padding(
+                padding: const EdgeInsets.only(left: 52),
+                child: repostPreview!,
               ),
             ],
             const SizedBox(height: AppSpacing.sm),

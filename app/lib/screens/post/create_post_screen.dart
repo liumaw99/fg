@@ -9,13 +9,17 @@ import '../../core/constants/app_strings.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_radius.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../data/models/post_model.dart';
 import '../../providers/post_provider.dart';
 import '../../providers/user_provider.dart';
 import '../../ui/atoms/app_avatar.dart';
 import '../../ui/atoms/app_button.dart';
+import '../../ui/molecules/media_grid.dart';
 
 class CreatePostScreen extends ConsumerStatefulWidget {
-  const CreatePostScreen({super.key});
+  final PostModel? repostOf;
+
+  const CreatePostScreen({super.key, this.repostOf});
 
   @override
   ConsumerState<CreatePostScreen> createState() => _CreatePostScreenState();
@@ -86,26 +90,43 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
 
   Future<void> _submitPost() async {
     final content = _contentController.text.trim();
-    if (content.isEmpty) return;
+    final isRepost = widget.repostOf != null;
+    if (!isRepost && content.isEmpty) return;
 
     try {
       final mediaAssetIds = await _uploadImages();
-      final notifier = ref.read(createPostProvider.notifier);
-      await notifier.createPost(content, mediaAssetIds: mediaAssetIds);
+      if (isRepost) {
+        await ref
+            .read(createRepostProvider.notifier)
+            .createRepost(
+              widget.repostOf!.id,
+              content: content,
+              mediaAssetIds: mediaAssetIds,
+            );
+      } else {
+        await ref
+            .read(createPostProvider.notifier)
+            .createPost(content, mediaAssetIds: mediaAssetIds);
+      }
     } catch (error) {
-      if (mounted) _showSnack('发布失败: $error');
+      if (mounted) _showSnack('${isRepost ? '转发' : '发布'}失败: $error');
       return;
     }
 
     if (!mounted) return;
 
-    final state = ref.read(createPostProvider);
+    final state = isRepost
+        ? ref.read(createRepostProvider)
+        : ref.read(createPostProvider);
     state.whenOrNull(
       data: (_) {
         ref.read(feedPostsProvider.notifier).refresh();
+        if (isRepost) {
+          ref.invalidate(postDetailProvider(widget.repostOf!.id));
+        }
         context.pop();
       },
-      error: (error, _) => _showSnack('发布失败: $error'),
+      error: (error, _) => _showSnack('${isRepost ? '转发' : '发布'}失败: $error'),
     );
   }
 
@@ -132,12 +153,15 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final createState = ref.watch(createPostProvider);
+    final createRepostState = ref.watch(createRepostProvider);
     final me = ref.watch(currentUserProvider).valueOrNull;
+    final isRepost = widget.repostOf != null;
     final currentLength = _contentController.text.length;
     final progress = (currentLength / _maxLength).clamp(0.0, 1.0);
     final overLimit = currentLength > _maxLength;
-    final isBusy = createState.isLoading || _uploadingMedia;
-    final canPost = !isBusy && currentLength > 0 && !overLimit;
+    final isBusy =
+        createState.isLoading || createRepostState.isLoading || _uploadingMedia;
+    final canPost = !isBusy && !overLimit && (isRepost || currentLength > 0);
 
     return Scaffold(
       backgroundColor: theme.appBackground,
@@ -146,7 +170,7 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
           icon: const Icon(Icons.close),
           onPressed: isBusy ? null : () => context.pop(),
         ),
-        title: const Text(AppStrings.newPost),
+        title: Text(isRepost ? '引用转发' : AppStrings.newPost),
         actions: [
           Padding(
             padding: const EdgeInsets.only(
@@ -155,7 +179,9 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
               bottom: AppSpacing.sm,
             ),
             child: AppButton(
-              label: _uploadingMedia ? '上传中' : AppStrings.post,
+              label: _uploadingMedia
+                  ? '上传中'
+                  : (isRepost ? '转发' : AppStrings.post),
               onPressed: canPost ? _submitPost : null,
               loading: isBusy,
               size: AppButtonSize.compact,
@@ -189,6 +215,9 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                           focusNode: _focusNode,
                           maxLength: _maxLength,
                           onChanged: () => setState(() {}),
+                          hintText: isRepost
+                              ? '说说你的看法，也可以只配图转发。'
+                              : '把正在发生的事写下来。',
                         ),
                         if (_images.isNotEmpty) ...[
                           const SizedBox(height: AppSpacing.md),
@@ -200,6 +229,10 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                                     setState(() => _images.removeAt(index));
                                   },
                           ),
+                        ],
+                        if (widget.repostOf != null) ...[
+                          const SizedBox(height: AppSpacing.md),
+                          _RepostComposerPreview(post: widget.repostOf!),
                         ],
                         const SizedBox(height: AppSpacing.lg),
                         _PromptRail(onTap: _applyPrompt),
@@ -248,6 +281,7 @@ class _ComposerCard extends StatelessWidget {
   final FocusNode focusNode;
   final int maxLength;
   final VoidCallback onChanged;
+  final String hintText;
 
   const _ComposerCard({
     required this.avatarUrl,
@@ -257,6 +291,7 @@ class _ComposerCard extends StatelessWidget {
     required this.focusNode,
     required this.maxLength,
     required this.onChanged,
+    required this.hintText,
   });
 
   @override
@@ -327,7 +362,7 @@ class _ComposerCard extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
             decoration: InputDecoration(
-              hintText: '把正在发生的事写下来。',
+              hintText: hintText,
               border: InputBorder.none,
               enabledBorder: InputBorder.none,
               focusedBorder: InputBorder.none,
@@ -468,6 +503,66 @@ class _PromptRail extends StatelessWidget {
             onTap: () => onTap(prompt),
           ),
       ],
+    );
+  }
+}
+
+class _RepostComposerPreview extends StatelessWidget {
+  final PostModel post;
+
+  const _RepostComposerPreview({required this.post});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final author = post.author;
+    final displayName = author?.effectiveDisplayName ?? '用户';
+    final username =
+        author?.effectiveUsername ?? 'user_${post.userId.substring(0, 6)}';
+    final mediaUrls = post.mediaUrls.map((m) => m.url).toList();
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '引用动态',
+            style: TextStyle(
+              color: theme.appTextSecondary,
+              fontSize: 12,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            '$displayName @$username',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: theme.appTextPrimary,
+              fontSize: 14,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          if (post.content.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              post.content,
+              maxLines: 4,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: theme.appTextSecondary,
+                fontSize: 14,
+                height: 1.45,
+              ),
+            ),
+          ],
+          if (mediaUrls.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.md),
+            MediaGrid(imageUrls: mediaUrls),
+          ],
+        ],
+      ),
     );
   }
 }

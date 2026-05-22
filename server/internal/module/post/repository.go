@@ -59,6 +59,38 @@ func (r *Repository) CreatePost(ctx context.Context, userID uuid.UUID, content s
 	return p, nil
 }
 
+// CreateRepost creates a repost with optional quote content and media.
+func (r *Repository) CreateRepost(ctx context.Context, userID, originalPostID uuid.UUID, content string, mediaAssetIDs []uuid.UUID) (*ent.Post, error) {
+	p, err := r.client.Post.Create().
+		SetUserID(userID).
+		SetContent(content).
+		SetRepostOfID(originalPostID).
+		Save(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("create repost: %w", err)
+	}
+
+	for i, mediaID := range mediaAssetIDs {
+		err = r.client.PostMedia.Create().
+			SetPostID(p.ID).
+			SetMediaAssetID(mediaID).
+			SetSortOrder(i).
+			Exec(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("create repost media: %w", err)
+		}
+	}
+
+	_, err = r.client.PostStats.Create().
+		SetPostID(p.ID).
+		Save(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("create repost stats: %w", err)
+	}
+
+	return p, nil
+}
+
 // CountOwnedMediaAssets counts media assets owned by user.
 func (r *Repository) CountOwnedMediaAssets(ctx context.Context, ownerID uuid.UUID, ids []uuid.UUID) (int, error) {
 	if len(ids) == 0 {
@@ -178,6 +210,35 @@ func (r *Repository) DecrementReplyCount(ctx context.Context, postID uuid.UUID) 
 	}
 	return r.client.PostStats.UpdateOne(stats).
 		AddReplyCount(-1).
+		Exec(ctx)
+}
+
+// IncrementRepostCount increments the repost count in post stats.
+func (r *Repository) IncrementRepostCount(ctx context.Context, postID uuid.UUID) error {
+	stats, err := r.client.PostStats.Query().
+		Where(poststats.PostID(postID)).
+		Only(ctx)
+	if err != nil {
+		return fmt.Errorf("get stats: %w", err)
+	}
+	return r.client.PostStats.UpdateOne(stats).
+		AddRepostCount(1).
+		Exec(ctx)
+}
+
+// DecrementRepostCount decrements the repost count in post stats.
+func (r *Repository) DecrementRepostCount(ctx context.Context, postID uuid.UUID) error {
+	stats, err := r.client.PostStats.Query().
+		Where(poststats.PostID(postID)).
+		Only(ctx)
+	if err != nil {
+		return fmt.Errorf("get stats: %w", err)
+	}
+	if stats.RepostCount <= 0 {
+		return nil
+	}
+	return r.client.PostStats.UpdateOne(stats).
+		AddRepostCount(-1).
 		Exec(ctx)
 }
 

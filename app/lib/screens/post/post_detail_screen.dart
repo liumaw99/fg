@@ -809,6 +809,10 @@ class _PostDetailContent extends StatelessWidget {
               },
             ),
           ],
+          if (post.repostOf != null) ...[
+            const SizedBox(height: AppSpacing.lg),
+            _DetailRepostPreview(post: post.repostOf!),
+          ],
           const SizedBox(height: AppSpacing.lg),
           Text(
             Formatters.formatDateTime(post.createdAt),
@@ -830,6 +834,71 @@ class _PostDetailContent extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           const AppDivider(),
         ],
+      ),
+    );
+  }
+}
+
+class _DetailRepostPreview extends StatelessWidget {
+  final PostModel post;
+
+  const _DetailRepostPreview({required this.post});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final author = post.author;
+    final displayName = author?.effectiveDisplayName ?? '用户';
+    final username =
+        author?.effectiveUsername ?? 'user_${post.userId.substring(0, 6)}';
+    final mediaUrls = post.mediaUrls.map((m) => m.url).toList();
+    return InkWell(
+      onTap: () => context.push('/post/${post.id}'),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '$displayName @$username',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: theme.appTextPrimary,
+                fontSize: 15,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            if (post.content.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                post.content,
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 15,
+                  height: 1.45,
+                  color: theme.appTextSecondary,
+                ),
+              ),
+            ],
+            if (mediaUrls.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.md),
+              MediaGrid(
+                imageUrls: mediaUrls,
+                onTap: (index) {
+                  context.push(
+                    RouteNames.imagePreview,
+                    extra: ImagePreviewArgs(
+                      imageUrls: mediaUrls,
+                      initialIndex: index,
+                    ),
+                  );
+                },
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

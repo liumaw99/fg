@@ -117,6 +117,41 @@ func (h *Handler) CreateReply(c *gin.Context) {
 	response.Created(c, reply)
 }
 
+// CreateRepost creates a repost of a post.
+func (h *Handler) CreateRepost(c *gin.Context) {
+	userIDStr := middleware.GetUserID(c)
+	userID, err := uuid.Parse(userIDStr)
+	if err != nil {
+		response.Unauthorized(c, "invalid_user", "invalid user id")
+		return
+	}
+
+	postID, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		response.BadRequest(c, "invalid_post_id", "invalid post id")
+		return
+	}
+
+	var req CreateRepostRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.BadRequest(c, "validation_error", err.Error())
+		return
+	}
+
+	repost, err := h.service.CreateRepost(c.Request.Context(), userID, postID, req)
+	if err != nil {
+		var appErr *errors.AppError
+		if errors.As(err, &appErr) {
+			response.Error(c, appErr.StatusCode, appErr.Code, appErr.Message)
+			return
+		}
+		response.InternalError(c)
+		return
+	}
+
+	response.Created(c, repost)
+}
+
 // ListReplies retrieves replies for a post.
 func (h *Handler) ListReplies(c *gin.Context) {
 	userIDStr := middleware.GetUserID(c)

@@ -96,6 +96,7 @@ func (a *App) setupRouter() {
 				posts.GET("/feed", postHandler.ListPosts)
 				posts.GET("/:id/replies", postHandler.ListReplies)
 				posts.POST("/:id/replies", postHandler.CreateReply)
+				posts.POST("/:id/reposts", postHandler.CreateRepost)
 				posts.GET("/:id", postHandler.GetPost)
 				posts.DELETE("/:id", postHandler.DeletePost)
 				posts.GET("/user/:user_id", postHandler.ListUserPosts)
