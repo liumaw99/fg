@@ -47,7 +47,7 @@ class TimelinePageState extends ConsumerState<TimelinePage>
     if (_forYouScrollCtrl.position.pixels >=
         _forYouScrollCtrl.position.maxScrollExtent - 300) {
       final n = ref.read(feedPostsProvider.notifier);
-      if (n.hasMore) n.loadMore();
+      if (n.hasMore && !n.isLoadingMore) n.loadMore();
     }
   }
 

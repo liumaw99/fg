@@ -10,6 +10,7 @@ final postApiProvider = Provider<PostApi>((ref) => PostApi());
 class FeedPosts extends _$FeedPosts {
   String? _nextCursor;
   bool _hasMore = true;
+  bool _loadingMore = false;
 
   @override
   Future<List<PostModel>> build() async {
@@ -24,21 +25,26 @@ class FeedPosts extends _$FeedPosts {
     state = const AsyncLoading();
     _nextCursor = null;
     _hasMore = true;
+    _loadingMore = false;
     state = await AsyncValue.guard(() => build());
   }
 
   Future<void> loadMore() async {
-    if (!_hasMore || state.isLoading) return;
-    final currentPosts = state.valueOrNull ?? [];
-    if (_nextCursor == null) return;
+    if (_loadingMore || !_hasMore || _nextCursor == null) return;
+    _loadingMore = true;
 
+    final currentPosts = state.valueOrNull ?? [];
     final api = ref.read(postApiProvider);
     try {
       final response = await api.getFeed(cursor: _nextCursor);
       _nextCursor = response.nextCursor;
       _hasMore = response.hasMore;
       state = AsyncValue.data([...currentPosts, ...response.posts]);
-    } catch (_) {}
+    } catch (_) {
+      // 失败时保留 cursor，允许下次重试
+    } finally {
+      _loadingMore = false;
+    }
   }
 
   /// 局部替换某条 post（点赞等乐观更新使用，不重建整列）
@@ -51,12 +57,14 @@ class FeedPosts extends _$FeedPosts {
   }
 
   bool get hasMore => _hasMore;
+  bool get isLoadingMore => _loadingMore;
 }
 
 @riverpod
 class UserPosts extends _$UserPosts {
   String? _nextCursor;
   bool _hasMore = true;
+  bool _loadingMore = false;
 
   @override
   Future<List<PostModel>> build(String userId) async {
@@ -71,21 +79,25 @@ class UserPosts extends _$UserPosts {
     state = const AsyncLoading();
     _nextCursor = null;
     _hasMore = true;
+    _loadingMore = false;
     state = await AsyncValue.guard(() => build(userId));
   }
 
   Future<void> loadMore() async {
-    if (!_hasMore || state.isLoading) return;
-    final currentPosts = state.valueOrNull ?? [];
-    if (_nextCursor == null) return;
+    if (_loadingMore || !_hasMore || _nextCursor == null) return;
+    _loadingMore = true;
 
+    final currentPosts = state.valueOrNull ?? [];
     final api = ref.read(postApiProvider);
     try {
       final response = await api.getUserPosts(userId, cursor: _nextCursor);
       _nextCursor = response.nextCursor;
       _hasMore = response.hasMore;
       state = AsyncValue.data([...currentPosts, ...response.posts]);
-    } catch (_) {}
+    } catch (_) {
+    } finally {
+      _loadingMore = false;
+    }
   }
 
   void updatePost(PostModel updated) {
@@ -97,6 +109,7 @@ class UserPosts extends _$UserPosts {
   }
 
   bool get hasMore => _hasMore;
+  bool get isLoadingMore => _loadingMore;
 }
 
 @riverpod

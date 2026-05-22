@@ -1,4 +1,4 @@
-.PHONY: all help dev dev-down gen gen-watch build build-api build-worker build-app migrate migrate-down seed run-api run-worker run-app test test-api test-app lint fmt clean
+.PHONY: all help dev dev-down gen gen-watch build build-api build-worker build-app migrate migrate-down seed run-api run-worker run-app run-web test test-api test-app lint fmt clean
 
 # Default target
 all: help
@@ -135,6 +135,10 @@ run-worker:
 
 run-app:
 	@cd app && flutter run
+
+run-web:
+	@echo "Running Flutter Web (CanvasKit, fonts cached after first load)..."
+	@cd app && flutter run -d chrome
 
 run:
 	@echo "Starting API and Worker in background..."

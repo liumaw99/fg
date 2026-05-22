@@ -1,3 +1,6 @@
+import 'dart:io' show Platform;
+
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -9,7 +12,29 @@ import 'app_spacing.dart';
 class AppTheme {
   AppTheme._();
 
-  static const String fontFamily = '.SF Pro Display';
+  /// 平台默认无衬线字体回退链，避免引用不存在的字体导致 Web 端反复解析 + fallback。
+  ///
+  /// - iOS / macOS：系统自动用 SF Pro
+  /// - Android：Roboto
+  /// - Web / 其他：sans-serif（浏览器自家无衬线）
+  static String? get _platformFontFamily {
+    if (kIsWeb) return null; // 让 CSS 回退到系统默认无衬线
+    if (Platform.isIOS || Platform.isMacOS) return null; // CupertinoSystem 自动接管
+    return null; // 其他平台使用 Material 默认 Roboto
+  }
+
+  /// 字体回退列表：缺字时按序尝试，零网络加载
+  static const List<String> _fontFamilyFallback = [
+    'system-ui',
+    '-apple-system',
+    'BlinkMacSystemFont',
+    'Segoe UI',
+    'Roboto',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    'sans-serif',
+  ];
 
   static TextTheme _textTheme(Color primary, Color secondary) => TextTheme(
         displayLarge: TextStyle(fontSize: 48, fontWeight: FontWeight.w800, color: primary, letterSpacing: -1.5, height: 1.1),
@@ -43,7 +68,8 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      fontFamily: fontFamily,
+      fontFamily: _platformFontFamily,
+      fontFamilyFallback: _fontFamilyFallback,
       colorScheme: const ColorScheme.dark(
         primary: accent,
         onPrimary: accentText,
@@ -186,7 +212,8 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      fontFamily: fontFamily,
+      fontFamily: _platformFontFamily,
+      fontFamilyFallback: _fontFamilyFallback,
       colorScheme: const ColorScheme.light(
         primary: accent,
         onPrimary: accentText,

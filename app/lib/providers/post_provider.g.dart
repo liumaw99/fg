@@ -146,7 +146,7 @@ class _PostDetailProviderElement
   String get postId => (origin as PostDetailProvider).postId;
 }
 
-String _$feedPostsHash() => r'ebc58127444607b84ccf66f7892b51fbfc1c4bbf';
+String _$feedPostsHash() => r'd76bd1ede11577fb962831765fabec9169808ac5';
 
 /// See also [FeedPosts].
 @ProviderFor(FeedPosts)
@@ -162,7 +162,7 @@ final feedPostsProvider =
     );
 
 typedef _$FeedPosts = AutoDisposeAsyncNotifier<List<PostModel>>;
-String _$userPostsHash() => r'78e1259b8cc581e72df546515fcec758584fca9b';
+String _$userPostsHash() => r'038c52c6bd4e2750118dff9a80e90e6b05a2779c';
 
 abstract class _$UserPosts
     extends BuildlessAutoDisposeAsyncNotifier<List<PostModel>> {

@@ -31,6 +31,29 @@
 
   <title>social_app</title>
   <link rel="manifest" href="manifest.json">
+
+  <!-- 预加载 Flutter CanvasKit 字体清单到浏览器 HTTP cache，避免每次会话重新下载 -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <style>
+    /* 全局系统字体栈：零下载、零重复加载，让 Flutter Web 直接命中浏览器默认无衬线 */
+    html, body {
+      font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        "PingFang SC",
+        "Hiragino Sans GB",
+        "Microsoft YaHei",
+        sans-serif;
+      font-display: swap;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+  </style>
 </head>
 <body>
   <!--
