@@ -146,6 +146,125 @@ class _PostDetailProviderElement
   String get postId => (origin as PostDetailProvider).postId;
 }
 
+String _$postRepliesHash() => r'da93c05aff999fd59ef1576a8c7097515aedad21';
+
+/// See also [postReplies].
+@ProviderFor(postReplies)
+const postRepliesProvider = PostRepliesFamily();
+
+/// See also [postReplies].
+class PostRepliesFamily extends Family<AsyncValue<List<PostModel>>> {
+  /// See also [postReplies].
+  const PostRepliesFamily();
+
+  /// See also [postReplies].
+  PostRepliesProvider call(String postId) {
+    return PostRepliesProvider(postId);
+  }
+
+  @override
+  PostRepliesProvider getProviderOverride(
+    covariant PostRepliesProvider provider,
+  ) {
+    return call(provider.postId);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'postRepliesProvider';
+}
+
+/// See also [postReplies].
+class PostRepliesProvider extends AutoDisposeFutureProvider<List<PostModel>> {
+  /// See also [postReplies].
+  PostRepliesProvider(String postId)
+    : this._internal(
+        (ref) => postReplies(ref as PostRepliesRef, postId),
+        from: postRepliesProvider,
+        name: r'postRepliesProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$postRepliesHash,
+        dependencies: PostRepliesFamily._dependencies,
+        allTransitiveDependencies: PostRepliesFamily._allTransitiveDependencies,
+        postId: postId,
+      );
+
+  PostRepliesProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.postId,
+  }) : super.internal();
+
+  final String postId;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<PostModel>> Function(PostRepliesRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: PostRepliesProvider._internal(
+        (ref) => create(ref as PostRepliesRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        postId: postId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<PostModel>> createElement() {
+    return _PostRepliesProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PostRepliesProvider && other.postId == postId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, postId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin PostRepliesRef on AutoDisposeFutureProviderRef<List<PostModel>> {
+  /// The parameter `postId` of this provider.
+  String get postId;
+}
+
+class _PostRepliesProviderElement
+    extends AutoDisposeFutureProviderElement<List<PostModel>>
+    with PostRepliesRef {
+  _PostRepliesProviderElement(super.provider);
+
+  @override
+  String get postId => (origin as PostRepliesProvider).postId;
+}
+
 String _$feedPostsHash() => r'd76bd1ede11577fb962831765fabec9169808ac5';
 
 /// See also [FeedPosts].
@@ -291,6 +410,22 @@ class _UserPostsProviderElement
   String get userId => (origin as UserPostsProvider).userId;
 }
 
+String _$createReplyHash() => r'31303986fd475d66932aa406610343efd02e1fba';
+
+/// See also [CreateReply].
+@ProviderFor(CreateReply)
+final createReplyProvider =
+    AutoDisposeAsyncNotifierProvider<CreateReply, void>.internal(
+      CreateReply.new,
+      name: r'createReplyProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$createReplyHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$CreateReply = AutoDisposeAsyncNotifier<void>;
 String _$createPostHash() => r'66d89f1b84e55e27ac0e4fd4e32edfe089d368e8';
 
 /// See also [CreatePost].

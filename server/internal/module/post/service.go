@@ -97,6 +97,116 @@ func (s *Service) GetPost(ctx context.Context, userID, postID uuid.UUID) (*PostR
 	return s.buildPostResponse(ctx, post, userID)
 }
 
+// CreateReply creates a reply under a post or another reply.
+func (s *Service) CreateReply(ctx context.Context, userID, parentPostID uuid.UUID, req CreateReplyRequest) (*PostResponse, error) {
+	if req.Content == "" {
+		return nil, errors.New("invalid_content", 400, "content is required")
+	}
+
+	parent, err := s.repo.GetPostByID(ctx, parentPostID)
+	if err != nil || parent.Status != "active" {
+		return nil, errors.ErrNotFound
+	}
+
+	tx, err := s.repo.client.Tx(ctx)
+	if err != nil {
+		s.log.Error("failed to start transaction", logger.Error(err))
+		return nil, errors.ErrInternal
+	}
+	repo := NewRepository(tx.Client())
+
+	reply, err := repo.CreateReply(ctx, userID, parentPostID, req.Content)
+	if err != nil {
+		_ = tx.Rollback()
+		s.log.Error("failed to create reply", logger.Error(err))
+		return nil, errors.ErrInternal
+	}
+
+	if err := repo.IncrementReplyCount(ctx, parentPostID); err != nil {
+		_ = tx.Rollback()
+		s.log.Error("failed to increment reply count", logger.Error(err))
+		return nil, errors.ErrInternal
+	}
+
+	if err := repo.CreateNotification(ctx, parent.UserID, userID, "reply", parentPostID, "replied to your post"); err != nil {
+		s.log.Error("failed to create reply notification", logger.Error(err))
+	}
+
+	err = repo.CreateOutboxEvent(ctx, "post.events.v1", reply.ID.String(), map[string]any{
+		"event_type":     "PostReplied",
+		"post_id":        reply.ID.String(),
+		"parent_post_id": parentPostID.String(),
+		"user_id":        userID.String(),
+		"created_at":     time.Now().UTC(),
+	})
+	if err != nil {
+		_ = tx.Rollback()
+		s.log.Error("failed to create outbox event", logger.Error(err))
+		return nil, errors.ErrInternal
+	}
+
+	if err := tx.Commit(); err != nil {
+		s.log.Error("failed to commit transaction", logger.Error(err))
+		return nil, errors.ErrInternal
+	}
+
+	return s.buildPostResponse(ctx, reply, userID)
+}
+
+// ListReplies retrieves replies for the given post as a bounded nested tree.
+func (s *Service) ListReplies(ctx context.Context, postID, currentUserID uuid.UUID, params pagination.Params) (*PostListResponse, error) {
+	params.ValidateAndNormalize(100)
+	if _, err := s.repo.GetPostByID(ctx, postID); err != nil {
+		return nil, errors.ErrNotFound
+	}
+
+	replies, err := s.repo.ListReplies(ctx, postID, params.Limit+1)
+	if err != nil {
+		s.log.Error("failed to list replies", logger.Error(err))
+		return nil, errors.ErrInternal
+	}
+
+	result, err := s.buildPostListResponse(ctx, replies, params.Limit, currentUserID)
+	if err != nil {
+		return nil, err
+	}
+
+	parentIDs := make([]uuid.UUID, 0, len(result.Posts))
+	for _, reply := range result.Posts {
+		id, err := uuid.Parse(reply.ID)
+		if err == nil {
+			parentIDs = append(parentIDs, id)
+		}
+	}
+
+	children, err := s.repo.ListReplyDescendants(ctx, parentIDs, 5, 50)
+	if err != nil {
+		return result, nil
+	}
+	s.attachNestedReplies(ctx, result.Posts, children, currentUserID)
+
+	return result, nil
+}
+
+func (s *Service) attachNestedReplies(ctx context.Context, replies []PostResponse, children map[uuid.UUID][]*ent.Post, currentUserID uuid.UUID) {
+	for i := range replies {
+		parentID, err := uuid.Parse(replies[i].ID)
+		if err != nil {
+			continue
+		}
+		childList := children[parentID]
+		if len(childList) == 0 {
+			continue
+		}
+		childResult, err := s.buildPostListResponse(ctx, childList, len(childList), currentUserID)
+		if err != nil {
+			continue
+		}
+		replies[i].Replies = childResult.Posts
+		s.attachNestedReplies(ctx, replies[i].Replies, children, currentUserID)
+	}
+}
+
 // DeletePost soft-deletes a post if the user owns it.
 func (s *Service) DeletePost(ctx context.Context, userID, postID uuid.UUID) error {
 	post, err := s.repo.GetPostByID(ctx, postID)
@@ -111,6 +221,12 @@ func (s *Service) DeletePost(ctx context.Context, userID, postID uuid.UUID) erro
 	if err := s.repo.DeletePost(ctx, postID); err != nil {
 		s.log.Error("failed to delete post", logger.Error(err))
 		return errors.ErrInternal
+	}
+
+	if post.ReplyToID != uuid.Nil {
+		if err := s.repo.DecrementReplyCount(ctx, post.ReplyToID); err != nil {
+			s.log.Error("failed to decrement reply count", logger.Error(err))
+		}
 	}
 
 	s.log.Info("post deleted",
@@ -191,6 +307,11 @@ func (s *Service) assemblePostResponse(ctx context.Context, post *ent.Post, curr
 		}
 	}
 
+	replyCount := stats.ReplyCount
+	if count, err := s.repo.CountReplyDescendants(ctx, post.ID, 50); err == nil {
+		replyCount = count
+	}
+
 	resp := &PostResponse{
 		ID:            post.ID.String(),
 		UserID:        post.UserID.String(),
@@ -198,7 +319,7 @@ func (s *Service) assemblePostResponse(ctx context.Context, post *ent.Post, curr
 		Status:        post.Status,
 		Visibility:    post.Visibility,
 		LikeCount:     stats.LikeCount,
-		ReplyCount:    stats.ReplyCount,
+		ReplyCount:    replyCount,
 		RepostCount:   stats.RepostCount,
 		BookmarkCount: stats.BookmarkCount,
 		ViewCount:     stats.ViewCount,
@@ -218,6 +339,14 @@ func (s *Service) assemblePostResponse(ctx context.Context, post *ent.Post, curr
 
 	if post.ReplyToID != uuid.Nil {
 		resp.ReplyToID = post.ReplyToID.String()
+		if parent, err := s.repo.GetPostByID(ctx, post.ReplyToID); err == nil {
+			if author, ok := authors[parent.UserID]; ok && author != nil {
+				resp.ReplyToAuthorName = author.DisplayName
+				if resp.ReplyToAuthorName == "" {
+					resp.ReplyToAuthorName = author.Username
+				}
+			}
+		}
 	}
 	if post.RepostOfID != uuid.Nil {
 		resp.RepostOfID = post.RepostOfID.String()
@@ -241,11 +370,18 @@ func (s *Service) buildPostListResponse(ctx context.Context, posts []*ent.Post, 
 	authorIDs := make([]uuid.UUID, 0, len(posts))
 	seen := make(map[uuid.UUID]struct{}, len(posts))
 	for _, p := range posts {
-		if _, ok := seen[p.UserID]; ok {
-			continue
+		if _, ok := seen[p.UserID]; !ok {
+			seen[p.UserID] = struct{}{}
+			authorIDs = append(authorIDs, p.UserID)
 		}
-		seen[p.UserID] = struct{}{}
-		authorIDs = append(authorIDs, p.UserID)
+		if p.ReplyToID != uuid.Nil {
+			if parent, err := s.repo.GetPostByID(ctx, p.ReplyToID); err == nil {
+				if _, ok := seen[parent.UserID]; !ok {
+					seen[parent.UserID] = struct{}{}
+					authorIDs = append(authorIDs, parent.UserID)
+				}
+			}
+		}
 	}
 
 	authors, err := s.repo.GetAuthorsByIDs(ctx, authorIDs)

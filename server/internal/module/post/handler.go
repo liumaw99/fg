@@ -82,6 +82,78 @@ func (h *Handler) GetPost(c *gin.Context) {
 	response.OK(c, post)
 }
 
+// CreateReply creates a reply under a post or reply.
+func (h *Handler) CreateReply(c *gin.Context) {
+	userIDStr := middleware.GetUserID(c)
+	userID, err := uuid.Parse(userIDStr)
+	if err != nil {
+		response.Unauthorized(c, "invalid_user", "invalid user id")
+		return
+	}
+
+	postID, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		response.BadRequest(c, "invalid_post_id", "invalid post id")
+		return
+	}
+
+	var req CreateReplyRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.BadRequest(c, "validation_error", err.Error())
+		return
+	}
+
+	reply, err := h.service.CreateReply(c.Request.Context(), userID, postID, req)
+	if err != nil {
+		var appErr *errors.AppError
+		if errors.As(err, &appErr) {
+			response.Error(c, appErr.StatusCode, appErr.Code, appErr.Message)
+			return
+		}
+		response.InternalError(c)
+		return
+	}
+
+	response.Created(c, reply)
+}
+
+// ListReplies retrieves replies for a post.
+func (h *Handler) ListReplies(c *gin.Context) {
+	userIDStr := middleware.GetUserID(c)
+	userID, err := uuid.Parse(userIDStr)
+	if err != nil {
+		response.Unauthorized(c, "invalid_user", "invalid user id")
+		return
+	}
+
+	postID, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		response.BadRequest(c, "invalid_post_id", "invalid post id")
+		return
+	}
+
+	params := pagination.DefaultParams()
+	params.Cursor = c.Query("cursor")
+	if limitStr := c.Query("limit"); limitStr != "" {
+		if n, err := strconv.Atoi(limitStr); err == nil && n > 0 {
+			params.Limit = n
+		}
+	}
+
+	result, err := h.service.ListReplies(c.Request.Context(), postID, userID, params)
+	if err != nil {
+		var appErr *errors.AppError
+		if errors.As(err, &appErr) {
+			response.Error(c, appErr.StatusCode, appErr.Code, appErr.Message)
+			return
+		}
+		response.InternalError(c)
+		return
+	}
+
+	response.OK(c, result)
+}
+
 // DeletePost soft-deletes a post.
 func (h *Handler) DeletePost(c *gin.Context) {
 	userIDStr := middleware.GetUserID(c)

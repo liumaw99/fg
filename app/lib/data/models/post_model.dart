@@ -44,6 +44,8 @@ class PostModel {
   final int bookmarkCount;
   final int viewCount;
   final List<PostMedia> mediaUrls;
+  final List<PostModel> replies;
+  final String? replyToAuthorName;
   final bool isLiked;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -63,6 +65,8 @@ class PostModel {
     this.bookmarkCount = 0,
     this.viewCount = 0,
     this.mediaUrls = const [],
+    this.replies = const [],
+    this.replyToAuthorName,
     this.isLiked = false,
     required this.createdAt,
     required this.updatedAt,
@@ -90,6 +94,12 @@ class PostModel {
               ?.map((e) => PostMedia.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      replies:
+          (json['replies'] as List<dynamic>?)
+              ?.map((e) => PostModel.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      replyToAuthorName: json['reply_to_author_name'] as String?,
       isLiked: json['is_liked'] as bool? ?? false,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
@@ -101,6 +111,7 @@ class PostModel {
     int? likeCount,
     int? replyCount,
     int? repostCount,
+    List<PostModel>? replies,
   }) {
     return PostModel(
       id: id,
@@ -117,6 +128,8 @@ class PostModel {
       bookmarkCount: bookmarkCount,
       viewCount: viewCount,
       mediaUrls: mediaUrls,
+      replies: replies ?? this.replies,
+      replyToAuthorName: replyToAuthorName,
       isLiked: isLiked ?? this.isLiked,
       createdAt: createdAt,
       updatedAt: updatedAt,

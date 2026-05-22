@@ -123,6 +123,33 @@ Future<PostModel?> postDetail(PostDetailRef ref, String postId) async {
 }
 
 @riverpod
+Future<List<PostModel>> postReplies(PostRepliesRef ref, String postId) async {
+  final api = ref.read(postApiProvider);
+  final response = await api.getReplies(postId);
+  return response.posts;
+}
+
+@riverpod
+class CreateReply extends _$CreateReply {
+  @override
+  FutureOr<void> build() => null;
+
+  Future<void> createReply({
+    required String postId,
+    required String content,
+  }) async {
+    state = const AsyncValue.loading();
+    try {
+      final api = ref.read(postApiProvider);
+      await api.createReply(postId, content);
+      state = const AsyncValue.data(null);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+}
+
+@riverpod
 class CreatePost extends _$CreatePost {
   @override
   FutureOr<void> build() => null;

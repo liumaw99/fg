@@ -59,6 +59,27 @@ func (r *Repository) CreatePost(ctx context.Context, userID uuid.UUID, content s
 	return p, nil
 }
 
+// CreateReply creates a reply post under parentPostID.
+func (r *Repository) CreateReply(ctx context.Context, userID, parentPostID uuid.UUID, content string) (*ent.Post, error) {
+	p, err := r.client.Post.Create().
+		SetUserID(userID).
+		SetContent(content).
+		SetReplyToID(parentPostID).
+		Save(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("create reply: %w", err)
+	}
+
+	_, err = r.client.PostStats.Create().
+		SetPostID(p.ID).
+		Save(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("create reply stats: %w", err)
+	}
+
+	return p, nil
+}
+
 // GetPostByID retrieves a post by ID.
 func (r *Repository) GetPostByID(ctx context.Context, id uuid.UUID) (*ent.Post, error) {
 	p, err := r.client.Post.Get(ctx, id)
@@ -114,12 +135,177 @@ func (r *Repository) DeletePost(ctx context.Context, id uuid.UUID) error {
 	return nil
 }
 
+// IncrementReplyCount increments the reply count in post stats.
+func (r *Repository) IncrementReplyCount(ctx context.Context, postID uuid.UUID) error {
+	stats, err := r.client.PostStats.Query().
+		Where(poststats.PostID(postID)).
+		Only(ctx)
+	if err != nil {
+		return fmt.Errorf("get stats: %w", err)
+	}
+	return r.client.PostStats.UpdateOne(stats).
+		AddReplyCount(1).
+		Exec(ctx)
+}
+
+func (r *Repository) DecrementReplyCount(ctx context.Context, postID uuid.UUID) error {
+	stats, err := r.client.PostStats.Query().
+		Where(poststats.PostID(postID)).
+		Only(ctx)
+	if err != nil {
+		return fmt.Errorf("get stats: %w", err)
+	}
+	if stats.ReplyCount <= 0 {
+		return nil
+	}
+	return r.client.PostStats.UpdateOne(stats).
+		AddReplyCount(-1).
+		Exec(ctx)
+}
+
+func (r *Repository) CountReplyDescendants(ctx context.Context, postID uuid.UUID, maxDepth int) (int, error) {
+	if maxDepth <= 0 {
+		return 0, nil
+	}
+
+	count := 0
+	frontier := []uuid.UUID{postID}
+	for depth := 0; depth < maxDepth && len(frontier) > 0; depth++ {
+		replies, err := r.client.Post.Query().
+			Where(
+				post.ReplyToIDIn(frontier...),
+				post.Status("active"),
+			).
+			All(ctx)
+		if err != nil {
+			return 0, fmt.Errorf("count reply descendants: %w", err)
+		}
+
+		count += len(replies)
+		frontier = frontier[:0]
+		for _, reply := range replies {
+			frontier = append(frontier, reply.ID)
+		}
+	}
+
+	return count, nil
+}
+
+// ListReplies retrieves active replies for a post, oldest first.
+func (r *Repository) ListReplies(ctx context.Context, postID uuid.UUID, limit int) ([]*ent.Post, error) {
+	replies, err := r.client.Post.Query().
+		Where(
+			post.ReplyToID(postID),
+			post.Status("active"),
+		).
+		Order(ent.Asc(post.FieldCreatedAt)).
+		Limit(limit).
+		All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("list replies: %w", err)
+	}
+	return replies, nil
+}
+
+// ListRepliesForParents retrieves active direct replies for multiple parent posts.
+func (r *Repository) ListRepliesForParents(ctx context.Context, parentIDs []uuid.UUID, limitPerParent int) (map[uuid.UUID][]*ent.Post, error) {
+	result := make(map[uuid.UUID][]*ent.Post, len(parentIDs))
+	if len(parentIDs) == 0 {
+		return result, nil
+	}
+
+	replies, err := r.client.Post.Query().
+		Where(
+			post.ReplyToIDIn(parentIDs...),
+			post.Status("active"),
+		).
+		Order(ent.Asc(post.FieldCreatedAt)).
+		All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("list child replies: %w", err)
+	}
+
+	for _, reply := range replies {
+		parentID := reply.ReplyToID
+		if limitPerParent > 0 && len(result[parentID]) >= limitPerParent {
+			continue
+		}
+		result[parentID] = append(result[parentID], reply)
+	}
+	return result, nil
+}
+
+// ListReplyDescendants retrieves replies grouped by direct parent for a bounded reply tree.
+func (r *Repository) ListReplyDescendants(ctx context.Context, rootIDs []uuid.UUID, maxDepth, limitPerRoot int) (map[uuid.UUID][]*ent.Post, error) {
+	result := make(map[uuid.UUID][]*ent.Post, len(rootIDs))
+	if len(rootIDs) == 0 || maxDepth <= 0 {
+		return result, nil
+	}
+
+	frontier := append([]uuid.UUID(nil), rootIDs...)
+	owner := make(map[uuid.UUID]uuid.UUID, len(rootIDs))
+	ownerCount := make(map[uuid.UUID]int, len(rootIDs))
+	for _, id := range rootIDs {
+		owner[id] = id
+	}
+
+	for depth := 0; depth < maxDepth && len(frontier) > 0; depth++ {
+		replies, err := r.client.Post.Query().
+			Where(
+				post.ReplyToIDIn(frontier...),
+				post.Status("active"),
+			).
+			Order(ent.Asc(post.FieldCreatedAt)).
+			All(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("list reply descendants: %w", err)
+		}
+
+		next := make([]uuid.UUID, 0, len(replies))
+		for _, reply := range replies {
+			rootID, ok := owner[reply.ReplyToID]
+			if !ok {
+				continue
+			}
+			if limitPerRoot > 0 && ownerCount[rootID] >= limitPerRoot {
+				continue
+			}
+			result[reply.ReplyToID] = append(result[reply.ReplyToID], reply)
+			ownerCount[rootID]++
+			owner[reply.ID] = rootID
+			next = append(next, reply.ID)
+		}
+		frontier = next
+	}
+
+	return result, nil
+}
+
+// CreateNotification creates a post-related notification.
+func (r *Repository) CreateNotification(ctx context.Context, userID, actorID uuid.UUID, notifType string, postID uuid.UUID, content string) error {
+	if userID == actorID {
+		return nil
+	}
+	err := r.client.Notification.Create().
+		SetUserID(userID).
+		SetActorID(actorID).
+		SetType(notifType).
+		SetPostID(postID).
+		SetContent(content).
+		Exec(ctx)
+	if err != nil {
+		return fmt.Errorf("create notification: %w", err)
+	}
+	return nil
+}
+
 // ListUserPosts retrieves posts by a user with cursor pagination.
 func (r *Repository) ListUserPosts(ctx context.Context, userID uuid.UUID, cursor string, limit int) ([]*ent.Post, error) {
 	q := r.client.Post.Query().
 		Where(
 			post.UserID(userID),
 			post.Status("active"),
+			post.ReplyToIDIsNil(),
 		).
 		Order(ent.Desc(post.FieldCreatedAt))
 
@@ -151,7 +337,10 @@ func (r *Repository) ListUserPosts(ctx context.Context, userID uuid.UUID, cursor
 // ListPosts retrieves all active posts with cursor pagination.
 func (r *Repository) ListPosts(ctx context.Context, cursor string, limit int) ([]*ent.Post, error) {
 	q := r.client.Post.Query().
-		Where(post.Status("active")).
+		Where(
+			post.Status("active"),
+			post.ReplyToIDIsNil(),
+		).
 		Order(ent.Desc(post.FieldCreatedAt))
 
 	if cursor != "" {

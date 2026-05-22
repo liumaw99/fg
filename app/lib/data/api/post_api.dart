@@ -33,6 +33,23 @@ class PostApi {
     }
   }
 
+  Future<PostModel> createReply(String postId, String content) async {
+    try {
+      final response = await _client.dio.post(
+        '${ApiConstants.posts}/$postId/replies',
+        data: {'content': content},
+      );
+      return PostModel.fromJson(response.data['data'] as Map<String, dynamic>);
+    } on ApiError {
+      rethrow;
+    } on DioException catch (e) {
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
+    }
+  }
+
   Future<PostListResponse> getFeed({String? cursor}) async {
     try {
       final response = await _client.dio.get(
@@ -75,6 +92,24 @@ class PostApi {
     try {
       final response = await _client.dio.get('${ApiConstants.posts}/$postId');
       return PostModel.fromJson(response.data['data'] as Map<String, dynamic>);
+    } on ApiError {
+      rethrow;
+    } on DioException catch (e) {
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
+    }
+  }
+
+  Future<PostListResponse> getReplies(String postId) async {
+    try {
+      final response = await _client.dio.get(
+        '${ApiConstants.posts}/$postId/replies',
+      );
+      return PostListResponse.fromJson(
+        response.data['data'] as Map<String, dynamic>,
+      );
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
