@@ -31,10 +31,7 @@ class MediaGrid extends StatelessWidget {
   Widget _buildLayout(BuildContext context) {
     switch (imageUrls.length) {
       case 1:
-        return AspectRatio(
-          aspectRatio: 16 / 9,
-          child: _image(0),
-        );
+        return AspectRatio(aspectRatio: 16 / 9, child: _image(0));
       case 2:
         return AspectRatio(
           aspectRatio: 16 / 9,
@@ -101,7 +98,11 @@ class MediaGrid extends StatelessWidget {
     final img = CachedNetworkImage(
       imageUrl: url,
       fit: BoxFit.cover,
-      placeholder: (_, __) => const AppSkeleton(width: double.infinity, height: double.infinity, radius: 0),
+      placeholder: (_, __) => const AppSkeleton(
+        width: double.infinity,
+        height: double.infinity,
+        radius: 0,
+      ),
       errorWidget: (context, _, __) => _ErrorPlaceholder(),
       fadeInDuration: const Duration(milliseconds: 200),
     );
@@ -119,7 +120,11 @@ class _ErrorPlaceholder extends StatelessWidget {
     return Container(
       color: theme.appSurfaceElevated,
       alignment: Alignment.center,
-      child: Icon(Icons.image_not_supported_outlined, size: 32, color: theme.appTextSecondary),
+      child: Icon(
+        Icons.image_not_supported_outlined,
+        size: 32,
+        color: theme.appTextSecondary,
+      ),
     );
   }
 }

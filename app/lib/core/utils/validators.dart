@@ -53,7 +53,11 @@ class Validators {
     return null;
   }
 
-  static String? maxLength(String? value, int max, {required String fieldName}) {
+  static String? maxLength(
+    String? value,
+    int max, {
+    required String fieldName,
+  }) {
     if (value != null && value.length > max) {
       return '$fieldName最多$max个字符';
     }

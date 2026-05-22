@@ -45,9 +45,9 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
         context.pop();
       },
       error: (error, _) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('发布失败: $error')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('发布失败: $error')));
       },
     );
   }
@@ -70,10 +70,17 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
         title: const Text(AppStrings.newPost),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: AppSpacing.md, top: AppSpacing.sm, bottom: AppSpacing.sm),
+            padding: const EdgeInsets.only(
+              right: AppSpacing.md,
+              top: AppSpacing.sm,
+              bottom: AppSpacing.sm,
+            ),
             child: AppButton(
               label: AppStrings.post,
-              onPressed: createState.isLoading || currentLength == 0 || overLimit ? null : _submitPost,
+              onPressed:
+                  createState.isLoading || currentLength == 0 || overLimit
+                  ? null
+                  : _submitPost,
               loading: createState.isLoading,
               size: AppButtonSize.compact,
             ),
@@ -84,7 +91,10 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.md,
+              ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -102,12 +112,20 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                       maxLength: _maxLength,
                       autofocus: true,
                       textCapitalization: TextCapitalization.sentences,
-                      style: TextStyle(fontSize: 18, height: 1.5, color: theme.appTextPrimary, letterSpacing: -0.05),
+                      style: TextStyle(
+                        fontSize: 18,
+                        height: 1.5,
+                        color: theme.appTextPrimary,
+                        letterSpacing: -0.05,
+                      ),
                       decoration: InputDecoration(
                         hintText: AppStrings.whatsHappening,
                         border: InputBorder.none,
                         counterText: '',
-                        hintStyle: TextStyle(fontSize: 18, color: theme.appTextTertiary),
+                        hintStyle: TextStyle(
+                          fontSize: 18,
+                          color: theme.appTextTertiary,
+                        ),
                       ),
                       onChanged: (_) => setState(() {}),
                     ),
@@ -118,9 +136,14 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
           ),
           Container(
             decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: theme.appBorder, width: 0.5)),
+              border: Border(
+                top: BorderSide(color: theme.appBorder, width: 0.5),
+              ),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
+            ),
             child: Row(
               children: [
                 IconButton(
@@ -129,7 +152,10 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                 ),
                 IconButton(
                   onPressed: () {},
-                  icon: Icon(Icons.gif_box_outlined, color: theme.appTextPrimary),
+                  icon: Icon(
+                    Icons.gif_box_outlined,
+                    color: theme.appTextPrimary,
+                  ),
                 ),
                 const Spacer(),
                 if (currentLength > 0)

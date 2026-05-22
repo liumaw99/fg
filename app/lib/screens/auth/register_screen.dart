@@ -50,9 +50,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     if (auth.isAuthenticated) {
       context.go(RouteNames.home);
     } else if (auth.error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(auth.error!)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(auth.error!)));
       auth.clearError();
     }
   }
@@ -108,8 +108,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     hintText: AppStrings.passwordHint,
                     prefixIcon: const Icon(Icons.lock_outlined),
                     suffixIcon: IconButton(
-                      icon: Icon(_obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined),
-                      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                      ),
+                      onPressed: () =>
+                          setState(() => _obscurePassword = !_obscurePassword),
                     ),
                   ),
                   validator: Validators.password,
@@ -125,11 +130,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     hintText: AppStrings.confirmPasswordHint,
                     prefixIcon: const Icon(Icons.lock_outlined),
                     suffixIcon: IconButton(
-                      icon: Icon(_obscureConfirm ? Icons.visibility_outlined : Icons.visibility_off_outlined),
-                      onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
+                      icon: Icon(
+                        _obscureConfirm
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                      ),
+                      onPressed: () =>
+                          setState(() => _obscureConfirm = !_obscureConfirm),
                     ),
                   ),
-                  validator: (v) => Validators.confirmPassword(v, _passwordController.text),
+                  validator: (v) =>
+                      Validators.confirmPassword(v, _passwordController.text),
                   onFieldSubmitted: (_) => _register(),
                 ),
                 const SizedBox(height: AppSpacing.xxl),

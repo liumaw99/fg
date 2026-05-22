@@ -37,8 +37,11 @@ class SearchResponse {
 
   factory SearchResponse.fromJson(Map<String, dynamic> json) {
     return SearchResponse(
-      results: (json['results'] as List<dynamic>?)
-              ?.map((e) => SearchResultModel.fromJson(e as Map<String, dynamic>))
+      results:
+          (json['results'] as List<dynamic>?)
+              ?.map(
+                (e) => SearchResultModel.fromJson(e as Map<String, dynamic>),
+              )
               .toList() ??
           [],
       nextCursor: json['next_cursor'] as String?,

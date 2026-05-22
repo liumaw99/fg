@@ -12,8 +12,8 @@ class AuthState extends ChangeNotifier {
   String? _error;
 
   AuthState({TokenStorage? tokenStorage, AuthApi? authApi})
-      : _tokenStorage = tokenStorage ?? TokenStorage(),
-        _authApi = authApi ?? AuthApi() {
+    : _tokenStorage = tokenStorage ?? TokenStorage(),
+      _authApi = authApi ?? AuthApi() {
     _checkAuth();
   }
 

@@ -3,11 +3,7 @@ class ApiError implements Exception {
   final String message;
   final int? statusCode;
 
-  const ApiError({
-    required this.code,
-    required this.message,
-    this.statusCode,
-  });
+  const ApiError({required this.code, required this.message, this.statusCode});
 
   factory ApiError.fromResponse(dynamic data, int statusCode) {
     if (data is Map<String, dynamic>) {

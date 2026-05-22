@@ -38,14 +38,22 @@ class AppColors {
 extension AppColorsX on ThemeData {
   bool get isDark => brightness == Brightness.dark;
 
-  Color get appBackground => isDark ? AppColors.darkBackground : AppColors.lightBackground;
-  Color get appSurface => isDark ? AppColors.darkSurface : AppColors.lightSurface;
-  Color get appSurfaceElevated => isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurfaceElevated;
+  Color get appBackground =>
+      isDark ? AppColors.darkBackground : AppColors.lightBackground;
+  Color get appSurface =>
+      isDark ? AppColors.darkSurface : AppColors.lightSurface;
+  Color get appSurfaceElevated =>
+      isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurfaceElevated;
   Color get appBorder => isDark ? AppColors.darkBorder : AppColors.lightBorder;
-  Color get appBorderStrong => isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong;
-  Color get appTextPrimary => isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-  Color get appTextSecondary => isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
-  Color get appTextTertiary => isDark ? AppColors.darkTextTertiary : AppColors.lightTextTertiary;
+  Color get appBorderStrong =>
+      isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong;
+  Color get appTextPrimary =>
+      isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
+  Color get appTextSecondary =>
+      isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+  Color get appTextTertiary =>
+      isDark ? AppColors.darkTextTertiary : AppColors.lightTextTertiary;
   Color get appAccent => isDark ? AppColors.darkAccent : AppColors.lightAccent;
-  Color get appAccentText => isDark ? AppColors.darkAccentText : AppColors.lightAccentText;
+  Color get appAccentText =>
+      isDark ? AppColors.darkAccentText : AppColors.lightAccentText;
 }

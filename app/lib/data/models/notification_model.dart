@@ -48,8 +48,11 @@ class NotificationListResponse {
 
   factory NotificationListResponse.fromJson(Map<String, dynamic> json) {
     return NotificationListResponse(
-      notifications: (json['notifications'] as List<dynamic>?)
-              ?.map((e) => NotificationModel.fromJson(e as Map<String, dynamic>))
+      notifications:
+          (json['notifications'] as List<dynamic>?)
+              ?.map(
+                (e) => NotificationModel.fromJson(e as Map<String, dynamic>),
+              )
               .toList() ??
           [],
       unreadCount: json['unread_count'] as int? ?? 0,

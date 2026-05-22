@@ -14,9 +14,7 @@ class SettingsScreen extends ConsumerWidget {
     final themeMode = ref.watch(themeSettingsProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppStrings.settings),
-      ),
+      appBar: AppBar(title: const Text(AppStrings.settings)),
       body: ListView(
         children: [
           _SectionHeader(title: AppStrings.appearance),
@@ -118,14 +116,10 @@ class _ThemeSelector extends StatelessWidget {
   final ThemeMode currentMode;
   final ValueChanged<ThemeMode> onChanged;
 
-  const _ThemeSelector({
-    required this.currentMode,
-    required this.onChanged,
-  });
+  const _ThemeSelector({required this.currentMode, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: [
         _ThemeOption(

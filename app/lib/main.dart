@@ -6,11 +6,7 @@ import 'router/app_router.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(
-    const ProviderScope(
-      child: SocialApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: SocialApp()));
 }
 
 class SocialApp extends ConsumerWidget {

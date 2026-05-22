@@ -8,7 +8,7 @@ class ApiClient {
   final TokenStorage _tokenStorage;
 
   ApiClient({TokenStorage? tokenStorage})
-      : _tokenStorage = tokenStorage ?? TokenStorage() {
+    : _tokenStorage = tokenStorage ?? TokenStorage() {
     _dio = Dio(
       BaseOptions(
         baseUrl: ApiConstants.baseApiUrl,
@@ -21,10 +21,7 @@ class ApiClient {
     _dio.interceptors.addAll([
       _authInterceptor(),
       _refreshTokenInterceptor(),
-      LogInterceptor(
-        requestBody: true,
-        responseBody: true,
-      ),
+      LogInterceptor(requestBody: true, responseBody: true),
     ]);
   }
 
@@ -52,9 +49,7 @@ class ApiClient {
               final response = await _dio.post(
                 ApiConstants.refresh,
                 data: {'refresh_token': refreshToken},
-                options: Options(
-                  headers: {'Authorization': null},
-                ),
+                options: Options(headers: {'Authorization': null}),
               );
 
               if (response.statusCode == 200) {
@@ -91,10 +86,7 @@ class ApiClient {
     }
   }
 
-  Future<Response<T>> post<T>(
-    String path, {
-    dynamic data,
-  }) async {
+  Future<Response<T>> post<T>(String path, {dynamic data}) async {
     try {
       return await _dio.post<T>(path, data: data);
     } on DioException catch (e) {
@@ -102,10 +94,7 @@ class ApiClient {
     }
   }
 
-  Future<Response<T>> put<T>(
-    String path, {
-    dynamic data,
-  }) async {
+  Future<Response<T>> put<T>(String path, {dynamic data}) async {
     try {
       return await _dio.put<T>(path, data: data);
     } on DioException catch (e) {

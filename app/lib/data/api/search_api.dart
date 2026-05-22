@@ -7,7 +7,11 @@ class SearchApi {
 
   SearchApi({ApiClient? client}) : _client = client ?? ApiClient();
 
-  Future<Map<String, dynamic>> search(String query, {String type = 'all', String? cursor}) async {
+  Future<Map<String, dynamic>> search(
+    String query, {
+    String type = 'all',
+    String? cursor,
+  }) async {
     try {
       final response = await _client.dio.get(
         '/search',
@@ -21,7 +25,10 @@ class SearchApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
@@ -45,7 +52,10 @@ class SearchApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 }

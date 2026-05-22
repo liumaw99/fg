@@ -47,14 +47,9 @@ class UserHeader extends StatelessWidget {
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: dense
-              ? _buildDenseInline(theme)
-              : _buildStacked(theme),
+          child: dense ? _buildDenseInline(theme) : _buildStacked(theme),
         ),
-        if (trailing != null) ...[
-          const SizedBox(width: 8),
-          trailing!,
-        ],
+        if (trailing != null) ...[const SizedBox(width: 8), trailing!],
       ],
     );
   }
@@ -81,14 +76,13 @@ class UserHeader extends StatelessWidget {
               ),
             ),
             if (time != null) ...[
-              Text('  ·  ',
-                  style: TextStyle(color: theme.appTextSecondary, fontSize: 14)),
+              Text(
+                '  ·  ',
+                style: TextStyle(color: theme.appTextSecondary, fontSize: 14),
+              ),
               Text(
                 Formatters.formatShortTime(time!),
-                style: TextStyle(
-                  fontSize: 14,
-                  color: theme.appTextSecondary,
-                ),
+                style: TextStyle(fontSize: 14, color: theme.appTextSecondary),
               ),
             ],
           ],
@@ -129,21 +123,17 @@ class UserHeader extends StatelessWidget {
             '@$username',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 14,
-              color: theme.appTextSecondary,
-            ),
+            style: TextStyle(fontSize: 14, color: theme.appTextSecondary),
           ),
         ),
         if (time != null) ...[
-          Text('  ·  ',
-              style: TextStyle(color: theme.appTextSecondary, fontSize: 14)),
+          Text(
+            '  ·  ',
+            style: TextStyle(color: theme.appTextSecondary, fontSize: 14),
+          ),
           Text(
             Formatters.formatShortTime(time!),
-            style: TextStyle(
-              fontSize: 14,
-              color: theme.appTextSecondary,
-            ),
+            style: TextStyle(fontSize: 14, color: theme.appTextSecondary),
           ),
         ],
       ],

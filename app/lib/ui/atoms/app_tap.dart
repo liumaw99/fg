@@ -49,10 +49,7 @@ class AppTap extends StatelessWidget {
         splashColor: base.withAlpha(15),
         highlightColor: base.withAlpha(10),
         hoverColor: base.withAlpha(8),
-        child: Padding(
-          padding: padding ?? EdgeInsets.zero,
-          child: child,
-        ),
+        child: Padding(padding: padding ?? EdgeInsets.zero, child: child),
       ),
     );
   }

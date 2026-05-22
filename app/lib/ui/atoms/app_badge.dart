@@ -37,7 +37,10 @@ class AppBadge extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.danger,
                 shape: BoxShape.circle,
-                border: Border.all(color: theme.scaffoldBackgroundColor, width: 1.5),
+                border: Border.all(
+                  color: theme.scaffoldBackgroundColor,
+                  width: 1.5,
+                ),
               ),
             ),
           ),
@@ -61,7 +64,10 @@ class AppBadge extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.danger,
               borderRadius: BorderRadius.circular(size / 2),
-              border: Border.all(color: theme.scaffoldBackgroundColor, width: 2),
+              border: Border.all(
+                color: theme.scaffoldBackgroundColor,
+                width: 2,
+              ),
             ),
             alignment: Alignment.center,
             child: Text(

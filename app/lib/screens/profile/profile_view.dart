@@ -79,7 +79,11 @@ class _ProfileViewState extends ConsumerState<ProfileView>
                 child: InkWell(
                   customBorder: const CircleBorder(),
                   onTap: () => Navigator.of(context).maybePop(),
-                  child: const Icon(Icons.arrow_back, color: Colors.white, size: 18),
+                  child: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                    size: 18,
+                  ),
                 ),
               ),
             ),
@@ -156,7 +160,11 @@ class _ProfileHeader extends StatelessWidget {
   final bool isMe;
   final Widget? actionButton;
 
-  const _ProfileHeader({required this.user, required this.isMe, this.actionButton});
+  const _ProfileHeader({
+    required this.user,
+    required this.isMe,
+    this.actionButton,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -186,11 +194,7 @@ class _ProfileHeader extends StatelessWidget {
                   ),
                 ),
                 if (actionButton != null)
-                  Positioned(
-                    right: 0,
-                    top: 8,
-                    child: actionButton!,
-                  ),
+                  Positioned(right: 0, top: 8, child: actionButton!),
               ],
             ),
           ),
@@ -207,32 +211,43 @@ class _ProfileHeader extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             '@${user.username}',
-            style: TextStyle(
-              fontSize: 15,
-              color: theme.appTextSecondary,
-            ),
+            style: TextStyle(fontSize: 15, color: theme.appTextSecondary),
           ),
           if (user.bio.isNotEmpty) ...[
             const SizedBox(height: AppSpacing.md),
             Text(
               user.bio,
-              style: TextStyle(fontSize: 15, height: 1.5, color: theme.appTextPrimary),
+              style: TextStyle(
+                fontSize: 15,
+                height: 1.5,
+                color: theme.appTextPrimary,
+              ),
             ),
           ],
-          if (user.location.isNotEmpty || user.website.isNotEmpty || user.createdAt != null) ...[
+          if (user.location.isNotEmpty ||
+              user.website.isNotEmpty ||
+              user.createdAt != null) ...[
             const SizedBox(height: AppSpacing.md),
             Wrap(
               spacing: 16,
               runSpacing: 6,
               children: [
                 if (user.location.isNotEmpty)
-                  _MetaItem(icon: Icons.location_on_outlined, label: user.location),
+                  _MetaItem(
+                    icon: Icons.location_on_outlined,
+                    label: user.location,
+                  ),
                 if (user.website.isNotEmpty)
-                  _MetaItem(icon: Icons.link, label: user.website, highlight: true),
+                  _MetaItem(
+                    icon: Icons.link,
+                    label: user.website,
+                    highlight: true,
+                  ),
                 if (user.createdAt != null)
                   _MetaItem(
                     icon: Icons.calendar_today_outlined,
-                    label: '加入于 ${user.createdAt!.year}年${user.createdAt!.month}月',
+                    label:
+                        '加入于 ${user.createdAt!.year}年${user.createdAt!.month}月',
                   ),
               ],
             ),
@@ -267,7 +282,11 @@ class _MetaItem extends StatelessWidget {
   final String label;
   final bool highlight;
 
-  const _MetaItem({required this.icon, required this.label, this.highlight = false});
+  const _MetaItem({
+    required this.icon,
+    required this.label,
+    this.highlight = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -289,7 +308,11 @@ class _StatLink extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
 
-  const _StatLink({required this.count, required this.label, required this.onTap});
+  const _StatLink({
+    required this.count,
+    required this.label,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -341,7 +364,10 @@ class _StatItem extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 4),
-        Text(label, style: TextStyle(fontSize: 14, color: theme.appTextSecondary)),
+        Text(
+          label,
+          style: TextStyle(fontSize: 14, color: theme.appTextSecondary),
+        ),
       ],
     );
   }
@@ -412,7 +438,11 @@ class _StickyTabsDelegate extends SliverPersistentHeaderDelegate {
   });
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: backgroundColor,
@@ -427,10 +457,19 @@ class _StickyTabsDelegate extends SliverPersistentHeaderDelegate {
         indicatorSize: TabBarIndicatorSize.label,
         labelColor: labelColor,
         unselectedLabelColor: unselectedLabelColor,
-        labelStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, letterSpacing: -0.1),
-        unselectedLabelStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        labelStyle: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.1,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
         splashFactory: NoSplash.splashFactory,
-        overlayColor: WidgetStateProperty.resolveWith((_) => Colors.transparent),
+        overlayColor: WidgetStateProperty.resolveWith(
+          (_) => Colors.transparent,
+        ),
         tabs: const [
           Tab(text: '动态'),
           Tab(text: '回复'),
@@ -449,5 +488,6 @@ class _StickyTabsDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(covariant _StickyTabsDelegate old) =>
-      old.backgroundColor != backgroundColor || old.indicatorColor != indicatorColor;
+      old.backgroundColor != backgroundColor ||
+      old.indicatorColor != indicatorColor;
 }

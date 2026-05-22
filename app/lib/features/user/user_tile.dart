@@ -11,11 +11,7 @@ class UserTile extends ConsumerWidget {
   final UserModel user;
   final bool showFollowButton;
 
-  const UserTile({
-    super.key,
-    required this.user,
-    this.showFollowButton = true,
-  });
+  const UserTile({super.key, required this.user, this.showFollowButton = true});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

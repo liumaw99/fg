@@ -70,11 +70,14 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     if (content.isEmpty) return;
     AppHaptic.light();
 
-    final clientMsgId = 'client-${DateTime.now().millisecondsSinceEpoch}-${_msgCounter++}';
+    final clientMsgId =
+        'client-${DateTime.now().millisecondsSinceEpoch}-${_msgCounter++}';
     _controller.clear();
     FocusScope.of(context).unfocus();
 
-    await ref.read(sendMessageProvider.notifier).send(
+    await ref
+        .read(sendMessageProvider.notifier)
+        .send(
           conversationId: widget.conversationId,
           content: content,
           clientMessageId: clientMsgId,
@@ -142,12 +145,19 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                   return ListView.builder(
                     key: const ValueKey('chat-list'),
                     controller: _scrollController,
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg,
+                      vertical: AppSpacing.md,
+                    ),
                     itemCount: messages.length,
                     itemBuilder: (context, index) {
                       final msg = messages[index];
-                      final showDate = index == 0 ||
-                          _isDifferentDay(messages[index - 1].createdAt, msg.createdAt);
+                      final showDate =
+                          index == 0 ||
+                          _isDifferentDay(
+                            messages[index - 1].createdAt,
+                            msg.createdAt,
+                          );
                       final isMe = msg.senderId == currentUserId;
 
                       return Column(
@@ -164,23 +174,32 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                     },
                   );
                 },
-                loading: () => const LoadingState(key: ValueKey('chat-loading')),
+                loading: () =>
+                    const LoadingState(key: ValueKey('chat-loading')),
                 error: (error, _) => ErrorState(
                   key: const ValueKey('chat-error'),
                   message: error.toString(),
-                  onRetry: () => ref.invalidate(messagesProvider(widget.conversationId)),
+                  onRetry: () =>
+                      ref.invalidate(messagesProvider(widget.conversationId)),
                 ),
               ),
             ),
           ),
           Container(
             decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: theme.appBorder, width: 0.5)),
+              border: Border(
+                top: BorderSide(color: theme.appBorder, width: 0.5),
+              ),
             ),
             child: SafeArea(
               top: false,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.sm, AppSpacing.sm, AppSpacing.sm),
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.md,
+                  AppSpacing.sm,
+                  AppSpacing.sm,
+                  AppSpacing.sm,
+                ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -191,11 +210,17 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                           controller: _controller,
                           maxLines: null,
                           textInputAction: TextInputAction.newline,
-                          style: TextStyle(fontSize: 15, color: theme.appTextPrimary, height: 1.4),
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: theme.appTextPrimary,
+                            height: 1.4,
+                          ),
                           decoration: InputDecoration(
                             hintText: AppStrings.typeMessage,
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(AppRadius.full),
+                              borderRadius: BorderRadius.circular(
+                                AppRadius.full,
+                              ),
                               borderSide: BorderSide.none,
                             ),
                             filled: true,
@@ -214,7 +239,9 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: _composeActive ? theme.appAccent : theme.appSurfaceElevated,
+                        color: _composeActive
+                            ? theme.appAccent
+                            : theme.appSurfaceElevated,
                         shape: BoxShape.circle,
                       ),
                       child: Material(
@@ -225,7 +252,9 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                           onTap: _composeActive ? _sendMessage : null,
                           child: Icon(
                             Icons.arrow_upward_rounded,
-                            color: _composeActive ? theme.appAccentText : theme.appTextSecondary,
+                            color: _composeActive
+                                ? theme.appAccentText
+                                : theme.appTextSecondary,
                             size: 20,
                           ),
                         ),

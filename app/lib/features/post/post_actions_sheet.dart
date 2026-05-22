@@ -9,7 +9,10 @@ import '../../providers/post_provider.dart';
 import '../../providers/user_provider.dart';
 
 /// 动态详情底部弹窗：复制链接 / 删除（仅自己） / 举报。
-Future<void> showPostActionsSheet(BuildContext context, {required PostModel post}) {
+Future<void> showPostActionsSheet(
+  BuildContext context, {
+  required PostModel post,
+}) {
   return showModalBottomSheet<void>(
     context: context,
     showDragHandle: true,
@@ -35,12 +38,14 @@ class _PostActionsSheet extends ConsumerWidget {
             icon: Icons.link,
             label: '复制链接',
             onTap: () async {
-              await Clipboard.setData(ClipboardData(text: 'fg://post/${post.id}'));
+              await Clipboard.setData(
+                ClipboardData(text: 'fg://post/${post.id}'),
+              );
               if (context.mounted) {
                 Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('链接已复制')),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text('链接已复制')));
               }
             },
           ),
@@ -57,19 +62,25 @@ class _PostActionsSheet extends ConsumerWidget {
                     title: const Text('确认删除？'),
                     content: const Text('删除后将无法恢复'),
                     actions: [
-                      TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('取消')),
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx, false),
+                        child: const Text('取消'),
+                      ),
                       TextButton(
                         onPressed: () => Navigator.pop(ctx, true),
-                        child: const Text('删除', style: TextStyle(color: AppColors.danger)),
+                        child: const Text(
+                          '删除',
+                          style: TextStyle(color: AppColors.danger),
+                        ),
                       ),
                     ],
                   ),
                 );
                 if (confirmed == true && context.mounted) {
                   // TODO: 接入 deletePost API
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('删除功能即将上线')),
-                  );
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(const SnackBar(content: Text('删除功能即将上线')));
                   await ref.read(feedPostsProvider.notifier).refresh();
                 }
               },
@@ -80,9 +91,9 @@ class _PostActionsSheet extends ConsumerWidget {
               label: '举报',
               onTap: () {
                 Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('举报功能即将上线')),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text('举报功能即将上线')));
               },
             ),
           const SizedBox(height: AppSpacing.md),
@@ -113,7 +124,11 @@ class _Item extends StatelessWidget {
       leading: Icon(icon, color: color, size: 22),
       title: Text(
         label,
-        style: TextStyle(color: color, fontSize: 15, fontWeight: FontWeight.w600),
+        style: TextStyle(
+          color: color,
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+        ),
       ),
       onTap: onTap,
     );

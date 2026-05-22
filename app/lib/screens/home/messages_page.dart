@@ -64,7 +64,8 @@ class _MessagesPageState extends ConsumerState<MessagesPage> {
             return RefreshIndicator(
               key: const ValueKey('conv-empty'),
               color: theme.appTextPrimary,
-              onRefresh: () => ref.read(conversationsProvider.notifier).refresh(),
+              onRefresh: () =>
+                  ref.read(conversationsProvider.notifier).refresh(),
               child: ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 children: const [
@@ -85,7 +86,9 @@ class _MessagesPageState extends ConsumerState<MessagesPage> {
             onRefresh: () => ref.read(conversationsProvider.notifier).refresh(),
             child: ListView.separated(
               controller: _scrollController,
-              physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics(),
+              ),
               itemCount: response.conversations.length + 1,
               separatorBuilder: (_, __) => const AppDivider(indent: 84),
               itemBuilder: (context, index) {
@@ -105,7 +108,9 @@ class _MessagesPageState extends ConsumerState<MessagesPage> {
                   }
                   return const SizedBox(height: 60);
                 }
-                return ConversationTile(conversation: response.conversations[index]);
+                return ConversationTile(
+                  conversation: response.conversations[index],
+                );
               },
             ),
           );

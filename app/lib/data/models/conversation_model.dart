@@ -47,8 +47,11 @@ class ConversationListResponse {
 
   factory ConversationListResponse.fromJson(Map<String, dynamic> json) {
     return ConversationListResponse(
-      conversations: (json['conversations'] as List<dynamic>?)
-              ?.map((e) => ConversationModel.fromJson(e as Map<String, dynamic>))
+      conversations:
+          (json['conversations'] as List<dynamic>?)
+              ?.map(
+                (e) => ConversationModel.fromJson(e as Map<String, dynamic>),
+              )
               .toList() ??
           [],
       nextCursor: json['next_cursor'] as String?,

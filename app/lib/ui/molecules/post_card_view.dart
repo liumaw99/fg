@@ -93,10 +93,17 @@ class PostCardView extends StatelessWidget {
                 if (onMore != null)
                   IconButton(
                     onPressed: onMore,
-                    icon: Icon(Icons.more_horiz, size: 18, color: theme.appTextSecondary),
+                    icon: Icon(
+                      Icons.more_horiz,
+                      size: 18,
+                      color: theme.appTextSecondary,
+                    ),
                     visualDensity: VisualDensity.compact,
                     padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                    constraints: const BoxConstraints(
+                      minWidth: 32,
+                      minHeight: 32,
+                    ),
                   ),
               ],
             ),
@@ -141,11 +148,7 @@ class PostCardView extends StatelessWidget {
                     activeColor: AppColors.repost,
                     semanticLabel: '转发',
                   ),
-                  LikeIcon(
-                    isLiked: isLiked,
-                    count: likeCount,
-                    onTap: onLike,
-                  ),
+                  LikeIcon(isLiked: isLiked, count: likeCount, onTap: onLike),
                   ActionIcon(
                     icon: Icons.share_outlined,
                     onTap: onShare,

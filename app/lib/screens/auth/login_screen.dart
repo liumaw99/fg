@@ -41,9 +41,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     if (auth.isAuthenticated) {
       context.go(RouteNames.home);
     } else if (auth.error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(auth.error!)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(auth.error!)));
       auth.clearError();
     }
   }
@@ -67,7 +67,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const Spacer(flex: 2),
-                      Icon(Icons.bolt_rounded, size: 40, color: theme.appTextPrimary),
+                      Icon(
+                        Icons.bolt_rounded,
+                        size: 40,
+                        color: theme.appTextPrimary,
+                      ),
                       const SizedBox(height: AppSpacing.xl),
                       Text(
                         AppStrings.welcomeBack,
@@ -81,7 +85,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       const SizedBox(height: AppSpacing.sm),
                       Text(
                         AppStrings.signInToContinue,
-                        style: TextStyle(fontSize: 15, color: theme.appTextSecondary),
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: theme.appTextSecondary,
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.xxxl),
                       TextFormField(
@@ -107,8 +114,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           hintText: AppStrings.passwordHint,
                           prefixIcon: const Icon(Icons.lock_outlined),
                           suffixIcon: IconButton(
-                            icon: Icon(_obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined),
-                            onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                            icon: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined,
+                            ),
+                            onPressed: () => setState(
+                              () => _obscurePassword = !_obscurePassword,
+                            ),
                           ),
                         ),
                         validator: Validators.password,

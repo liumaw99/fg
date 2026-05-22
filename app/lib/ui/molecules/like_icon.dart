@@ -106,7 +106,9 @@ class _LikeIconState extends State<LikeIcon> with TickerProviderStateMixin {
                     height: 32,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: _hover ? AppColors.like.withAlpha(20) : Colors.transparent,
+                      color: _hover
+                          ? AppColors.like.withAlpha(20)
+                          : Colors.transparent,
                     ),
                   ),
                   AnimatedBuilder(
@@ -131,11 +133,7 @@ class _LikeIconState extends State<LikeIcon> with TickerProviderStateMixin {
               const SizedBox(width: 2),
               Text(
                 Formatters.formatCount(widget.count),
-                style: TextStyle(
-                  fontSize: 13,
-                  color: color,
-                  height: 1,
-                ),
+                style: TextStyle(fontSize: 13, color: color, height: 1),
               ),
             ],
           ],

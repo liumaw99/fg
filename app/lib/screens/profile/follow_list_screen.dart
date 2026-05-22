@@ -68,7 +68,8 @@ class _FollowList extends ConsumerWidget {
         itemCount: 6,
         itemBuilder: (_, __) => const UserTileSkeleton(),
       ),
-      error: (error, _) => ErrorState(message: error.toString(), onRetry: onRetry),
+      error: (error, _) =>
+          ErrorState(message: error.toString(), onRetry: onRetry),
       data: (users) {
         if (users.isEmpty) {
           return EmptyState(icon: Icons.people_outline, title: emptyTitle);

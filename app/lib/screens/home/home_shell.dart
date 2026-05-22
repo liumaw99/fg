@@ -77,7 +77,11 @@ class HomeShellState extends ConsumerState<HomeShell> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.settings_outlined, color: theme.appTextPrimary, size: 22),
+            icon: Icon(
+              Icons.settings_outlined,
+              color: theme.appTextPrimary,
+              size: 22,
+            ),
             onPressed: () => context.push(RouteNames.settings),
           ),
           const SizedBox(width: 4),
@@ -125,11 +129,7 @@ class _BottomBar extends StatelessWidget {
         activeIcon: Icons.home_rounded,
         label: '首页',
       ),
-      _TabItem(
-        icon: Icons.search,
-        activeIcon: Icons.search,
-        label: '探索',
-      ),
+      _TabItem(icon: Icons.search, activeIcon: Icons.search, label: '探索'),
       _TabItem(
         icon: Icons.notifications_outlined,
         activeIcon: Icons.notifications_rounded,
@@ -168,7 +168,9 @@ class _BottomBar extends StatelessWidget {
                         child: Icon(
                           selected ? item.activeIcon : item.icon,
                           size: 26,
-                          color: selected ? theme.appTextPrimary : theme.appTextSecondary,
+                          color: selected
+                              ? theme.appTextPrimary
+                              : theme.appTextSecondary,
                         ),
                       ),
                     ),

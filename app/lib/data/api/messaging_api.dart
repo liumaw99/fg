@@ -17,7 +17,10 @@ class MessagingApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
@@ -31,7 +34,10 @@ class MessagingApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
@@ -53,11 +59,17 @@ class MessagingApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
-  Future<Map<String, dynamic>> getMessages(String conversationId, {String? cursor}) async {
+  Future<Map<String, dynamic>> getMessages(
+    String conversationId, {
+    String? cursor,
+  }) async {
     try {
       final response = await _client.dio.get(
         '/conversations/$conversationId/messages',
@@ -67,7 +79,10 @@ class MessagingApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
@@ -78,15 +93,15 @@ class MessagingApi {
     try {
       await _client.dio.post(
         '/conversations/read',
-        data: {
-          'conversation_id': conversationId,
-          'message_id': messageId,
-        },
+        data: {'conversation_id': conversationId, 'message_id': messageId},
       );
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 }

@@ -46,7 +46,8 @@ class MessageListResponse {
 
   factory MessageListResponse.fromJson(Map<String, dynamic> json) {
     return MessageListResponse(
-      messages: (json['messages'] as List<dynamic>?)
+      messages:
+          (json['messages'] as List<dynamic>?)
               ?.map((e) => MessageModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],

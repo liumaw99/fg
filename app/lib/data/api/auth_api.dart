@@ -8,21 +8,24 @@ class AuthApi {
 
   AuthApi({ApiClient? client}) : _client = client ?? ApiClient();
 
-  Future<Map<String, dynamic>> register(String username, String email, String password) async {
+  Future<Map<String, dynamic>> register(
+    String username,
+    String email,
+    String password,
+  ) async {
     try {
       final response = await _client.dio.post(
         ApiConstants.register,
-        data: {
-          'username': username,
-          'email': email,
-          'password': password,
-        },
+        data: {'username': username, 'email': email, 'password': password},
       );
       return response.data['data'] as Map<String, dynamic>;
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
@@ -30,16 +33,16 @@ class AuthApi {
     try {
       final response = await _client.dio.post(
         ApiConstants.login,
-        data: {
-          'email': email,
-          'password': password,
-        },
+        data: {'email': email, 'password': password},
       );
       return response.data['data'] as Map<String, dynamic>;
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
@@ -53,7 +56,10 @@ class AuthApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
@@ -66,7 +72,10 @@ class AuthApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
@@ -77,7 +86,10 @@ class AuthApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 }

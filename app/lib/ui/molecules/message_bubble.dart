@@ -26,7 +26,9 @@ class MessageBubble extends StatelessWidget {
     final theme = Theme.of(context);
     final bg = isMe ? theme.appAccent : theme.appSurfaceElevated;
     final fg = isMe ? theme.appAccentText : theme.appTextPrimary;
-    final metaFg = isMe ? theme.appAccentText.withAlpha(160) : theme.appTextSecondary;
+    final metaFg = isMe
+        ? theme.appAccentText.withAlpha(160)
+        : theme.appTextSecondary;
 
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
@@ -65,10 +67,7 @@ class MessageBubble extends StatelessWidget {
                   Formatters.formatChatTime(createdAt),
                   style: TextStyle(fontSize: 10, color: metaFg, height: 1),
                 ),
-                if (isMe) ...[
-                  const SizedBox(width: 4),
-                  _statusIcon(metaFg),
-                ],
+                if (isMe) ...[const SizedBox(width: 4), _statusIcon(metaFg)],
               ],
             ),
           ],
@@ -89,7 +88,11 @@ class MessageBubble extends StatelessWidget {
           ),
         );
       case BubbleStatus.failed:
-        return const Icon(Icons.error_outline, size: 12, color: AppColors.danger);
+        return const Icon(
+          Icons.error_outline,
+          size: 12,
+          color: AppColors.danger,
+        );
       case BubbleStatus.sent:
         return Icon(Icons.done, size: 12, color: color);
     }

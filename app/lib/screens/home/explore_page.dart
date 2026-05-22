@@ -48,10 +48,9 @@ class _ExplorePageState extends ConsumerState<ExplorePage>
   void _performSearch() {
     final query = _controller.text.trim();
     if (query.isEmpty) return;
-    ref.read(searchProvider.notifier).search(
-          query,
-          type: _tabTypes[_tabController.index],
-        );
+    ref
+        .read(searchProvider.notifier)
+        .search(query, type: _tabTypes[_tabController.index]);
   }
 
   @override
@@ -69,10 +68,18 @@ class _ExplorePageState extends ConsumerState<ExplorePage>
             decoration: InputDecoration(
               hintText: AppStrings.searchHint,
               hintStyle: TextStyle(color: theme.appTextTertiary, fontSize: 15),
-              prefixIcon: Icon(Icons.search, size: 20, color: theme.appTextSecondary),
+              prefixIcon: Icon(
+                Icons.search,
+                size: 20,
+                color: theme.appTextSecondary,
+              ),
               suffixIcon: _controller.text.isNotEmpty
                   ? IconButton(
-                      icon: Icon(Icons.cancel, size: 18, color: theme.appTextSecondary),
+                      icon: Icon(
+                        Icons.cancel,
+                        size: 18,
+                        color: theme.appTextSecondary,
+                      ),
                       onPressed: () {
                         _controller.clear();
                         ref.read(searchProvider.notifier).clear();
@@ -95,7 +102,9 @@ class _ExplorePageState extends ConsumerState<ExplorePage>
         ),
         Container(
           decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: theme.appBorder, width: 0.5)),
+            border: Border(
+              bottom: BorderSide(color: theme.appBorder, width: 0.5),
+            ),
           ),
           child: TabBar(
             controller: _tabController,
@@ -108,8 +117,15 @@ class _ExplorePageState extends ConsumerState<ExplorePage>
             indicatorSize: TabBarIndicatorSize.label,
             labelColor: theme.appTextPrimary,
             unselectedLabelColor: theme.appTextSecondary,
-            labelStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, letterSpacing: -0.1),
-            unselectedLabelStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            labelStyle: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.1,
+            ),
+            unselectedLabelStyle: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
             dividerColor: Colors.transparent,
             splashFactory: NoSplash.splashFactory,
             tabs: _tabs.map((t) => Tab(text: t)).toList(),
@@ -119,7 +135,8 @@ class _ExplorePageState extends ConsumerState<ExplorePage>
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 200),
             child: searchState.when(
-              loading: () => const LoadingState(key: ValueKey('search-loading')),
+              loading: () =>
+                  const LoadingState(key: ValueKey('search-loading')),
               error: (error, _) => ErrorState(
                 key: const ValueKey('search-error'),
                 message: error.toString(),
@@ -131,7 +148,10 @@ class _ExplorePageState extends ConsumerState<ExplorePage>
                     key: const ValueKey('search-hint'),
                     child: Text(
                       '输入关键词开始搜索',
-                      style: TextStyle(color: theme.appTextSecondary, fontSize: 14),
+                      style: TextStyle(
+                        color: theme.appTextSecondary,
+                        fontSize: 14,
+                      ),
                     ),
                   );
                 }
@@ -155,12 +175,26 @@ class _ExplorePageState extends ConsumerState<ExplorePage>
                         isUser ? Icons.person : Icons.article,
                         color: theme.appTextSecondary,
                       ),
-                      title: Text(r.title, style: TextStyle(color: theme.appTextPrimary, fontWeight: FontWeight.w600)),
+                      title: Text(
+                        r.title,
+                        style: TextStyle(
+                          color: theme.appTextPrimary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                       subtitle: r.subtitle != null
-                          ? Text(r.subtitle!, maxLines: 2, overflow: TextOverflow.ellipsis)
+                          ? Text(
+                              r.subtitle!,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            )
                           : (r.content != null
-                              ? Text(r.content!, maxLines: 2, overflow: TextOverflow.ellipsis)
-                              : null),
+                                ? Text(
+                                    r.content!,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  )
+                                : null),
                       onTap: () {
                         if (isUser) {
                           context.push('/user/${r.title}');

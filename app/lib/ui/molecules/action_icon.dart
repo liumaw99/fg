@@ -37,7 +37,9 @@ class _ActionIconState extends State<ActionIcon> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final hoverColor = widget.activeColor ?? theme.appTextPrimary;
-    final fgColor = widget.active ? (widget.activeColor ?? hoverColor) : theme.appTextSecondary;
+    final fgColor = widget.active
+        ? (widget.activeColor ?? hoverColor)
+        : theme.appTextSecondary;
 
     return Semantics(
       button: true,
@@ -72,11 +74,7 @@ class _ActionIconState extends State<ActionIcon> {
                 const SizedBox(width: 2),
                 Text(
                   Formatters.formatCount(widget.count!),
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: fgColor,
-                    height: 1,
-                  ),
+                  style: TextStyle(fontSize: 13, color: fgColor, height: 1),
                 ),
               ],
             ],

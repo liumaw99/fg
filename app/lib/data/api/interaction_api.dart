@@ -9,38 +9,43 @@ class InteractionApi {
 
   Future<void> like(String postId) async {
     try {
-      await _client.dio.post(
-        '/interactions/like',
-        data: {'post_id': postId},
-      );
+      await _client.dio.post('/interactions/like', data: {'post_id': postId});
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
   Future<void> unlike(String postId) async {
     try {
-      await _client.dio.post(
-        '/interactions/unlike',
-        data: {'post_id': postId},
-      );
+      await _client.dio.post('/interactions/unlike', data: {'post_id': postId});
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
   Future<Map<String, dynamic>> getLikeStatus(String postId) async {
     try {
-      final response = await _client.dio.get('/interactions/like-status/$postId');
+      final response = await _client.dio.get(
+        '/interactions/like-status/$postId',
+      );
       return response.data['data'] as Map<String, dynamic>;
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
@@ -54,7 +59,10 @@ class InteractionApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
@@ -64,7 +72,10 @@ class InteractionApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
@@ -74,7 +85,10 @@ class InteractionApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 }

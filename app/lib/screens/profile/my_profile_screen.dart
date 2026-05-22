@@ -32,11 +32,7 @@ class MyProfileScreen extends ConsumerWidget {
             ),
           );
         }
-        return ProfileView(
-          user: user,
-          isMe: true,
-          actionButton: _EditButton(),
-        );
+        return ProfileView(user: user, isMe: true, actionButton: _EditButton());
       },
     );
   }
@@ -52,8 +48,14 @@ class _EditButton extends StatelessWidget {
         foregroundColor: theme.appTextPrimary,
         side: BorderSide(color: theme.appBorderStrong, width: 1),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9999)),
-        textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, letterSpacing: -0.1),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(9999),
+        ),
+        textStyle: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.1,
+        ),
         minimumSize: const Size(0, 32),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),

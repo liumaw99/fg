@@ -52,7 +52,8 @@ class UserModel {
     );
   }
 
-  String get displayNameOrUsername => displayName.isNotEmpty ? displayName : username;
+  String get displayNameOrUsername =>
+      displayName.isNotEmpty ? displayName : username;
 }
 
 class UserListResponse {
@@ -68,7 +69,8 @@ class UserListResponse {
 
   factory UserListResponse.fromJson(Map<String, dynamic> json) {
     return UserListResponse(
-      users: (json['users'] as List<dynamic>?)
+      users:
+          (json['users'] as List<dynamic>?)
               ?.map((e) => UserModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],

@@ -88,8 +88,9 @@ class AppAvatar extends StatelessWidget {
   }
 
   Widget _buildFallback(double diameter, Color bg, Color fg) {
-    final initials =
-        (fallbackText ?? '?').trim().isEmpty ? '?' : (fallbackText ?? '?').trim();
+    final initials = (fallbackText ?? '?').trim().isEmpty
+        ? '?'
+        : (fallbackText ?? '?').trim();
     final shown = initials.length > 2 ? initials.substring(0, 2) : initials;
     return Container(
       width: diameter,

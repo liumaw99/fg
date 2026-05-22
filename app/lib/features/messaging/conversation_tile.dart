@@ -13,7 +13,8 @@ class ConversationTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final name = conversation.title ??
+    final name =
+        conversation.title ??
         (conversation.participantId != null
             ? conversation.participantId!.substring(0, 6)
             : '对话');

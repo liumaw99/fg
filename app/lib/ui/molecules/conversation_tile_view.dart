@@ -84,8 +84,12 @@ class ConversationTileView extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 14,
-                          color: hasUnread ? theme.appTextPrimary : theme.appTextSecondary,
-                          fontWeight: hasUnread ? FontWeight.w600 : FontWeight.w400,
+                          color: hasUnread
+                              ? theme.appTextPrimary
+                              : theme.appTextSecondary,
+                          fontWeight: hasUnread
+                              ? FontWeight.w600
+                              : FontWeight.w400,
                           height: 1.3,
                         ),
                       ),
@@ -93,8 +97,14 @@ class ConversationTileView extends StatelessWidget {
                     if (hasUnread)
                       Container(
                         margin: const EdgeInsets.only(left: 8),
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 18,
+                          minHeight: 18,
+                        ),
                         decoration: BoxDecoration(
                           color: theme.appAccent,
                           borderRadius: BorderRadius.circular(9),

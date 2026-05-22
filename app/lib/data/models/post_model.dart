@@ -20,11 +20,13 @@ class PostAuthor {
     );
   }
 
-  String get effectiveDisplayName =>
-      displayName.isNotEmpty ? displayName : (username.isNotEmpty ? username : '用户');
+  String get effectiveDisplayName => displayName.isNotEmpty
+      ? displayName
+      : (username.isNotEmpty ? username : '用户');
 
-  String get effectiveUsername =>
-      username.isNotEmpty ? username : (id.isNotEmpty ? 'user_${id.substring(0, 6)}' : 'unknown');
+  String get effectiveUsername => username.isNotEmpty
+      ? username
+      : (id.isNotEmpty ? 'user_${id.substring(0, 6)}' : 'unknown');
 }
 
 class PostModel {
@@ -83,7 +85,8 @@ class PostModel {
       repostCount: json['repost_count'] as int? ?? 0,
       bookmarkCount: json['bookmark_count'] as int? ?? 0,
       viewCount: json['view_count'] as int? ?? 0,
-      mediaUrls: (json['media_urls'] as List<dynamic>?)
+      mediaUrls:
+          (json['media_urls'] as List<dynamic>?)
               ?.map((e) => PostMedia.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],

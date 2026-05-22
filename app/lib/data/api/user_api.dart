@@ -14,7 +14,10 @@ class UserApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
@@ -38,7 +41,10 @@ class UserApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
@@ -49,16 +55,16 @@ class UserApi {
     try {
       final response = await _client.dio.post(
         '/users/avatar/upload-url',
-        data: {
-          'filename': filename,
-          'mime_type': mimeType,
-        },
+        data: {'filename': filename, 'mime_type': mimeType},
       );
       return response.data['data'] as Map<String, dynamic>;
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
@@ -69,7 +75,10 @@ class UserApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 }

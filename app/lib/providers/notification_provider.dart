@@ -4,7 +4,9 @@ import '../data/models/notification_model.dart';
 
 part 'notification_provider.g.dart';
 
-final interactionApiProvider = Provider<InteractionApi>((ref) => InteractionApi());
+final interactionApiProvider = Provider<InteractionApi>(
+  (ref) => InteractionApi(),
+);
 
 @riverpod
 class Notifications extends _$Notifications {
@@ -35,12 +37,14 @@ class Notifications extends _$Notifications {
 
     try {
       final more = await build();
-      state = AsyncValue.data(NotificationListResponse(
-        notifications: [...current.notifications, ...more.notifications],
-        unreadCount: more.unreadCount,
-        nextCursor: _nextCursor,
-        hasMore: _hasMore,
-      ));
+      state = AsyncValue.data(
+        NotificationListResponse(
+          notifications: [...current.notifications, ...more.notifications],
+          unreadCount: more.unreadCount,
+          nextCursor: _nextCursor,
+          hasMore: _hasMore,
+        ),
+      );
     } catch (_) {}
   }
 

@@ -9,7 +9,10 @@ class PostApi {
 
   PostApi({ApiClient? client}) : _client = client ?? ApiClient();
 
-  Future<PostModel> createPost(String content, {List<String>? mediaAssetIds}) async {
+  Future<PostModel> createPost(
+    String content, {
+    List<String>? mediaAssetIds,
+  }) async {
     try {
       final response = await _client.dio.post(
         ApiConstants.posts,
@@ -23,7 +26,10 @@ class PostApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
@@ -31,15 +37,18 @@ class PostApi {
     try {
       final response = await _client.dio.get(
         '${ApiConstants.posts}/feed',
-        queryParameters: {
-          if (cursor != null) 'cursor': cursor,
-        },
+        queryParameters: {if (cursor != null) 'cursor': cursor},
       );
-      return PostListResponse.fromJson(response.data['data'] as Map<String, dynamic>);
+      return PostListResponse.fromJson(
+        response.data['data'] as Map<String, dynamic>,
+      );
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
@@ -47,15 +56,18 @@ class PostApi {
     try {
       final response = await _client.dio.get(
         '${ApiConstants.posts}/user/$userId',
-        queryParameters: {
-          if (cursor != null) 'cursor': cursor,
-        },
+        queryParameters: {if (cursor != null) 'cursor': cursor},
       );
-      return PostListResponse.fromJson(response.data['data'] as Map<String, dynamic>);
+      return PostListResponse.fromJson(
+        response.data['data'] as Map<String, dynamic>,
+      );
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
@@ -66,7 +78,10 @@ class PostApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
@@ -76,7 +91,10 @@ class PostApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 }

@@ -53,7 +53,9 @@ class TimelinePageState extends ConsumerState<TimelinePage>
 
   /// 外部可调用：滚动到顶部
   void scrollToTop() {
-    final ctrl = _tabController.index == 0 ? _forYouScrollCtrl : _followingScrollCtrl;
+    final ctrl = _tabController.index == 0
+        ? _forYouScrollCtrl
+        : _followingScrollCtrl;
     if (ctrl.hasClients) {
       ctrl.animateTo(0, duration: AppDuration.slow, curve: Curves.easeOut);
     }
@@ -101,7 +103,9 @@ class _ForYouTab extends ConsumerWidget {
 
     return CustomScrollView(
       controller: scrollController,
-      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+      physics: const AlwaysScrollableScrollPhysics(
+        parent: BouncingScrollPhysics(),
+      ),
       slivers: [
         CupertinoSliverRefreshControl(
           onRefresh: () => ref.read(feedPostsProvider.notifier).refresh(),
@@ -167,7 +171,9 @@ class _FollowingTab extends StatelessWidget {
     // 后端未提供专门的 following timeline 接口，暂占位
     return ListView(
       controller: scrollController,
-      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+      physics: const AlwaysScrollableScrollPhysics(
+        parent: BouncingScrollPhysics(),
+      ),
       children: const [
         SizedBox(height: 80),
         EmptyState(
@@ -198,7 +204,11 @@ class _StickyTabsDelegate extends SliverPersistentHeaderDelegate {
   });
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: backgroundColor,
@@ -213,10 +223,19 @@ class _StickyTabsDelegate extends SliverPersistentHeaderDelegate {
         indicatorSize: TabBarIndicatorSize.label,
         labelColor: labelColor,
         unselectedLabelColor: unselectedLabelColor,
-        labelStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, letterSpacing: -0.1),
-        unselectedLabelStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+        labelStyle: const TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.1,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+        ),
         splashFactory: NoSplash.splashFactory,
-        overlayColor: WidgetStateProperty.resolveWith((_) => Colors.transparent),
+        overlayColor: WidgetStateProperty.resolveWith(
+          (_) => Colors.transparent,
+        ),
         tabs: const [
           Tab(text: '为你'),
           Tab(text: '关注'),

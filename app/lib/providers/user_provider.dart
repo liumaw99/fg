@@ -28,7 +28,10 @@ Future<UserModel?> profile(ProfileRef ref) async {
 }
 
 @riverpod
-Future<UserModel?> userByUsername(UserByUsernameRef ref, String username) async {
+Future<UserModel?> userByUsername(
+  UserByUsernameRef ref,
+  String username,
+) async {
   final api = UserApi();
   try {
     final data = await api.getUserByUsername(username);

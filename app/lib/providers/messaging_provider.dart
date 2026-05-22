@@ -36,11 +36,13 @@ class Conversations extends _$Conversations {
 
     try {
       final more = await build();
-      state = AsyncValue.data(ConversationListResponse(
-        conversations: [...current.conversations, ...more.conversations],
-        nextCursor: _nextCursor,
-        hasMore: _hasMore,
-      ));
+      state = AsyncValue.data(
+        ConversationListResponse(
+          conversations: [...current.conversations, ...more.conversations],
+          nextCursor: _nextCursor,
+          hasMore: _hasMore,
+        ),
+      );
     } catch (_) {}
   }
 

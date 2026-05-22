@@ -16,7 +16,10 @@ class SocialApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
@@ -29,7 +32,10 @@ class SocialApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
@@ -40,11 +46,17 @@ class SocialApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
-  Future<Map<String, dynamic>> listFollowers(String userId, {String? cursor}) async {
+  Future<Map<String, dynamic>> listFollowers(
+    String userId, {
+    String? cursor,
+  }) async {
     try {
       final response = await _client.dio.get(
         '/social/followers/$userId',
@@ -54,11 +66,17 @@ class SocialApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 
-  Future<Map<String, dynamic>> listFollowing(String userId, {String? cursor}) async {
+  Future<Map<String, dynamic>> listFollowing(
+    String userId, {
+    String? cursor,
+  }) async {
     try {
       final response = await _client.dio.get(
         '/social/following/$userId',
@@ -68,7 +86,10 @@ class SocialApi {
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
-      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
     }
   }
 }

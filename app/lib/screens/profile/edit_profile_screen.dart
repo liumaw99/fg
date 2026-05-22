@@ -68,9 +68,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         context.pop();
       },
       error: (error, _) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('保存失败: $error')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('保存失败: $error')));
       },
     );
   }
@@ -102,10 +102,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             Center(
               child: Stack(
                 children: [
-                  const AppAvatar(
-                    fallbackText: 'Me',
-                    size: AvatarSize.xl,
-                  ),
+                  const AppAvatar(fallbackText: 'Me', size: AvatarSize.xl),
                   Positioned(
                     bottom: 0,
                     right: 0,

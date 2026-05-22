@@ -20,13 +20,11 @@ class AppSkeleton extends StatefulWidget {
   });
 
   /// 圆形骨架（用于头像占位）
-  const AppSkeleton.circle({
-    super.key,
-    required double size,
-  })  : width = size,
-        height = size,
-        radius = 0,
-        shape = BoxShape.circle;
+  const AppSkeleton.circle({super.key, required double size})
+    : width = size,
+      height = size,
+      radius = 0,
+      shape = BoxShape.circle;
 
   @override
   State<AppSkeleton> createState() => _AppSkeletonState();

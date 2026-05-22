@@ -51,23 +51,27 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
       children: [
         if (unread > 0)
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+              vertical: AppSpacing.sm,
+            ),
             decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: theme.appBorder, width: 0.5)),
+              border: Border(
+                bottom: BorderSide(color: theme.appBorder, width: 0.5),
+              ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   '未读 $unread',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: theme.appTextSecondary,
-                  ),
+                  style: TextStyle(fontSize: 13, color: theme.appTextSecondary),
                 ),
                 TextButton(
                   onPressed: () async {
-                    await ref.read(markNotificationReadProvider.notifier).markAllAsRead();
+                    await ref
+                        .read(markNotificationReadProvider.notifier)
+                        .markAllAsRead();
                     ref.invalidate(notificationsProvider);
                   },
                   child: const Text(AppStrings.markAllAsRead),
@@ -87,7 +91,8 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
               error: (error, _) => ErrorState(
                 key: const ValueKey('notif-error'),
                 message: error.toString(),
-                onRetry: () => ref.read(notificationsProvider.notifier).refresh(),
+                onRetry: () =>
+                    ref.read(notificationsProvider.notifier).refresh(),
               ),
               data: (response) {
                 if (response.notifications.isEmpty) {
@@ -101,7 +106,8 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
 
                 return RefreshIndicator(
                   key: const ValueKey('notif-list'),
-                  onRefresh: () => ref.read(notificationsProvider.notifier).refresh(),
+                  onRefresh: () =>
+                      ref.read(notificationsProvider.notifier).refresh(),
                   color: theme.appTextPrimary,
                   child: ListView.separated(
                     controller: _scrollController,
@@ -120,14 +126,18 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
                               child: SizedBox(
                                 width: 22,
                                 height: 22,
-                                child: CircularProgressIndicator(strokeWidth: 2),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
                               ),
                             ),
                           );
                         }
                         return const SizedBox(height: 60);
                       }
-                      return NotificationTile(notification: response.notifications[index]);
+                      return NotificationTile(
+                        notification: response.notifications[index],
+                      );
                     },
                   ),
                 );
