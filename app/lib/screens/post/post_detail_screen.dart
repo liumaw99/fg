@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../core/constants/app_strings.dart';
+import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_spacing.dart';
 import '../../core/utils/formatters.dart';
 import '../../data/models/post_model.dart';
 import '../../providers/post_provider.dart';
-import '../../widgets/app_avatar.dart';
-import '../../widgets/app_divider.dart';
-import '../../widgets/empty_state.dart';
-import '../../widgets/error_state.dart';
-import '../../widgets/loading_state.dart';
+import '../../ui/atoms/app_avatar.dart';
+import '../../ui/atoms/app_divider.dart';
+import '../../ui/molecules/media_grid.dart';
+import '../../ui/molecules/user_header.dart';
+import '../../ui/states/empty_state.dart';
+import '../../ui/states/error_state.dart';
+import '../../ui/states/loading_state.dart';
 
 class PostDetailScreen extends ConsumerStatefulWidget {
   final String postId;
@@ -35,7 +40,6 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     _replyController.clear();
     FocusScope.of(context).unfocus();
 
-    // TODO: Implement reply API when backend supports it
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('回复功能即将上线')),
     );
@@ -43,43 +47,43 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final postAsync = ref.watch(postDetailProvider(widget.postId));
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('动态'),
-      ),
+      appBar: AppBar(title: const Text('动态')),
       body: postAsync.when(
+        loading: () => const LoadingState(),
+        error: (e, _) => ErrorState(
+          message: e.toString(),
+          onRetry: () => ref.invalidate(postDetailProvider(widget.postId)),
+        ),
         data: (post) {
           if (post == null) {
-            return EmptyState(
+            return const EmptyState(
               icon: Icons.article_outlined,
               title: AppStrings.notFound,
             );
           }
-
           return Column(
             children: [
               Expanded(
                 child: CustomScrollView(
                   slivers: [
-                    SliverToBoxAdapter(
-                      child: _PostDetailContent(post: post),
-                    ),
+                    SliverToBoxAdapter(child: _PostDetailContent(post: post)),
                     SliverToBoxAdapter(
                       child: Padding(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(AppSpacing.lg),
                         child: Text(
                           '回复 (${post.replyCount})',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
+                            color: theme.appTextPrimary,
                           ),
                         ),
                       ),
                     ),
-                    // TODO: Reply list when backend supports it
                     const SliverFillRemaining(
                       hasScrollBody: false,
                       child: EmptyState(
@@ -91,53 +95,49 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                   ],
                 ),
               ),
-              const Divider(height: 0.5, thickness: 0.5),
-              SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Row(
-                    children: [
-                      const AppAvatar(
-                        fallbackText: 'Me',
-                        size: AvatarSize.sm,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: TextField(
-                          controller: _replyController,
-                          decoration: InputDecoration(
-                            hintText: '写回复...',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(9999),
-                              borderSide: BorderSide.none,
+              Container(
+                decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: theme.appBorder, width: 0.5)),
+                ),
+                child: SafeArea(
+                  top: false,
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    child: Row(
+                      children: [
+                        const AppAvatar(fallbackText: 'Me', size: AvatarSize.sm),
+                        const SizedBox(width: AppSpacing.md),
+                        Expanded(
+                          child: TextField(
+                            controller: _replyController,
+                            style: TextStyle(color: theme.appTextPrimary, fontSize: 15),
+                            decoration: InputDecoration(
+                              hintText: '写回复...',
+                              hintStyle: TextStyle(color: theme.appTextTertiary),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(9999),
+                                borderSide: BorderSide.none,
+                              ),
+                              filled: true,
+                              fillColor: theme.appSurfaceElevated,
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                             ),
-                            filled: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 10,
-                            ),
+                            onSubmitted: (_) => _submitReply(),
                           ),
-                          onSubmitted: (_) => _submitReply(),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      IconButton(
-                        onPressed: _submitReply,
-                        icon: const Icon(Icons.send),
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ],
+                        const SizedBox(width: AppSpacing.sm),
+                        IconButton(
+                          onPressed: _submitReply,
+                          icon: Icon(Icons.arrow_upward_rounded, color: theme.appTextPrimary),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ],
           );
         },
-        loading: () => const LoadingState(),
-        error: (error, _) => ErrorState(
-          message: error.toString(),
-          onRetry: () => ref.invalidate(postDetailProvider(widget.postId)),
-        ),
       ),
     );
   }
@@ -145,159 +145,57 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
 
 class _PostDetailContent extends StatelessWidget {
   final PostModel post;
-
   const _PostDetailContent({required this.post});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final author = post.author;
+    final displayName = author?.effectiveDisplayName ?? '用户';
+    final username = author?.effectiveUsername ?? 'user_${post.userId.substring(0, 6)}';
 
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              const AppAvatar(
-                fallbackText: 'U',
-                size: AvatarSize.lg,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      post.userId.substring(0, 8),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Text(
-                      '@${post.userId.substring(0, 8)}',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: isDark
-                            ? const Color(0xFF71717A)
-                            : const Color(0xFFA1A1AA),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          UserHeader(
+            displayName: displayName,
+            username: username,
+            avatarUrl: author?.avatarUrl,
+            avatarSize: AvatarSize.lg,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           Text(
             post.content,
-            style: const TextStyle(fontSize: 17, height: 1.6),
+            style: TextStyle(fontSize: 18, height: 1.5, color: theme.appTextPrimary, letterSpacing: -0.05),
           ),
           if (post.mediaUrls.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            _buildMediaGrid(),
+            const SizedBox(height: AppSpacing.lg),
+            MediaGrid(imageUrls: post.mediaUrls.map((m) => m.url).toList()),
           ],
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             Formatters.formatDateTime(post.createdAt),
-            style: TextStyle(
-              fontSize: 14,
-              color: isDark
-                  ? const Color(0xFF71717A)
-                  : const Color(0xFFA1A1AA),
-            ),
+            style: TextStyle(fontSize: 14, color: theme.appTextSecondary),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           const AppDivider(),
-          const SizedBox(height: 12),
-          Row(
+          const SizedBox(height: AppSpacing.md),
+          Wrap(
+            spacing: 24,
+            runSpacing: 8,
             children: [
               _Stat(count: post.replyCount, label: '回复'),
-              const SizedBox(width: 24),
               _Stat(count: post.repostCount, label: '转发'),
-              const SizedBox(width: 24),
               _Stat(count: post.likeCount, label: '点赞'),
-              const SizedBox(width: 24),
               _Stat(count: post.bookmarkCount, label: '收藏'),
             ],
           ),
-          const SizedBox(height: 12),
-          const AppDivider(),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.chat_bubble_outline, size: 20),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: const Icon(Icons.repeat, size: 20),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(
-                  post.isLiked ? Icons.favorite : Icons.favorite_outline,
-                  size: 20,
-                  color: post.isLiked ? Colors.red : null,
-                ),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: const Icon(Icons.bookmark_outline, size: 20),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: const Icon(Icons.share_outlined, size: 20),
-                onPressed: () {},
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.md),
           const AppDivider(),
         ],
       ),
-    );
-  }
-
-  Widget _buildMediaGrid() {
-    final media = post.mediaUrls;
-    if (media.length == 1) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: AspectRatio(
-          aspectRatio: 16 / 9,
-          child: Container(
-            color: Colors.grey.shade800,
-            child: const Center(
-              child: Icon(Icons.image, size: 40, color: Colors.grey),
-            ),
-          ),
-        ),
-      );
-    }
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 4,
-        mainAxisSpacing: 4,
-      ),
-      itemCount: media.length,
-      itemBuilder: (context, index) {
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Container(
-            color: Colors.grey.shade800,
-            child: const Center(
-              child: Icon(Icons.image, color: Colors.grey),
-            ),
-          ),
-        );
-      },
     );
   }
 }
@@ -305,31 +203,20 @@ class _PostDetailContent extends StatelessWidget {
 class _Stat extends StatelessWidget {
   final int count;
   final String label;
-
   const _Stat({required this.count, required this.label});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           Formatters.formatCount(count),
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w700,
-          ),
+          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: theme.appTextPrimary),
         ),
         const SizedBox(width: 4),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 14,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? const Color(0xFF71717A)
-                : const Color(0xFFA1A1AA),
-          ),
-        ),
+        Text(label, style: TextStyle(fontSize: 14, color: theme.appTextSecondary)),
       ],
     );
   }

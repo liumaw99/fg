@@ -41,6 +41,15 @@ class FeedPosts extends _$FeedPosts {
     } catch (_) {}
   }
 
+  /// 局部替换某条 post（点赞等乐观更新使用，不重建整列）
+  void updatePost(PostModel updated) {
+    final current = state.valueOrNull;
+    if (current == null) return;
+    state = AsyncValue.data([
+      for (final p in current) p.id == updated.id ? updated : p,
+    ]);
+  }
+
   bool get hasMore => _hasMore;
 }
 
@@ -77,6 +86,14 @@ class UserPosts extends _$UserPosts {
       _hasMore = response.hasMore;
       state = AsyncValue.data([...currentPosts, ...response.posts]);
     } catch (_) {}
+  }
+
+  void updatePost(PostModel updated) {
+    final current = state.valueOrNull;
+    if (current == null) return;
+    state = AsyncValue.data([
+      for (final p in current) p.id == updated.id ? updated : p,
+    ]);
   }
 
   bool get hasMore => _hasMore;

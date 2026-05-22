@@ -147,14 +147,19 @@ func (s *Service) ListPosts(ctx context.Context, currentUserID uuid.UUID, params
 	return s.buildPostListResponse(ctx, posts, params.Limit, currentUserID)
 }
 
-// buildPostResponse builds a PostResponse from an ent.Post.
+// buildPostResponse builds a PostResponse from an ent.Post (single-post path).
 func (s *Service) buildPostResponse(ctx context.Context, post *ent.Post, currentUserID uuid.UUID) (*PostResponse, error) {
+	authors, _ := s.repo.GetAuthorsByIDs(ctx, []uuid.UUID{post.UserID})
+	return s.assemblePostResponse(ctx, post, currentUserID, authors), nil
+}
+
+// assemblePostResponse turns a Post + prefetched authors map into a PostResponse.
+func (s *Service) assemblePostResponse(ctx context.Context, post *ent.Post, currentUserID uuid.UUID, authors map[uuid.UUID]*AuthorInfo) *PostResponse {
 	stats, err := s.repo.GetPostStats(ctx, post.ID)
 	if err != nil {
 		stats = &ent.PostStats{}
 	}
 
-	// Get media
 	postMedia, err := s.repo.GetPostMediaAssets(ctx, post.ID)
 	if err != nil {
 		postMedia = []*ent.PostMedia{}
@@ -162,14 +167,14 @@ func (s *Service) buildPostResponse(ctx context.Context, post *ent.Post, current
 
 	var mediaURLs []MediaItem
 	if len(postMedia) > 0 {
-		var mediaAssetIDs []uuid.UUID
+		mediaAssetIDs := make([]uuid.UUID, 0, len(postMedia))
 		for _, pm := range postMedia {
 			mediaAssetIDs = append(mediaAssetIDs, pm.MediaAssetID)
 		}
 
 		assets, err := s.repo.GetMediaAssets(ctx, mediaAssetIDs)
 		if err == nil {
-			assetMap := make(map[uuid.UUID]*ent.MediaAsset)
+			assetMap := make(map[uuid.UUID]*ent.MediaAsset, len(assets))
 			for _, a := range assets {
 				assetMap[a.ID] = a
 			}
@@ -202,6 +207,15 @@ func (s *Service) buildPostResponse(ctx context.Context, post *ent.Post, current
 		UpdatedAt:     post.UpdatedAt,
 	}
 
+	if author, ok := authors[post.UserID]; ok && author != nil {
+		resp.Author = &PostAuthor{
+			ID:          author.ID.String(),
+			Username:    author.Username,
+			DisplayName: author.DisplayName,
+			AvatarURL:   author.AvatarURL,
+		}
+	}
+
 	if post.ReplyToID != uuid.Nil {
 		resp.ReplyToID = post.ReplyToID.String()
 	}
@@ -209,29 +223,39 @@ func (s *Service) buildPostResponse(ctx context.Context, post *ent.Post, current
 		resp.RepostOfID = post.RepostOfID.String()
 	}
 
-	// Check if current user liked this post
 	if currentUserID != uuid.Nil {
 		isLiked, _ := s.repo.IsLiked(ctx, post.ID, currentUserID)
 		resp.IsLiked = isLiked
 	}
 
-	return resp, nil
+	return resp
 }
 
-// buildPostListResponse builds a paginated list response.
+// buildPostListResponse builds a paginated list response with one batched author query.
 func (s *Service) buildPostListResponse(ctx context.Context, posts []*ent.Post, limit int, currentUserID uuid.UUID) (*PostListResponse, error) {
 	hasMore := len(posts) > limit
 	if hasMore {
 		posts = posts[:limit]
 	}
 
-	var items []PostResponse
+	authorIDs := make([]uuid.UUID, 0, len(posts))
+	seen := make(map[uuid.UUID]struct{}, len(posts))
 	for _, p := range posts {
-		resp, err := s.buildPostResponse(ctx, p, currentUserID)
-		if err != nil {
+		if _, ok := seen[p.UserID]; ok {
 			continue
 		}
-		items = append(items, *resp)
+		seen[p.UserID] = struct{}{}
+		authorIDs = append(authorIDs, p.UserID)
+	}
+
+	authors, err := s.repo.GetAuthorsByIDs(ctx, authorIDs)
+	if err != nil {
+		authors = map[uuid.UUID]*AuthorInfo{}
+	}
+
+	items := make([]PostResponse, 0, len(posts))
+	for _, p := range posts {
+		items = append(items, *s.assemblePostResponse(ctx, p, currentUserID, authors))
 	}
 
 	result := &PostListResponse{

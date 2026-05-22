@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/constants/app_strings.dart';
+
+import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_duration.dart';
 import '../../providers/notification_provider.dart';
+import '../../providers/user_provider.dart';
 import '../../router/route_names.dart';
-import '../../widgets/app_badge.dart';
+import '../../ui/atoms/app_avatar.dart';
+import '../../ui/atoms/app_badge.dart';
+import '../../ui/atoms/app_haptic.dart';
 import 'explore_page.dart';
 import 'messages_page.dart';
 import 'notifications_page.dart';
@@ -14,97 +19,201 @@ class HomeShell extends ConsumerStatefulWidget {
   const HomeShell({super.key});
 
   @override
-  ConsumerState<HomeShell> createState() => _HomeShellState();
+  ConsumerState<HomeShell> createState() => HomeShellState();
 }
 
-class _HomeShellState extends ConsumerState<HomeShell> {
+class HomeShellState extends ConsumerState<HomeShell> {
   int _currentIndex = 0;
 
-  final _pages = const [
-    TimelinePage(),
-    ExplorePage(),
-    NotificationsPage(),
-    MessagesPage(),
+  // 子页面通过 key 暴露 scrollToTop 方法
+  final _timelineKey = GlobalKey<TimelinePageState>();
+
+  late final List<Widget> _pages = [
+    TimelinePage(key: _timelineKey),
+    const ExplorePage(),
+    const NotificationsPage(),
+    const MessagesPage(),
   ];
 
-  String get _title {
-    switch (_currentIndex) {
-      case 0:
-        return AppStrings.timeline;
-      case 1:
-        return AppStrings.explore;
-      case 2:
-        return AppStrings.notifications;
-      case 3:
-        return AppStrings.messages;
-      default:
-        return '';
+  void _onTabSelected(int index) {
+    if (index == _currentIndex) {
+      // 二次点击当前 tab -> 滚动到顶部
+      if (index == 0) {
+        _timelineKey.currentState?.scrollToTop();
+      }
+      AppHaptic.selection();
+      return;
     }
+    setState(() => _currentIndex = index);
+    AppHaptic.light();
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final unreadCount = ref.watch(unreadCountProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final me = ref.watch(currentUserProvider).valueOrNull;
 
     return Scaffold(
+      backgroundColor: theme.appBackground,
       appBar: AppBar(
-        title: Text(_title),
+        toolbarHeight: 52,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        leadingWidth: 56,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: AppAvatar(
+              imageUrl: me?.avatarUrl,
+              fallbackText: me?.displayNameOrUsername,
+              size: AvatarSize.sm,
+              onTap: () => context.push(RouteNames.profile),
+            ),
+          ),
+        ),
+        title: Icon(Icons.bolt_rounded, size: 28, color: theme.appTextPrimary),
+        centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings_outlined),
+            icon: Icon(Icons.settings_outlined, color: theme.appTextPrimary, size: 22),
             onPressed: () => context.push(RouteNames.settings),
           ),
+          const SizedBox(width: 4),
         ],
       ),
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
-      ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (index) {
-          setState(() => _currentIndex = index);
+      body: AnimatedSwitcher(
+        duration: AppDuration.fast,
+        transitionBuilder: (child, animation) {
+          return FadeTransition(opacity: animation, child: child);
         },
-        destinations: [
-          const NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: AppStrings.home,
-          ),
-          const NavigationDestination(
-            icon: Icon(Icons.search_outlined),
-            selectedIcon: Icon(Icons.search),
-            label: AppStrings.explore,
-          ),
-          NavigationDestination(
-            icon: unreadCount > 0
-                ? AppBadge(
-                    count: unreadCount,
-                    child: const Icon(Icons.notifications_outlined),
-                  )
-                : const Icon(Icons.notifications_outlined),
-            selectedIcon: unreadCount > 0
-                ? AppBadge(
-                    count: unreadCount,
-                    child: const Icon(Icons.notifications),
-                  )
-                : const Icon(Icons.notifications),
-            label: AppStrings.notifications,
-          ),
-          const NavigationDestination(
-            icon: Icon(Icons.mail_outline),
-            selectedIcon: Icon(Icons.mail),
-            label: AppStrings.messages,
-          ),
-        ],
+        child: KeyedSubtree(
+          key: ValueKey(_currentIndex),
+          child: _pages[_currentIndex],
+        ),
       ),
-      floatingActionButton: _currentIndex == 0 || _currentIndex == 1
-          ? FloatingActionButton(
-              onPressed: () => context.push('/create-post'),
-              child: const Icon(Icons.add),
-            )
-          : null,
+      bottomNavigationBar: _BottomBar(
+        currentIndex: _currentIndex,
+        unreadCount: unreadCount,
+        onTap: _onTabSelected,
+      ),
+      floatingActionButton: _ComposeButton(
+        onTap: () => context.push(RouteNames.createPost),
+      ),
+    );
+  }
+}
+
+class _BottomBar extends StatelessWidget {
+  final int currentIndex;
+  final int unreadCount;
+  final ValueChanged<int> onTap;
+
+  const _BottomBar({
+    required this.currentIndex,
+    required this.unreadCount,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final items = [
+      _TabItem(
+        icon: Icons.home_outlined,
+        activeIcon: Icons.home_rounded,
+        label: '首页',
+      ),
+      _TabItem(
+        icon: Icons.search,
+        activeIcon: Icons.search,
+        label: '探索',
+      ),
+      _TabItem(
+        icon: Icons.notifications_outlined,
+        activeIcon: Icons.notifications_rounded,
+        label: '通知',
+        badge: unreadCount,
+      ),
+      _TabItem(
+        icon: Icons.mail_outline,
+        activeIcon: Icons.mail_rounded,
+        label: '消息',
+      ),
+    ];
+
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.appBackground,
+        border: Border(top: BorderSide(color: theme.appBorder, width: 0.5)),
+      ),
+      child: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: 52,
+          child: Row(
+            children: List.generate(items.length, (i) {
+              final item = items[i];
+              final selected = i == currentIndex;
+              return Expanded(
+                child: InkWell(
+                  onTap: () => onTap(i),
+                  child: Center(
+                    child: AppBadge(
+                      count: item.badge ?? 0,
+                      child: AnimatedScale(
+                        scale: selected ? 1.1 : 1.0,
+                        duration: const Duration(milliseconds: 180),
+                        child: Icon(
+                          selected ? item.activeIcon : item.icon,
+                          size: 26,
+                          color: selected ? theme.appTextPrimary : theme.appTextSecondary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TabItem {
+  final IconData icon;
+  final IconData activeIcon;
+  final String label;
+  final int? badge;
+
+  _TabItem({
+    required this.icon,
+    required this.activeIcon,
+    required this.label,
+    this.badge,
+  });
+}
+
+class _ComposeButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _ComposeButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return FloatingActionButton(
+      onPressed: () {
+        AppHaptic.light();
+        onTap();
+      },
+      backgroundColor: theme.appAccent,
+      foregroundColor: theme.appAccentText,
+      elevation: 2,
+      child: const Icon(Icons.add_rounded, size: 28),
     );
   }
 }

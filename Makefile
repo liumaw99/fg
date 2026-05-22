@@ -1,4 +1,4 @@
-.PHONY: all help dev dev-down gen gen-watch build build-api build-worker build-app migrate migrate-down run-api run-worker run-app test test-api test-app lint fmt clean
+.PHONY: all help dev dev-down gen gen-watch build build-api build-worker build-app migrate migrate-down seed run-api run-worker run-app test test-api test-app lint fmt clean
 
 # Default target
 all: help
@@ -21,6 +21,7 @@ help:
 	@echo "Database:"
 	@echo "  make migrate      Run database migrations"
 	@echo "  make migrate-down Run database rollback (ent auto-migration limited)"
+	@echo "  make seed         Seed database with demo data"
 	@echo ""
 	@echo "Run:"
 	@echo "  make run-api      Run API server (go run)"
@@ -52,7 +53,7 @@ help:
 
 dev:
 	@echo "Starting development infrastructure..."
-	@cd server && docker-compose -f deploy/docker/docker-compose.yml up -d postgres redis kafka minio elasticsearch
+	@cd server && docker-compose -f deploy/docker/docker-compose.yml up -d --no-build postgres redis kafka minio elasticsearch
 	@echo "Waiting for services to be ready..."
 	@sleep 5
 	@echo "Infrastructure ready:"
@@ -110,6 +111,10 @@ build-app:
 migrate:
 	@echo "Running database migrations..."
 	@cd server && go run ./cmd/migrate up
+
+seed:
+	@echo "Seeding database with demo data..."
+	@cd server && go run ./cmd/seed
 
 migrate-down:
 	@echo "Database rollback not fully supported with ent auto-migration"

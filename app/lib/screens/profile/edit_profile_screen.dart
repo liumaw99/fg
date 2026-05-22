@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../core/constants/app_strings.dart';
+import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_spacing.dart';
 import '../../providers/user_provider.dart';
-import '../../widgets/app_avatar.dart';
-import '../../widgets/app_button.dart';
-import '../../widgets/app_text_field.dart';
+import '../../ui/atoms/app_avatar.dart';
+import '../../ui/atoms/app_button.dart';
+import '../../ui/atoms/app_text_field.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
@@ -74,26 +77,26 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final updateState = ref.watch(updateProfileProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text(AppStrings.editProfile),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 16),
+            padding: const EdgeInsets.only(right: AppSpacing.md),
             child: AppButton(
               label: AppStrings.save,
               onPressed: updateState.isLoading ? null : _save,
-              isLoading: updateState.isLoading,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              loading: updateState.isLoading,
+              size: AppButtonSize.compact,
             ),
           ),
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           children: [
             Center(
@@ -110,53 +113,49 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: theme.appAccent,
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: Theme.of(context).scaffoldBackgroundColor,
+                          color: theme.scaffoldBackgroundColor,
                           width: 2,
                         ),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.camera_alt,
                         size: 16,
-                        color: Colors.white,
+                        color: theme.appAccentText,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xl),
             AppTextField(
               controller: _displayNameController,
               label: AppStrings.displayName,
               hint: '你的显示名称',
-              textInputAction: TextInputAction.next,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg),
             AppTextField(
               controller: _bioController,
               label: AppStrings.bio,
               hint: '介绍一下你自己',
               maxLines: 3,
               maxLength: 160,
-              textInputAction: TextInputAction.next,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg),
             AppTextField(
               controller: _locationController,
               label: AppStrings.location,
               hint: '你所在的城市',
-              textInputAction: TextInputAction.next,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg),
             AppTextField(
               controller: _websiteController,
               label: AppStrings.website,
               hint: 'https://example.com',
               keyboardType: TextInputType.url,
-              textInputAction: TextInputAction.done,
             ),
           ],
         ),

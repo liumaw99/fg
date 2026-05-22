@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../core/constants/app_strings.dart';
+import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_spacing.dart';
 import '../../core/utils/validators.dart';
 import '../../providers/auth_provider.dart';
 import '../../router/route_names.dart';
-import '../../widgets/app_button.dart';
-import '../../widgets/app_text_field.dart';
+import '../../ui/atoms/app_button.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -57,90 +59,94 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final auth = ref.watch(authProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppStrings.createAccount),
-      ),
+      appBar: AppBar(title: const Text(AppStrings.createAccount)),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(AppSpacing.xxl),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 16),
-                AppTextField(
+                const SizedBox(height: AppSpacing.lg),
+                TextFormField(
                   controller: _usernameController,
-                  label: AppStrings.username,
-                  hint: AppStrings.usernameHint,
                   textInputAction: TextInputAction.next,
-                  prefixIcon: Icons.person_outline,
+                  style: TextStyle(color: theme.appTextPrimary),
+                  decoration: InputDecoration(
+                    labelText: AppStrings.username,
+                    hintText: AppStrings.usernameHint,
+                    prefixIcon: const Icon(Icons.person_outline),
+                  ),
                   validator: Validators.username,
                 ),
-                const SizedBox(height: 20),
-                AppTextField(
+                const SizedBox(height: AppSpacing.lg),
+                TextFormField(
                   controller: _emailController,
-                  label: AppStrings.email,
-                  hint: AppStrings.emailHint,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
-                  prefixIcon: Icons.email_outlined,
+                  style: TextStyle(color: theme.appTextPrimary),
+                  decoration: InputDecoration(
+                    labelText: AppStrings.email,
+                    hintText: AppStrings.emailHint,
+                    prefixIcon: const Icon(Icons.email_outlined),
+                  ),
                   validator: Validators.email,
                 ),
-                const SizedBox(height: 20),
-                AppTextField(
+                const SizedBox(height: AppSpacing.lg),
+                TextFormField(
                   controller: _passwordController,
-                  label: AppStrings.password,
-                  hint: AppStrings.passwordHint,
                   obscureText: _obscurePassword,
                   textInputAction: TextInputAction.next,
-                  prefixIcon: Icons.lock_outlined,
-                  suffixIcon: _obscurePassword
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
-                  onSuffixTap: () =>
-                      setState(() => _obscurePassword = !_obscurePassword),
+                  style: TextStyle(color: theme.appTextPrimary),
+                  decoration: InputDecoration(
+                    labelText: AppStrings.password,
+                    hintText: AppStrings.passwordHint,
+                    prefixIcon: const Icon(Icons.lock_outlined),
+                    suffixIcon: IconButton(
+                      icon: Icon(_obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+                      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                    ),
+                  ),
                   validator: Validators.password,
                 ),
-                const SizedBox(height: 20),
-                AppTextField(
+                const SizedBox(height: AppSpacing.lg),
+                TextFormField(
                   controller: _confirmPasswordController,
-                  label: AppStrings.confirmPassword,
-                  hint: AppStrings.confirmPasswordHint,
                   obscureText: _obscureConfirm,
                   textInputAction: TextInputAction.done,
-                  prefixIcon: Icons.lock_outlined,
-                  suffixIcon: _obscureConfirm
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
-                  onSuffixTap: () =>
-                      setState(() => _obscureConfirm = !_obscureConfirm),
-                  validator: (v) => Validators.confirmPassword(
-                      v, _passwordController.text),
-                  onSubmitted: _register,
+                  style: TextStyle(color: theme.appTextPrimary),
+                  decoration: InputDecoration(
+                    labelText: AppStrings.confirmPassword,
+                    hintText: AppStrings.confirmPasswordHint,
+                    prefixIcon: const Icon(Icons.lock_outlined),
+                    suffixIcon: IconButton(
+                      icon: Icon(_obscureConfirm ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+                      onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
+                    ),
+                  ),
+                  validator: (v) => Validators.confirmPassword(v, _passwordController.text),
+                  onFieldSubmitted: (_) => _register(),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSpacing.xxl),
                 AppButton(
                   label: AppStrings.signUp,
                   onPressed: auth.isLoading ? null : _register,
-                  isLoading: auth.isLoading,
-                  isFullWidth: true,
+                  loading: auth.isLoading,
+                  size: AppButtonSize.large,
+                  fullWidth: true,
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       AppStrings.hasAccount,
-                      style: TextStyle(
-                        color: isDark
-                            ? const Color(0xFF71717A)
-                            : const Color(0xFFA1A1AA),
-                      ),
+                      style: TextStyle(color: theme.appTextSecondary),
                     ),
                     TextButton(
                       onPressed: () => context.pop(),

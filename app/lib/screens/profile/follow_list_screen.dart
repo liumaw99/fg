@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+
 import '../../core/constants/app_strings.dart';
+import '../../data/models/user_model.dart';
+import '../../features/user/user_tile.dart';
 import '../../providers/social_provider.dart';
-import '../../widgets/app_divider.dart';
-import '../../widgets/empty_state.dart';
-import '../../widgets/error_state.dart';
-import '../../widgets/loading_state.dart';
-import '../../widgets/user_list_tile.dart';
+import '../../ui/atoms/app_divider.dart';
+import '../../ui/molecules/skeletons/user_tile_skeleton.dart';
+import '../../ui/states/empty_state.dart';
+import '../../ui/states/error_state.dart';
 
 class FollowersScreen extends ConsumerWidget {
   final String userId;
@@ -16,14 +17,12 @@ class FollowersScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final followersAsync = ref.watch(followersProvider(userId));
+    final asyncList = ref.watch(followersProvider(userId));
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppStrings.followers),
-      ),
+      appBar: AppBar(title: const Text(AppStrings.followers)),
       body: _FollowList(
-        asyncValue: followersAsync,
+        asyncValue: asyncList,
         onRetry: () => ref.read(followersProvider(userId).notifier).refresh(),
         emptyTitle: AppStrings.noFollowers,
       ),
@@ -38,14 +37,12 @@ class FollowingScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final followingAsync = ref.watch(followingProvider(userId));
+    final asyncList = ref.watch(followingProvider(userId));
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppStrings.following),
-      ),
+      appBar: AppBar(title: const Text(AppStrings.following)),
       body: _FollowList(
-        asyncValue: followingAsync,
+        asyncValue: asyncList,
         onRetry: () => ref.read(followingProvider(userId).notifier).refresh(),
         emptyTitle: AppStrings.noFollowing,
       ),
@@ -54,7 +51,7 @@ class FollowingScreen extends ConsumerWidget {
 }
 
 class _FollowList extends ConsumerWidget {
-  final dynamic asyncValue;
+  final AsyncValue<List<UserModel>> asyncValue;
   final VoidCallback onRetry;
   final String emptyTitle;
 
@@ -66,33 +63,22 @@ class _FollowList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // This is a simplified version - the actual notifier pattern
-    // would need proper family provider setup
     return asyncValue.when(
+      loading: () => ListView.builder(
+        itemCount: 6,
+        itemBuilder: (_, __) => const UserTileSkeleton(),
+      ),
+      error: (error, _) => ErrorState(message: error.toString(), onRetry: onRetry),
       data: (users) {
         if (users.isEmpty) {
-          return EmptyState(
-            icon: Icons.people_outline,
-            title: emptyTitle,
-          );
+          return EmptyState(icon: Icons.people_outline, title: emptyTitle);
         }
         return ListView.separated(
           itemCount: users.length,
-          separatorBuilder: (_, __) => const AppDivider(indent: 72),
-          itemBuilder: (context, index) {
-            final user = users[index];
-            return UserListTile(
-              user: user,
-              onTap: () => context.push('/user/${user.username}'),
-            );
-          },
+          separatorBuilder: (_, __) => const AppDivider(indent: 68),
+          itemBuilder: (context, index) => UserTile(user: users[index]),
         );
       },
-      loading: () => const LoadingState(),
-      error: (error, _) => ErrorState(
-        message: error.toString(),
-        onRetry: onRetry,
-      ),
     );
   }
 }

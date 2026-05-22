@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
-import '../core/utils/formatters.dart';
 
+import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_radius.dart';
+import '../../core/utils/formatters.dart';
+
+enum BubbleStatus { sending, sent, failed }
+
+/// 消息气泡（纯展示，无业务依赖）。
 class MessageBubble extends StatelessWidget {
   final String content;
   final bool isMe;
-  final String status;
+  final BubbleStatus status;
   final DateTime createdAt;
 
   const MessageBubble({
@@ -18,21 +24,26 @@ class MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final bg = isMe ? theme.appAccent : theme.appSurfaceElevated;
+    final fg = isMe ? theme.appAccentText : theme.appTextPrimary;
+    final metaFg = isMe ? theme.appAccentText.withAlpha(160) : theme.appTextSecondary;
 
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          color: isMe
-              ? theme.colorScheme.primary
-              : (isDark ? const Color(0xFF1A1A1A) : const Color(0xFFF0F0F0)),
-          borderRadius: BorderRadius.circular(16),
-        ),
+        margin: const EdgeInsets.symmetric(vertical: 3),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
         constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width * 0.72,
+        ),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.only(
+            topLeft: const Radius.circular(AppRadius.lg),
+            topRight: const Radius.circular(AppRadius.lg),
+            bottomLeft: Radius.circular(isMe ? AppRadius.lg : 4),
+            bottomRight: Radius.circular(isMe ? 4 : AppRadius.lg),
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -41,26 +52,22 @@ class MessageBubble extends StatelessWidget {
               content,
               style: TextStyle(
                 fontSize: 15,
-                height: 1.5,
-                color: isMe ? Colors.white : theme.colorScheme.onSurface,
+                height: 1.45,
+                color: fg,
+                letterSpacing: -0.05,
               ),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 4),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   Formatters.formatChatTime(createdAt),
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: isMe
-                        ? Colors.white.withAlpha(150)
-                        : (isDark ? const Color(0xFF71717A) : const Color(0xFFA1A1AA)),
-                  ),
+                  style: TextStyle(fontSize: 10, color: metaFg, height: 1),
                 ),
                 if (isMe) ...[
                   const SizedBox(width: 4),
-                  _buildStatusIcon(),
+                  _statusIcon(metaFg),
                 ],
               ],
             ),
@@ -70,25 +77,26 @@ class MessageBubble extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusIcon() {
+  Widget _statusIcon(Color color) {
     switch (status) {
-      case 'sending':
-        return const SizedBox(
+      case BubbleStatus.sending:
+        return SizedBox(
           width: 10,
           height: 10,
           child: CircularProgressIndicator(
             strokeWidth: 1.5,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.white70),
+            valueColor: AlwaysStoppedAnimation<Color>(color),
           ),
         );
-      case 'failed':
-        return const Icon(Icons.error_outline, size: 12, color: Colors.red);
-      default:
-        return const Icon(Icons.done, size: 12, color: Colors.white70);
+      case BubbleStatus.failed:
+        return const Icon(Icons.error_outline, size: 12, color: AppColors.danger);
+      case BubbleStatus.sent:
+        return Icon(Icons.done, size: 12, color: color);
     }
   }
 }
 
+/// 聊天日期分隔。
 class DateSeparator extends StatelessWidget {
   final DateTime date;
 
@@ -96,45 +104,31 @@ class DateSeparator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
+    final theme = Theme.of(context);
+    final color = theme.appBorder;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Row(
         children: [
-          Expanded(
-            child: Divider(
-              color: isDark ? const Color(0xFF333333) : const Color(0xFFE4E4E7),
-              thickness: 0.5,
-            ),
-          ),
+          Expanded(child: Divider(color: color, thickness: 0.5)),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Text(
-              _formatDate(date),
-              style: TextStyle(
-                fontSize: 12,
-                color: isDark ? const Color(0xFF71717A) : const Color(0xFFA1A1AA),
-              ),
+              _label(date),
+              style: TextStyle(fontSize: 12, color: theme.appTextSecondary),
             ),
           ),
-          Expanded(
-            child: Divider(
-              color: isDark ? const Color(0xFF333333) : const Color(0xFFE4E4E7),
-              thickness: 0.5,
-            ),
-          ),
+          Expanded(child: Divider(color: color, thickness: 0.5)),
         ],
       ),
     );
   }
 
-  String _formatDate(DateTime date) {
+  String _label(DateTime date) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final target = DateTime(date.year, date.month, date.day);
     final diff = today.difference(target).inDays;
-
     if (diff == 0) return '今天';
     if (diff == 1) return '昨天';
     return '${date.month}月${date.day}日';

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../core/constants/app_strings.dart';
+import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_spacing.dart';
 import '../../providers/post_provider.dart';
-import '../../widgets/app_avatar.dart';
-import '../../widgets/app_button.dart';
+import '../../providers/user_provider.dart';
+import '../../ui/atoms/app_avatar.dart';
+import '../../ui/atoms/app_button.dart';
 
 class CreatePostScreen extends ConsumerStatefulWidget {
   const CreatePostScreen({super.key});
@@ -15,7 +19,7 @@ class CreatePostScreen extends ConsumerStatefulWidget {
 
 class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
   final _contentController = TextEditingController();
-  final _maxLength = 2000;
+  static const _maxLength = 2000;
   final _focusNode = FocusNode();
 
   @override
@@ -50,23 +54,28 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final createState = ref.watch(createPostProvider);
+    final me = ref.watch(currentUserProvider).valueOrNull;
     final currentLength = _contentController.text.length;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final progress = (currentLength / _maxLength).clamp(0.0, 1.0);
+    final overLimit = currentLength > _maxLength;
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => context.pop(),
+        ),
         title: const Text(AppStrings.newPost),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 16),
+            padding: const EdgeInsets.only(right: AppSpacing.md, top: AppSpacing.sm, bottom: AppSpacing.sm),
             child: AppButton(
               label: AppStrings.post,
-              onPressed: createState.isLoading || currentLength == 0
-                  ? null
-                  : _submitPost,
-              isLoading: createState.isLoading,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              onPressed: createState.isLoading || currentLength == 0 || overLimit ? null : _submitPost,
+              loading: createState.isLoading,
+              size: AppButtonSize.compact,
             ),
           ),
         ],
@@ -75,15 +84,16 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const AppAvatar(
-                    fallbackText: 'Me',
+                  AppAvatar(
+                    imageUrl: me?.avatarUrl,
+                    fallbackText: me?.displayNameOrUsername ?? 'Me',
                     size: AvatarSize.md,
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: TextField(
                       controller: _contentController,
@@ -92,18 +102,13 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                       maxLength: _maxLength,
                       autofocus: true,
                       textCapitalization: TextCapitalization.sentences,
+                      style: TextStyle(fontSize: 18, height: 1.5, color: theme.appTextPrimary, letterSpacing: -0.05),
                       decoration: InputDecoration(
                         hintText: AppStrings.whatsHappening,
                         border: InputBorder.none,
                         counterText: '',
-                        hintStyle: TextStyle(
-                          fontSize: 18,
-                          color: isDark
-                              ? const Color(0xFF71717A)
-                              : const Color(0xFFA1A1AA),
-                        ),
+                        hintStyle: TextStyle(fontSize: 18, color: theme.appTextTertiary),
                       ),
-                      style: const TextStyle(fontSize: 17, height: 1.6),
                       onChanged: (_) => setState(() {}),
                     ),
                   ),
@@ -111,38 +116,96 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
               ),
             ),
           ),
-          const Divider(height: 0.5, thickness: 0.5),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          Container(
+            decoration: BoxDecoration(
+              border: Border(top: BorderSide(color: theme.appBorder, width: 0.5)),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
             child: Row(
               children: [
                 IconButton(
                   onPressed: () {},
-                  icon: const Icon(Icons.image_outlined),
-                  color: Theme.of(context).colorScheme.primary,
+                  icon: Icon(Icons.image_outlined, color: theme.appTextPrimary),
                 ),
                 IconButton(
                   onPressed: () {},
-                  icon: const Icon(Icons.gif_box_outlined),
-                  color: Theme.of(context).colorScheme.primary,
+                  icon: Icon(Icons.gif_box_outlined, color: theme.appTextPrimary),
                 ),
                 const Spacer(),
-                Text(
-                  '$currentLength / $_maxLength',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: currentLength > _maxLength
-                        ? Theme.of(context).colorScheme.error
-                        : (isDark
-                            ? const Color(0xFF71717A)
-                            : const Color(0xFFA1A1AA)),
+                if (currentLength > 0)
+                  _CounterRing(
+                    progress: progress,
+                    overLimit: overLimit,
+                    remaining: _maxLength - currentLength,
                   ),
-                ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _CounterRing extends StatelessWidget {
+  final double progress;
+  final bool overLimit;
+  final int remaining;
+
+  const _CounterRing({
+    required this.progress,
+    required this.overLimit,
+    required this.remaining,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    Color ringColor;
+    if (overLimit) {
+      ringColor = AppColors.danger;
+    } else if (progress >= 0.9) {
+      ringColor = const Color(0xFFFFD400);
+    } else {
+      ringColor = theme.appTextPrimary;
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (progress >= 0.8 || overLimit)
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: Text(
+              remaining.toString(),
+              style: TextStyle(
+                fontSize: 13,
+                color: overLimit ? AppColors.danger : theme.appTextSecondary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        SizedBox(
+          width: 26,
+          height: 26,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              SizedBox(
+                width: 22,
+                height: 22,
+                child: CircularProgressIndicator(
+                  value: progress,
+                  strokeWidth: 2,
+                  backgroundColor: theme.appBorder,
+                  valueColor: AlwaysStoppedAnimation<Color>(ringColor),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

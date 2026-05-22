@@ -1,6 +1,36 @@
+class PostAuthor {
+  final String id;
+  final String username;
+  final String displayName;
+  final String avatarUrl;
+
+  const PostAuthor({
+    required this.id,
+    required this.username,
+    required this.displayName,
+    required this.avatarUrl,
+  });
+
+  factory PostAuthor.fromJson(Map<String, dynamic> json) {
+    return PostAuthor(
+      id: json['id'] as String? ?? '',
+      username: json['username'] as String? ?? '',
+      displayName: json['display_name'] as String? ?? '',
+      avatarUrl: json['avatar_url'] as String? ?? '',
+    );
+  }
+
+  String get effectiveDisplayName =>
+      displayName.isNotEmpty ? displayName : (username.isNotEmpty ? username : '用户');
+
+  String get effectiveUsername =>
+      username.isNotEmpty ? username : (id.isNotEmpty ? 'user_${id.substring(0, 6)}' : 'unknown');
+}
+
 class PostModel {
   final String id;
   final String userId;
+  final PostAuthor? author;
   final String content;
   final String? replyToId;
   final String? repostOfId;
@@ -19,6 +49,7 @@ class PostModel {
   PostModel({
     required this.id,
     required this.userId,
+    this.author,
     required this.content,
     this.replyToId,
     this.repostOfId,
@@ -39,6 +70,9 @@ class PostModel {
     return PostModel(
       id: json['id'] as String,
       userId: json['user_id'] as String,
+      author: json['author'] == null
+          ? null
+          : PostAuthor.fromJson(json['author'] as Map<String, dynamic>),
       content: json['content'] as String,
       replyToId: json['reply_to_id'] as String?,
       repostOfId: json['repost_of_id'] as String?,
@@ -52,10 +86,37 @@ class PostModel {
       mediaUrls: (json['media_urls'] as List<dynamic>?)
               ?.map((e) => PostMedia.fromJson(e as Map<String, dynamic>))
               .toList() ??
-          [],
+          const [],
       isLiked: json['is_liked'] as bool? ?? false,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
+    );
+  }
+
+  PostModel copyWith({
+    bool? isLiked,
+    int? likeCount,
+    int? replyCount,
+    int? repostCount,
+  }) {
+    return PostModel(
+      id: id,
+      userId: userId,
+      author: author,
+      content: content,
+      replyToId: replyToId,
+      repostOfId: repostOfId,
+      status: status,
+      visibility: visibility,
+      likeCount: likeCount ?? this.likeCount,
+      replyCount: replyCount ?? this.replyCount,
+      repostCount: repostCount ?? this.repostCount,
+      bookmarkCount: bookmarkCount,
+      viewCount: viewCount,
+      mediaUrls: mediaUrls,
+      isLiked: isLiked ?? this.isLiked,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
     );
   }
 
@@ -83,7 +144,7 @@ class PostMedia {
   final String? thumbnailUrl;
   final String mimeType;
 
-  PostMedia({
+  const PostMedia({
     required this.id,
     required this.url,
     this.thumbnailUrl,
@@ -105,7 +166,7 @@ class PostListResponse {
   final String? nextCursor;
   final bool hasMore;
 
-  PostListResponse({
+  const PostListResponse({
     required this.posts,
     this.nextCursor,
     required this.hasMore,
@@ -113,11 +174,11 @@ class PostListResponse {
 
   factory PostListResponse.fromJson(Map<String, dynamic> json) {
     return PostListResponse(
-      posts: (json['posts'] as List<dynamic>)
+      posts: (json['posts'] as List<dynamic>? ?? const [])
           .map((e) => PostModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       nextCursor: json['next_cursor'] as String?,
-      hasMore: json['has_more'] as bool,
+      hasMore: json['has_more'] as bool? ?? false,
     );
   }
 }

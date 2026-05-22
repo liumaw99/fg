@@ -8,10 +8,19 @@ type CreatePostRequest struct {
 	MediaAssetIDs []string `json:"media_asset_ids"`
 }
 
+// PostAuthor represents the author summary embedded in PostResponse.
+type PostAuthor struct {
+	ID          string `json:"id"`
+	Username    string `json:"username"`
+	DisplayName string `json:"display_name"`
+	AvatarURL   string `json:"avatar_url"`
+}
+
 // PostResponse represents a post in API responses.
 type PostResponse struct {
 	ID            string       `json:"id"`
 	UserID        string       `json:"user_id"`
+	Author        *PostAuthor  `json:"author,omitempty"`
 	Content       string       `json:"content"`
 	ReplyToID     string       `json:"reply_to_id,omitempty"`
 	RepostOfID    string       `json:"repost_of_id,omitempty"`

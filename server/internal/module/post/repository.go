@@ -11,6 +11,8 @@ import (
 	"social-server/internal/ent/postlike"
 	"social-server/internal/ent/postmedia"
 	"social-server/internal/ent/poststats"
+	"social-server/internal/ent/user"
+	"social-server/internal/ent/userprofile"
 )
 
 // Repository handles database operations for posts.
@@ -226,4 +228,52 @@ func (r *Repository) CreateOutboxEvent(ctx context.Context, topic, key string, p
 		return fmt.Errorf("create outbox event: %w", err)
 	}
 	return nil
+}
+
+// AuthorInfo bundles the user + profile data needed to populate PostAuthor.
+type AuthorInfo struct {
+	ID          uuid.UUID
+	Username    string
+	DisplayName string
+	AvatarURL   string
+}
+
+// GetAuthorsByIDs batch-fetches user+profile info for the given user IDs.
+// Returns a map keyed by user ID. Missing IDs are simply absent from the map.
+func (r *Repository) GetAuthorsByIDs(ctx context.Context, ids []uuid.UUID) (map[uuid.UUID]*AuthorInfo, error) {
+	result := make(map[uuid.UUID]*AuthorInfo, len(ids))
+	if len(ids) == 0 {
+		return result, nil
+	}
+
+	users, err := r.client.User.Query().
+		Where(user.IDIn(ids...)).
+		All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("query users: %w", err)
+	}
+
+	profiles, err := r.client.UserProfile.Query().
+		Where(userprofile.UserIDIn(ids...)).
+		All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("query user profiles: %w", err)
+	}
+	profileMap := make(map[uuid.UUID]*ent.UserProfile, len(profiles))
+	for _, p := range profiles {
+		profileMap[p.UserID] = p
+	}
+
+	for _, u := range users {
+		info := &AuthorInfo{
+			ID:       u.ID,
+			Username: u.Username,
+		}
+		if p, ok := profileMap[u.ID]; ok {
+			info.DisplayName = p.DisplayName
+			info.AvatarURL = p.AvatarURL
+		}
+		result[u.ID] = info
+	}
+	return result, nil
 }

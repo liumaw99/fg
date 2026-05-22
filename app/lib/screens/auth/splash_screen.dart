@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/storage/token_storage.dart';
-import '../../core/theme/app_theme.dart';
 import '../../router/route_names.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -94,18 +93,14 @@ class _SplashScreenState extends State<SplashScreen>
                         width: 80,
                         height: 80,
                         decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [AppTheme.accent, AppTheme.accentLight],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
+                          color: Theme.of(context).colorScheme.onSurface,
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: const Center(
+                        child: Center(
                           child: Icon(
-                            Icons.chat_bubble_outline,
-                            size: 40,
-                            color: Colors.white,
+                            Icons.bolt_rounded,
+                            size: 44,
+                            color: Theme.of(context).colorScheme.surface,
                           ),
                         ),
                       ),

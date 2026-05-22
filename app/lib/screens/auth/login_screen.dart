@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../core/constants/app_strings.dart';
+import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_spacing.dart';
 import '../../core/utils/validators.dart';
 import '../../providers/auth_provider.dart';
 import '../../router/route_names.dart';
-import '../../widgets/app_button.dart';
-import '../../widgets/app_text_field.dart';
+import '../../ui/atoms/app_button.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -48,8 +50,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final auth = ref.watch(authProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       body: SafeArea(
@@ -58,59 +60,67 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             SliverFillRemaining(
               hasScrollBody: false,
               child: Padding(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.all(AppSpacing.xxl),
                 child: Form(
                   key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const Spacer(flex: 2),
+                      Icon(Icons.bolt_rounded, size: 40, color: theme.appTextPrimary),
+                      const SizedBox(height: AppSpacing.xl),
                       Text(
                         AppStrings.welcomeBack,
-                        style: Theme.of(context).textTheme.displaySmall,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        AppStrings.signInToContinue,
                         style: TextStyle(
-                          fontSize: 16,
-                          color: isDark
-                              ? const Color(0xFF71717A)
-                              : const Color(0xFFA1A1AA),
+                          fontSize: 28,
+                          fontWeight: FontWeight.w800,
+                          color: theme.appTextPrimary,
+                          letterSpacing: -0.5,
                         ),
                       ),
-                      const SizedBox(height: 48),
-                      AppTextField(
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        AppStrings.signInToContinue,
+                        style: TextStyle(fontSize: 15, color: theme.appTextSecondary),
+                      ),
+                      const SizedBox(height: AppSpacing.xxxl),
+                      TextFormField(
                         controller: _emailController,
-                        label: AppStrings.email,
-                        hint: AppStrings.emailHint,
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.next,
-                        prefixIcon: Icons.email_outlined,
+                        style: TextStyle(color: theme.appTextPrimary),
+                        decoration: InputDecoration(
+                          labelText: AppStrings.email,
+                          hintText: AppStrings.emailHint,
+                          prefixIcon: const Icon(Icons.email_outlined),
+                        ),
                         validator: Validators.email,
                       ),
-                      const SizedBox(height: 20),
-                      AppTextField(
+                      const SizedBox(height: AppSpacing.lg),
+                      TextFormField(
                         controller: _passwordController,
-                        label: AppStrings.password,
-                        hint: AppStrings.passwordHint,
                         obscureText: _obscurePassword,
                         textInputAction: TextInputAction.done,
-                        prefixIcon: Icons.lock_outlined,
-                        suffixIcon: _obscurePassword
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined,
-                        onSuffixTap: () => setState(
-                            () => _obscurePassword = !_obscurePassword),
+                        style: TextStyle(color: theme.appTextPrimary),
+                        decoration: InputDecoration(
+                          labelText: AppStrings.password,
+                          hintText: AppStrings.passwordHint,
+                          prefixIcon: const Icon(Icons.lock_outlined),
+                          suffixIcon: IconButton(
+                            icon: Icon(_obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+                            onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                          ),
+                        ),
                         validator: Validators.password,
-                        onSubmitted: _login,
+                        onFieldSubmitted: (_) => _login(),
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: AppSpacing.xxl),
                       AppButton(
                         label: AppStrings.signIn,
                         onPressed: auth.isLoading ? null : _login,
-                        isLoading: auth.isLoading,
-                        isFullWidth: true,
+                        loading: auth.isLoading,
+                        size: AppButtonSize.large,
+                        fullWidth: true,
                       ),
                       const Spacer(flex: 3),
                       Row(
@@ -118,11 +128,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         children: [
                           Text(
                             AppStrings.noAccount,
-                            style: TextStyle(
-                              color: isDark
-                                  ? const Color(0xFF71717A)
-                                  : const Color(0xFFA1A1AA),
-                            ),
+                            style: TextStyle(color: theme.appTextSecondary),
                           ),
                           TextButton(
                             onPressed: () => context.push(RouteNames.register),
