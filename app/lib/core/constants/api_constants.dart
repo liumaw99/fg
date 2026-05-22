@@ -14,6 +14,9 @@ class ApiConstants {
   // User endpoints
   static const String users = '/users';
 
+  // Media endpoints
+  static const String media = '/media';
+
   // Post endpoints
   static const String posts = '/posts';
 

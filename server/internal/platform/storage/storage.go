@@ -3,6 +3,7 @@ package storage
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/minio/minio-go/v7"
@@ -11,10 +12,10 @@ import (
 
 // Client wraps MinIO client for object storage operations.
 type Client struct {
-	client     *minio.Client
-	bucket     string
-	useSSL     bool
-	endpoint   string
+	client   *minio.Client
+	bucket   string
+	useSSL   bool
+	endpoint string
 }
 
 // New creates a new storage client.
@@ -38,12 +39,31 @@ func New(endpoint, accessKey, secretKey, bucket string, useSSL bool) (*Client, e
 		}
 	}
 
+	policy := publicReadPolicy(bucket)
+	if err := minioClient.SetBucketPolicy(ctx, bucket, policy); err != nil {
+		return nil, fmt.Errorf("set bucket public read policy: %w", err)
+	}
+
 	return &Client{
 		client:   minioClient,
 		bucket:   bucket,
 		useSSL:   useSSL,
 		endpoint: endpoint,
 	}, nil
+}
+
+func publicReadPolicy(bucket string) string {
+	return strings.ReplaceAll(`{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {"AWS": ["*"]},
+      "Action": ["s3:GetObject"],
+      "Resource": ["arn:aws:s3:::BUCKET_NAME/*"]
+    }
+  ]
+}`, "BUCKET_NAME", bucket)
 }
 
 // PresignedPutURL generates a presigned URL for uploading an object.

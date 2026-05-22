@@ -39,6 +39,19 @@ func (s *Service) CreatePost(ctx context.Context, userID uuid.UUID, req CreatePo
 		}
 		mediaAssetIDs = append(mediaAssetIDs, id)
 	}
+	if len(mediaAssetIDs) > 4 {
+		return nil, errors.New("too_many_media", 400, "a post can include up to 4 images")
+	}
+	if len(mediaAssetIDs) > 0 {
+		count, err := s.repo.CountOwnedMediaAssets(ctx, userID, mediaAssetIDs)
+		if err != nil {
+			s.log.Error("failed to validate media assets", logger.Error(err))
+			return nil, errors.ErrInternal
+		}
+		if count != len(mediaAssetIDs) {
+			return nil, errors.New("invalid_media_id", 400, "one or more media assets are invalid")
+		}
+	}
 
 	// Create post in transaction
 	tx, err := s.repo.client.Tx(ctx)

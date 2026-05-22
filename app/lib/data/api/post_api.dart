@@ -1,13 +1,65 @@
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import '../../core/constants/api_constants.dart';
 import '../../core/errors/api_error.dart';
 import '../models/post_model.dart';
 import 'api_client.dart';
+import 'upload_api.dart';
 
 class PostApi {
   final ApiClient _client;
+  final UploadApi _uploadApi;
 
-  PostApi({ApiClient? client}) : _client = client ?? ApiClient();
+  PostApi({ApiClient? client, UploadApi? uploadApi})
+    : _client = client ?? ApiClient(),
+      _uploadApi = uploadApi ?? UploadApi();
+
+  Future<MediaUploadTarget> getMediaUploadUrl({
+    required String filename,
+    required String mimeType,
+    required int size,
+  }) async {
+    try {
+      final response = await _client.dio.post(
+        '${ApiConstants.media}/upload-url',
+        data: {
+          'filename': filename,
+          'mime_type': mimeType,
+          'size': size,
+          'purpose': 'posts',
+        },
+      );
+      return MediaUploadTarget.fromJson(
+        response.data['data'] as Map<String, dynamic>,
+      );
+    } on ApiError {
+      rethrow;
+    } on DioException catch (e) {
+      throw ApiError.fromResponse(
+        e.response?.data,
+        e.response?.statusCode ?? 500,
+      );
+    }
+  }
+
+  Future<String> uploadPostImage({
+    required String filename,
+    required String mimeType,
+    required Uint8List bytes,
+  }) async {
+    final target = await getMediaUploadUrl(
+      filename: filename,
+      mimeType: mimeType,
+      size: bytes.length,
+    );
+    await _uploadApi.putBytes(
+      uploadUrl: target.uploadUrl,
+      bytes: bytes,
+      mimeType: mimeType,
+    );
+    return target.mediaAssetId;
+  }
 
   Future<PostModel> createPost(
     String content, {
@@ -131,5 +183,25 @@ class PostApi {
         e.response?.statusCode ?? 500,
       );
     }
+  }
+}
+
+class MediaUploadTarget {
+  final String mediaAssetId;
+  final String uploadUrl;
+  final String publicUrl;
+
+  const MediaUploadTarget({
+    required this.mediaAssetId,
+    required this.uploadUrl,
+    required this.publicUrl,
+  });
+
+  factory MediaUploadTarget.fromJson(Map<String, dynamic> json) {
+    return MediaUploadTarget(
+      mediaAssetId: json['media_asset_id'] as String,
+      uploadUrl: json['upload_url'] as String,
+      publicUrl: json['public_url'] as String,
+    );
   }
 }

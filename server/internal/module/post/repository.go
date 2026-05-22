@@ -59,6 +59,24 @@ func (r *Repository) CreatePost(ctx context.Context, userID uuid.UUID, content s
 	return p, nil
 }
 
+// CountOwnedMediaAssets counts media assets owned by user.
+func (r *Repository) CountOwnedMediaAssets(ctx context.Context, ownerID uuid.UUID, ids []uuid.UUID) (int, error) {
+	if len(ids) == 0 {
+		return 0, nil
+	}
+	count, err := r.client.MediaAsset.Query().
+		Where(
+			mediaasset.IDIn(ids...),
+			mediaasset.OwnerID(ownerID),
+			mediaasset.Status("uploaded"),
+		).
+		Count(ctx)
+	if err != nil {
+		return 0, fmt.Errorf("count owned media assets: %w", err)
+	}
+	return count, nil
+}
+
 // CreateReply creates a reply post under parentPostID.
 func (r *Repository) CreateReply(ctx context.Context, userID, parentPostID uuid.UUID, content string) (*ent.Post, error) {
 	p, err := r.client.Post.Create().

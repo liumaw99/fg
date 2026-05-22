@@ -154,11 +154,11 @@ class CreatePost extends _$CreatePost {
   @override
   FutureOr<void> build() => null;
 
-  Future<void> createPost(String content) async {
+  Future<void> createPost(String content, {List<String>? mediaAssetIds}) async {
     state = const AsyncValue.loading();
     try {
       final api = ref.read(postApiProvider);
-      await api.createPost(content);
+      await api.createPost(content, mediaAssetIds: mediaAssetIds);
       state = const AsyncValue.data(null);
     } catch (e, st) {
       state = AsyncValue.error(e, st);

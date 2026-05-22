@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"social-server/internal/module/auth"
 	"social-server/internal/module/interaction"
+	"social-server/internal/module/media"
 	"social-server/internal/module/messaging"
 	"social-server/internal/module/moderation"
 	"social-server/internal/module/post"
@@ -48,6 +49,7 @@ func (a *App) setupRouter() {
 	// Init modules
 	authHandler := auth.NewAuthModule(a.ent, a.jwt, a.log)
 	userHandler := user.NewUserModule(a.ent, a.storage, a.log)
+	mediaHandler := media.NewMediaModule(a.ent, a.storage, a.log)
 	postHandler := post.NewPostModule(a.ent, a.log)
 	socialHandler := social.NewSocialModule(a.ent, a.log)
 	interactionHandler := interaction.NewInteractionModule(a.ent, a.log)
@@ -79,6 +81,12 @@ func (a *App) setupRouter() {
 				users.PATCH("/profile", userHandler.UpdateProfile)
 				users.POST("/avatar/upload-url", userHandler.GetAvatarUploadURL)
 				users.GET("/:username", userHandler.GetUserByUsername)
+			}
+
+			// Media
+			media := protected.Group("/media")
+			{
+				media.POST("/upload-url", mediaHandler.GetUploadURL)
 			}
 
 			// Posts
