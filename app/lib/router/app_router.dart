@@ -1,14 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/auth_provider.dart';
+import '../screens/auth/login_screen.dart';
+import '../screens/auth/register_screen.dart';
+import '../screens/auth/splash_screen.dart';
+import '../screens/chat/chat_detail_screen.dart';
+import '../screens/home/home_shell.dart';
+import '../screens/post/create_post_screen.dart';
+import '../screens/post/post_detail_screen.dart';
+import '../screens/profile/edit_profile_screen.dart';
+import '../screens/profile/follow_list_screen.dart';
+import '../screens/profile/my_profile_screen.dart';
+import '../screens/profile/user_profile_screen.dart';
+import '../screens/settings/settings_screen.dart';
 import 'route_names.dart';
-import '../screens/splash_screen.dart';
-import '../screens/login_screen.dart';
-import '../screens/register_screen.dart';
-import '../screens/home_shell.dart';
-import '../screens/profile_screen.dart';
-import '../screens/settings_screen.dart';
-import '../screens/create_post_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
@@ -22,20 +27,15 @@ final routerProvider = Provider<GoRouter>((ref) {
           state.matchedLocation == RouteNames.register;
       final isSplash = state.matchedLocation == RouteNames.splash;
 
-      // Allow splash screen to check auth state
       if (isSplash) return null;
 
-      // Redirect unauthenticated users to login
       if (!isLoggedIn && !isAuthRoute) {
         return RouteNames.login;
       }
 
-      // Redirect authenticated users away from auth pages
       if (isLoggedIn && isAuthRoute) {
         return RouteNames.home;
       }
-
-      print('GoRouter redirect: isLoggedIn=$isLoggedIn, isAuthRoute=$isAuthRoute, isSplash=$isSplash');
 
       return null;
     },
@@ -58,15 +58,58 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: RouteNames.profile,
-        builder: (context, state) => const ProfileScreen(),
+        builder: (context, state) => const MyProfileScreen(),
       ),
       GoRoute(
         path: RouteNames.settings,
         builder: (context, state) => const SettingsScreen(),
       ),
       GoRoute(
-        path: '/create-post',
+        path: RouteNames.createPost,
         builder: (context, state) => const CreatePostScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.postDetail,
+        builder: (context, state) {
+          final postId = state.pathParameters['id']!;
+          return PostDetailScreen(postId: postId);
+        },
+      ),
+      GoRoute(
+        path: RouteNames.userProfile,
+        builder: (context, state) {
+          final username = state.pathParameters['username']!;
+          return UserProfileScreen(username: username);
+        },
+      ),
+      GoRoute(
+        path: RouteNames.editProfile,
+        builder: (context, state) => const EditProfileScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.followers,
+        builder: (context, state) {
+          final userId = state.pathParameters['userId']!;
+          return FollowersScreen(userId: userId);
+        },
+      ),
+      GoRoute(
+        path: RouteNames.following,
+        builder: (context, state) {
+          final userId = state.pathParameters['userId']!;
+          return FollowingScreen(userId: userId);
+        },
+      ),
+      GoRoute(
+        path: RouteNames.chatDetail,
+        builder: (context, state) {
+          final conversationId = state.pathParameters['conversationId']!;
+          final participantId = state.extra as String?;
+          return ChatDetailScreen(
+            conversationId: conversationId,
+            participantId: participantId,
+          );
+        },
       ),
     ],
   );

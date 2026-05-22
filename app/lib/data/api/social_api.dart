@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import '../../core/constants/api_constants.dart';
 import '../../core/errors/api_error.dart';
 import 'api_client.dart';
 
@@ -36,10 +35,36 @@ class SocialApi {
 
   Future<bool> isFollowing(String userId) async {
     try {
-      final response = await _client.dio.get(
-        '/social/follow-status/$userId',
-      );
+      final response = await _client.dio.get('/social/follow-status/$userId');
       return response.data['data']['is_following'] as bool;
+    } on ApiError {
+      rethrow;
+    } on DioException catch (e) {
+      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+    }
+  }
+
+  Future<Map<String, dynamic>> listFollowers(String userId, {String? cursor}) async {
+    try {
+      final response = await _client.dio.get(
+        '/social/followers/$userId',
+        queryParameters: {if (cursor != null) 'cursor': cursor},
+      );
+      return response.data['data'] as Map<String, dynamic>;
+    } on ApiError {
+      rethrow;
+    } on DioException catch (e) {
+      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+    }
+  }
+
+  Future<Map<String, dynamic>> listFollowing(String userId, {String? cursor}) async {
+    try {
+      final response = await _client.dio.get(
+        '/social/following/$userId',
+        queryParameters: {if (cursor != null) 'cursor': cursor},
+      );
+      return response.data['data'] as Map<String, dynamic>;
     } on ApiError {
       rethrow;
     } on DioException catch (e) {

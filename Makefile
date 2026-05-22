@@ -1,4 +1,4 @@
-.PHONY: all help dev dev-down build build-api build-worker build-app migrate migrate-down run-api run-worker run-app test test-api test-app lint fmt clean
+.PHONY: all help dev dev-down gen gen-watch build build-api build-worker build-app migrate migrate-down run-api run-worker run-app test test-api test-app lint fmt clean
 
 # Default target
 all: help
@@ -32,6 +32,10 @@ help:
 	@echo "  make test         Run all tests"
 	@echo "  make test-api     Run backend tests"
 	@echo "  make test-app     Run Flutter tests"
+	@echo ""
+	@echo "Code Generation:"
+	@echo "  make gen          Generate Riverpod code (build_runner)"
+	@echo "  make gen-watch    Watch mode for Riverpod code generation"
 	@echo ""
 	@echo "Quality:"
 	@echo "  make fmt          Format all code"
@@ -70,6 +74,22 @@ dev-logs:
 # =============================================================================
 
 build: build-api build-worker build-app
+
+# =============================================================================
+# Code Generation
+# =============================================================================
+
+gen:
+	@echo "Running Riverpod code generation..."
+	@cd app && dart run build_runner build --delete-conflicting-outputs
+
+gen-watch:
+	@echo "Starting Riverpod code generation watch mode..."
+	@cd app && dart run build_runner watch --delete-conflicting-outputs
+
+# =============================================================================
+# Build
+# =============================================================================
 
 build-api:
 	@echo "Building API server..."

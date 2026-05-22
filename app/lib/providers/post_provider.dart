@@ -1,24 +1,18 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../data/api/post_api.dart';
 import '../data/models/post_model.dart';
 
+part 'post_provider.g.dart';
+
 final postApiProvider = Provider<PostApi>((ref) => PostApi());
 
-// Feed posts provider
-final feedPostsProvider = AsyncNotifierProvider<FeedPostsNotifier, List<PostModel>>(
-  FeedPostsNotifier.new,
-);
-
-class FeedPostsNotifier extends AsyncNotifier<List<PostModel>> {
+@riverpod
+class FeedPosts extends _$FeedPosts {
   String? _nextCursor;
   bool _hasMore = true;
 
   @override
   Future<List<PostModel>> build() async {
-    return _fetchPosts();
-  }
-
-  Future<List<PostModel>> _fetchPosts() async {
     final api = ref.read(postApiProvider);
     final response = await api.getFeed();
     _nextCursor = response.nextCursor;
@@ -30,16 +24,13 @@ class FeedPostsNotifier extends AsyncNotifier<List<PostModel>> {
     state = const AsyncLoading();
     _nextCursor = null;
     _hasMore = true;
-    state = await AsyncValue.guard(_fetchPosts);
+    state = await AsyncValue.guard(() => build());
   }
 
   Future<void> loadMore() async {
     if (!_hasMore || state.isLoading) return;
-
     final currentPosts = state.valueOrNull ?? [];
     if (_nextCursor == null) return;
-
-    state = const AsyncLoading();
 
     final api = ref.read(postApiProvider);
     try {
@@ -47,29 +38,73 @@ class FeedPostsNotifier extends AsyncNotifier<List<PostModel>> {
       _nextCursor = response.nextCursor;
       _hasMore = response.hasMore;
       state = AsyncValue.data([...currentPosts, ...response.posts]);
-    } catch (e) {
-      state = AsyncValue.data(currentPosts);
-    }
+    } catch (_) {}
+  }
+
+  bool get hasMore => _hasMore;
+}
+
+@riverpod
+class UserPosts extends _$UserPosts {
+  String? _nextCursor;
+  bool _hasMore = true;
+
+  @override
+  Future<List<PostModel>> build(String userId) async {
+    final api = ref.read(postApiProvider);
+    final response = await api.getUserPosts(userId);
+    _nextCursor = response.nextCursor;
+    _hasMore = response.hasMore;
+    return response.posts;
+  }
+
+  Future<void> refresh() async {
+    state = const AsyncLoading();
+    _nextCursor = null;
+    _hasMore = true;
+    state = await AsyncValue.guard(() => build(userId));
+  }
+
+  Future<void> loadMore() async {
+    if (!_hasMore || state.isLoading) return;
+    final currentPosts = state.valueOrNull ?? [];
+    if (_nextCursor == null) return;
+
+    final api = ref.read(postApiProvider);
+    try {
+      final response = await api.getUserPosts(userId, cursor: _nextCursor);
+      _nextCursor = response.nextCursor;
+      _hasMore = response.hasMore;
+      state = AsyncValue.data([...currentPosts, ...response.posts]);
+    } catch (_) {}
+  }
+
+  bool get hasMore => _hasMore;
+}
+
+@riverpod
+Future<PostModel?> postDetail(PostDetailRef ref, String postId) async {
+  final api = ref.read(postApiProvider);
+  try {
+    return await api.getPost(postId);
+  } catch (_) {
+    return null;
   }
 }
 
-// Create post provider
-final createPostProvider = StateNotifierProvider<CreatePostNotifier, AsyncValue<void>>(
-  (ref) => CreatePostNotifier(ref.read(postApiProvider)),
-);
-
-class CreatePostNotifier extends StateNotifier<AsyncValue<void>> {
-  final PostApi _api;
-
-  CreatePostNotifier(this._api) : super(const AsyncValue.data(null));
+@riverpod
+class CreatePost extends _$CreatePost {
+  @override
+  FutureOr<void> build() => null;
 
   Future<void> createPost(String content) async {
     state = const AsyncValue.loading();
     try {
-      await _api.createPost(content);
+      final api = ref.read(postApiProvider);
+      await api.createPost(content);
       state = const AsyncValue.data(null);
-    } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
     }
   }
 }

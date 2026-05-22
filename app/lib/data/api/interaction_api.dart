@@ -44,10 +44,23 @@ class InteractionApi {
     }
   }
 
-  Future<Map<String, dynamic>> getNotifications() async {
+  Future<Map<String, dynamic>> getNotifications({String? cursor}) async {
     try {
-      final response = await _client.dio.get('/interactions/notifications');
+      final response = await _client.dio.get(
+        '/interactions/notifications',
+        queryParameters: {if (cursor != null) 'cursor': cursor},
+      );
       return response.data['data'] as Map<String, dynamic>;
+    } on ApiError {
+      rethrow;
+    } on DioException catch (e) {
+      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+    }
+  }
+
+  Future<void> markNotificationAsRead(String id) async {
+    try {
+      await _client.dio.post('/interactions/notifications/$id/read');
     } on ApiError {
       rethrow;
     } on DioException catch (e) {

@@ -7,11 +7,15 @@ class SearchApi {
 
   SearchApi({ApiClient? client}) : _client = client ?? ApiClient();
 
-  Future<Map<String, dynamic>> search(String query, {String type = 'all'}) async {
+  Future<Map<String, dynamic>> search(String query, {String type = 'all', String? cursor}) async {
     try {
       final response = await _client.dio.get(
         '/search',
-        queryParameters: {'q': query, 'type': type},
+        queryParameters: {
+          'q': query,
+          'type': type,
+          if (cursor != null) 'cursor': cursor,
+        },
       );
       return response.data['data'] as Map<String, dynamic>;
     } on ApiError {

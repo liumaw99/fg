@@ -46,9 +46,9 @@ class AuthState extends ChangeNotifier {
       await _tokenStorage.setRefreshToken(refreshToken);
       _isAuthenticated = true;
     } on ApiError catch (e) {
-      _error = e.message;
+      _error = _mapError(e);
     } catch (e) {
-      _error = 'Registration failed. Please try again.';
+      _error = '注册失败，请稍后重试';
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -69,9 +69,9 @@ class AuthState extends ChangeNotifier {
       await _tokenStorage.setRefreshToken(refreshToken);
       _isAuthenticated = true;
     } on ApiError catch (e) {
-      _error = e.message;
+      _error = _mapError(e);
     } catch (e) {
-      _error = 'Login failed. Please check your credentials.';
+      _error = '登录失败，请检查账号密码';
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -91,13 +91,26 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> refreshAuth() async {
-    await _checkAuth();
-  }
-
   void clearError() {
     _error = null;
     notifyListeners();
+  }
+
+  String _mapError(ApiError e) {
+    switch (e.code) {
+      case 'invalid_credentials':
+        return '邮箱或密码错误';
+      case 'user_already_exists':
+        return '该邮箱或用户名已被注册';
+      case 'user_not_found':
+        return '用户不存在';
+      case 'unauthorized':
+        return '登录已过期，请重新登录';
+      case 'network_error':
+        return '网络连接失败，请检查网络设置';
+      default:
+        return e.message;
+    }
   }
 }
 

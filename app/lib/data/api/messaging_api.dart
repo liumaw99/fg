@@ -21,9 +21,12 @@ class MessagingApi {
     }
   }
 
-  Future<Map<String, dynamic>> getConversations() async {
+  Future<Map<String, dynamic>> getConversations({String? cursor}) async {
     try {
-      final response = await _client.dio.get('/conversations');
+      final response = await _client.dio.get(
+        '/conversations',
+        queryParameters: {if (cursor != null) 'cursor': cursor},
+      );
       return response.data['data'] as Map<String, dynamic>;
     } on ApiError {
       rethrow;
@@ -54,10 +57,32 @@ class MessagingApi {
     }
   }
 
-  Future<Map<String, dynamic>> getMessages(String conversationId) async {
+  Future<Map<String, dynamic>> getMessages(String conversationId, {String? cursor}) async {
     try {
-      final response = await _client.dio.get('/conversations/$conversationId/messages');
+      final response = await _client.dio.get(
+        '/conversations/$conversationId/messages',
+        queryParameters: {if (cursor != null) 'cursor': cursor},
+      );
       return response.data['data'] as Map<String, dynamic>;
+    } on ApiError {
+      rethrow;
+    } on DioException catch (e) {
+      throw ApiError.fromResponse(e.response?.data, e.response?.statusCode ?? 500);
+    }
+  }
+
+  Future<void> markAsRead({
+    required String conversationId,
+    required String messageId,
+  }) async {
+    try {
+      await _client.dio.post(
+        '/conversations/read',
+        data: {
+          'conversation_id': conversationId,
+          'message_id': messageId,
+        },
+      );
     } on ApiError {
       rethrow;
     } on DioException catch (e) {
