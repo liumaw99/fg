@@ -6,6 +6,7 @@ class RouteNames {
   static const String profile = '/profile';
   static const String settings = '/settings';
   static const String createPost = '/create-post';
+  static const String imagePreview = '/image-preview';
   static const String postDetail = '/post/:id';
   static const String userProfile = '/user/:username';
   static const String editProfile = '/edit-profile';

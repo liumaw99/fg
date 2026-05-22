@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../data/api/interaction_api.dart';
 import '../../data/models/post_model.dart';
 import '../../providers/post_provider.dart';
+import '../../router/route_names.dart';
+import '../../screens/post/image_preview_screen.dart';
 import '../../ui/atoms/app_haptic.dart';
 import '../../ui/molecules/post_card_view.dart';
 import 'post_actions_sheet.dart';
@@ -69,19 +71,26 @@ class _PostCardState extends ConsumerState<PostCard> {
   Widget build(BuildContext context) {
     final p = widget.post;
     final author = p.author;
+    final mediaUrls = p.mediaUrls.map((m) => m.url).toList();
     return PostCardView(
       displayName: author?.effectiveDisplayName ?? '用户',
       username: author?.effectiveUsername ?? 'user_${p.userId.substring(0, 6)}',
       avatarUrl: author?.avatarUrl,
       createdAt: p.createdAt,
       content: p.content,
-      mediaUrls: p.mediaUrls.map((m) => m.url).toList(),
+      mediaUrls: mediaUrls,
       likeCount: p.likeCount,
       replyCount: p.replyCount,
       repostCount: p.repostCount,
       isLiked: p.isLiked,
       avatarHeroTag: 'avatar_${p.id}',
       onTap: () => context.push('/post/${p.id}'),
+      onMediaTap: (index) {
+        context.push(
+          RouteNames.imagePreview,
+          extra: ImagePreviewArgs(imageUrls: mediaUrls, initialIndex: index),
+        );
+      },
       onAuthorTap: () {
         final uname = author?.username;
         if (uname != null && uname.isNotEmpty) {

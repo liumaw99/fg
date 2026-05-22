@@ -10,6 +10,7 @@ import '../screens/auth/splash_screen.dart';
 import '../screens/chat/chat_detail_screen.dart';
 import '../screens/home/home_shell.dart';
 import '../screens/post/create_post_screen.dart';
+import '../screens/post/image_preview_screen.dart';
 import '../screens/post/post_detail_screen.dart';
 import '../screens/profile/edit_profile_screen.dart';
 import '../screens/profile/follow_list_screen.dart';
@@ -110,6 +111,19 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RouteNames.createPost,
         pageBuilder: (context, state) => _modalPage(state, const CreatePostScreen()),
+      ),
+      GoRoute(
+        path: RouteNames.imagePreview,
+        pageBuilder: (context, state) {
+          final args = state.extra as ImagePreviewArgs?;
+          return _fadePage(
+            state,
+            ImagePreviewScreen(
+              imageUrls: args?.imageUrls ?? const [],
+              initialIndex: args?.initialIndex ?? 0,
+            ),
+          );
+        },
       ),
       GoRoute(
         path: RouteNames.postDetail,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../core/theme/app_colors.dart';
@@ -7,6 +8,7 @@ import '../../core/theme/app_spacing.dart';
 import '../../core/utils/formatters.dart';
 import '../../data/models/post_model.dart';
 import '../../providers/post_provider.dart';
+import '../../router/route_names.dart';
 import '../../ui/atoms/app_avatar.dart';
 import '../../ui/atoms/app_divider.dart';
 import '../../ui/molecules/media_grid.dart';
@@ -14,6 +16,7 @@ import '../../ui/molecules/user_header.dart';
 import '../../ui/states/empty_state.dart';
 import '../../ui/states/error_state.dart';
 import '../../ui/states/loading_state.dart';
+import 'image_preview_screen.dart';
 
 class PostDetailScreen extends ConsumerStatefulWidget {
   final String postId;
@@ -153,6 +156,7 @@ class _PostDetailContent extends StatelessWidget {
     final author = post.author;
     final displayName = author?.effectiveDisplayName ?? '用户';
     final username = author?.effectiveUsername ?? 'user_${post.userId.substring(0, 6)}';
+    final mediaUrls = post.mediaUrls.map((m) => m.url).toList();
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -170,9 +174,20 @@ class _PostDetailContent extends StatelessWidget {
             post.content,
             style: TextStyle(fontSize: 18, height: 1.5, color: theme.appTextPrimary, letterSpacing: -0.05),
           ),
-          if (post.mediaUrls.isNotEmpty) ...[
+          if (mediaUrls.isNotEmpty) ...[
             const SizedBox(height: AppSpacing.lg),
-            MediaGrid(imageUrls: post.mediaUrls.map((m) => m.url).toList()),
+            MediaGrid(
+              imageUrls: mediaUrls,
+              onTap: (index) {
+                context.push(
+                  RouteNames.imagePreview,
+                  extra: ImagePreviewArgs(
+                    imageUrls: mediaUrls,
+                    initialIndex: index,
+                  ),
+                );
+              },
+            ),
           ],
           const SizedBox(height: AppSpacing.lg),
           Text(
